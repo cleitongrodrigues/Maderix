@@ -1,0 +1,86 @@
+.login-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.login-container h1 {
+  margin-bottom: 25px;
+  color: #2f353a;
+  font-size: 26px;
+  font-weight: bold;
+  position: relative;
+}
+
+.login-container h1::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #ff7700; /* Laranja */
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #f7f7f7;
+}
+
+.login-container input:focus {
+  border-color: #ff7700;
+  box-shadow: 0 0 6px rgba(255, 119, 0, 0.5);
+  background-color: #fff;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  background-color: #ff7700;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #e06600;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.login-container button:active {
+  transform: translateY(2px); /* Move pra baixo */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25); /* Sombra menor, como se tivesse pressionado */
+  background-color: #cc5f00; /* Um tom mais escuro */
+}
+
+.login-container .extra-links {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login-container .extra-links a {
+  color: #666;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.2s;
+}
+
+.login-container .extra-links a:hover {
+  color: #ff7700;
+}

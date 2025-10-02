@@ -1,0 +1,189 @@
+body {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #2f353a, #3e464d);
+  height: 100vh;
+}
+
+/* Espaço reservado para o menu lateral */
+.menu-lateral {
+  width: 250px; /* Largura fixa para o menu */
+  background-color: #2f353a; /* Fundo cinza escuro */
+  color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.produto-container {
+  background-color: #ffffff; /* Fundo branco para o contêiner */
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  width: 75vw;
+  height: auto; /* Ajusta a altura ao conteúdo */
+  margin: auto;
+  text-align: center;
+  position: relative; /* Garante que os elementos internos fiquem dentro do contêiner */
+}
+
+.produto-container h1 {
+  margin-bottom: 25px;
+  color: #2f353a;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+}
+
+.produto-container h1::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #ff7700;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+.produto-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.produto-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #f7f7f7;
+  transition: all 0.2s ease;
+}
+
+.produto-container input:focus {
+  border-color: #ff7700;
+  box-shadow: 0 0 6px rgba(255, 119, 0, 0.5);
+  background-color: #fff;
+  outline: none;
+}
+
+/* Ajuste para garantir que o botão fique dentro do contêiner branco */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centraliza o botão horizontalmente */
+  margin-top: 20px; /* Adiciona espaçamento acima do botão */
+  position: relative; /* Garante que a posição seja relativa ao contêiner branco */
+  z-index: 1; /* Mantém o botão acima do fundo cinza */
+}
+
+.produto-container button {
+  width: 200px; /* Largura fixa para o botão */
+  padding: 14px;
+  margin: 20px auto 0; /* Centraliza o botão horizontalmente */
+  background-color: #ff7700;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  display: block; /* Garante que o botão fique alinhado no fluxo do layout */
+}
+
+.produto-container button:hover {
+  background-color: #e06600;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.produto-container button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) inset;
+}
+
+.produto-container textarea {
+width: 100%;
+padding: 14px;
+margin: 10px 0;
+border: 1px solid #ccc;
+border-radius: 8px;
+font-size: 15px;
+background-color: #f7f7f7;
+transition: all 0.2s ease;
+resize: vertical; /* Permite redimensionar verticalmente */
+min-height: 80px; /* Altura mínima */
+font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.produto-container textarea:focus {
+border-color: #ff7700;
+box-shadow: 0 0 6px rgba(255, 119, 0, 0.5);
+background-color: #fff;
+outline: none;
+
+}
+.produto-container textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Ajuste definitivo para manter os inputs lado a lado com labels acima */
+.input-row {
+  display: flex;
+  gap: 20px; /* Espaçamento entre os blocos */
+  margin-bottom: 20px; /* Espaçamento entre as linhas */
+  align-items: flex-start; /* Garante alinhamento no topo */
+}
+
+.input-row div {
+  display: flex;
+  flex-direction: column; /* Organiza o label acima do input */
+  flex: 1; /* Faz os blocos ocuparem o mesmo espaço */
+  min-width: 0; /* Evita que os blocos ultrapassem o limite */
+}
+
+.input-row label {
+  margin-bottom: 5px; /* Espaçamento entre o label e o input */
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+  text-align: left; /* Alinha o texto do label à esquerda */
+}
+
+.input-row input,
+.input-row textarea {
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #f7f7f7;
+  width: 100%; /* Garante que os inputs ocupem o espaço disponível */
+  box-sizing: border-box; /* Inclui padding e borda no cálculo de largura */
+}
+
+/* Estilo para centralizar o botão dentro do contêiner */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centraliza o botão horizontalmente */
+  margin-top: 20px; /* Adiciona espaçamento acima do botão */
+  position: relative; /* Garante que a posição seja relativa ao contêiner branco */
+  z-index: 1; /* Mantém o botão acima do fundo cinza */
+}
+
+.button-container button {
+  width: 200px; /* Define uma largura fixa para o botão */
+  padding: 14px;
+  background-color: #ff7700;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
