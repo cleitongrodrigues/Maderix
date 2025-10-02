@@ -1,38 +1,58 @@
-.App {
-  text-align: center;
+/* Layout básico com menu lateral fixo */
+.app-layout {
+  display: flex;
+  min-height: 100vh; /* Garante que o layout ocupe toda a altura da tela */
+  width: 100%; /* Garante que o layout ocupe toda a largura da tela */
+  background: #fff;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sidebar {
+  width: 240px; /* Define a largura fixa do menu */
+  background: #2f353a; /* Cor de fundo do menu */
+  color: white;
+  border-right: 1px solid #e6e6e6;
+  box-sizing: border-box;
+  flex-shrink: 0; /* Impede que o menu lateral encolha */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.content {
+  flex: 1; /* Faz o conteúdo ocupar o restante do espaço */
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* Garante que o conteúdo seja organizado em coluna */
+  justify-content: flex-start; /* Alinha o conteúdo ao topo */
+  overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja maior que a tela */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Estilo específico para o menu */
+.menu {
+  height: 100vh; /* Faz o menu ocupar toda a altura da tela */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.menu h1 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.menu a {
   color: white;
+  text-decoration: none;
+  margin: 8px 0;
+  font-size: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
+.menu a:hover {
+  text-decoration: underline;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.menu a.active-link {
+  color: #ffa500; /* Cor laranja para o link ativo */
+  font-weight: bold;
 }

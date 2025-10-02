@@ -1,0 +1,144 @@
+/* Container principal igual ao produto */
+.home {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  width: 84vw; /* ✅ mesma largura do produto */
+  height: auto; /* Ajusta a altura ao conteúdo */
+  margin: auto;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.home h1 {
+  color: #2f353a;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.home h1::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #ff7700;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+
+/* Título */
+.home h1 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: #2f353a;
+  font-weight: bold;
+  position: relative;
+}
+
+.home h1::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #ff7700;
+  margin-top: 8px;
+  border-radius: 2px;
+}
+
+/* Cards superiores */
+.home-overview {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #f8f9fa;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 16px;
+  flex: 1;
+  min-width: 220px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2f353a;
+}
+
+/* Blocos inferiores */
+.home-content {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.recent-activity,
+.quick-actions {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 300px;
+}
+
+.recent-activity h2,
+.quick-actions h2 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.recent-activity ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-activity li {
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* Botões */
+.quick-actions button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #ff7700;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.quick-actions button:hover {
+  background: #e06600;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

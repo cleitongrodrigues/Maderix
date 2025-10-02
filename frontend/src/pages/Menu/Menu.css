@@ -1,0 +1,34 @@
+.menu {
+  width: 240px;
+  height: 100vh;
+  background: #2f353a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.menu h1 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.menu a {
+  color: white;
+  text-decoration: none;
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.menu a:hover {
+  text-decoration: underline;
+}
+
+.menu a.active-link {
+  color: #FFA500 !important; /* Garante que a cor laranja seja aplicada */
+  font-weight: bold;
+}   
