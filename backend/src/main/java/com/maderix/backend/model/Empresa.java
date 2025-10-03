@@ -4,73 +4,78 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "EMPRESA")
 public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Empresa")
-    private Integer idEmpresa;
+    private Integer ID_Empresa;
 
     @Column(name = "NM_Fantasia", nullable = false, length = 150)
-    private String nomeFantasia;
+    private String NM_Fantasia;
 
     @Column(name = "RZ_Social", length = 150)
-    private String razaoSocial;
+    private String RZ_Social;
 
     @Column(name = "CNPJ", unique = true, length = 18)
-    private String cnpj;
+    private String CNPJ;
 
+    @CreationTimestamp // Registra a data do Sistema
     @Column(name = "DT_Cad_Empresa", nullable = false)
-    private LocalDateTime dataCadastro;
+    private LocalDateTime DT_Cad_Empresa;
 
     public Empresa(Integer idEmpresa, String nomeFantasia, String razaoSocial, String cnpj, LocalDateTime dataCadastro) {
-        this.idEmpresa = idEmpresa;
-        this.nomeFantasia = nomeFantasia;
-        this.razaoSocial = razaoSocial;
-        this.cnpj = cnpj;
-        this.dataCadastro = dataCadastro;
+        this.ID_Empresa = idEmpresa;
+        this.NM_Fantasia = nomeFantasia;
+        this.RZ_Social = razaoSocial;
+        this.CNPJ = cnpj;
+        this.DT_Cad_Empresa = dataCadastro;
     }
 
     public Empresa(){}
 
-    public Integer getIdEmpresa() {
-        return idEmpresa;
+    public Integer getID_Empresa() {
+        return ID_Empresa;
     }
 
-    public void setIdEmpresa(Integer idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setID_Empresa(Integer iD_Empresa) {
+        ID_Empresa = iD_Empresa;
     }
 
-    public String getNomeFantasia() {
-        return nomeFantasia;
+    public String getNM_Fantasia() {
+        return NM_Fantasia;
     }
 
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
+    public void setNM_Fantasia(String nM_Fantasia) {
+        NM_Fantasia = nM_Fantasia;
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
+    public String getRZ_Social() {
+        return RZ_Social;
     }
 
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
+    public void setRZ_Social(String rZ_Social) {
+        RZ_Social = rZ_Social;
     }
 
-    public String getCnpj() {
-        return cnpj;
+    public String getCNPJ() {
+        return CNPJ;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+    public void setCNPJ(String cNPJ) {
+        CNPJ = cNPJ;
     }
 
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
+    public LocalDateTime getDT_Cad_Empresa() {
+        return DT_Cad_Empresa;
     }
 
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
+    public void setDT_Cad_Empresa(LocalDateTime dT_Cad_Empresa) {
+        DT_Cad_Empresa = dT_Cad_Empresa;
     }
+
+
 }
