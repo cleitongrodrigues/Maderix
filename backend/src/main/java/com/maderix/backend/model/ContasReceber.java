@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "CONTAS_RECEBER")
 public class ContasReceber {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Conta")

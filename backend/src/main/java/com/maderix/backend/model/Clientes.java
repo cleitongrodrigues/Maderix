@@ -14,7 +14,7 @@ public class Clientes {
     @Column(name = "ID_Cliente")
     private Integer ID_Cliente;
 
-    @ManyToOne//CONSTRUÇÃO DO RELACIONAMENTO
+    @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
     private Empresa ID_Empresa;
 
@@ -31,8 +31,6 @@ public class Clientes {
     @CreationTimestamp // Registra a data do Sistema
     private LocalDateTime DT_Cad_Cliente;
 
-
-    //GET E SETS, ALÉM DO CONSTRUTOR PADÃO
     public Clientes(){}
 
     public Integer getID_Cliente() {

@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "ITENS_VENDA")
 public class ItensVenda {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Item_Venda")

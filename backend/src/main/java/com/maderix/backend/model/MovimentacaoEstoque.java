@@ -3,14 +3,8 @@ package com.maderix.backend.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "MOVIMENTACAO_ESTOQUE")
@@ -21,10 +15,12 @@ public class MovimentacaoEstoque {
     @Column(name = "ID_Movimentacao")
     private Integer ID_Movimentacao;
 
-    @Column(name = "ID_Material", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ID_Material", nullable = false)
     private Integer ID_Material;
 
-    @Column(name = "ID_Empresa", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ID_Empresa", nullable = false)
     private Integer ID_Empresa;
 
     @Column(name = "Tipo_Movimento", nullable = false, length = 50) // Adequar com a regra do banco depois (Criari um enum com os tipos de movimentação e passar aqui)
