@@ -4,7 +4,6 @@
   ./mvnw clean spring-boot:run
 
 # Para alterar a versão do java, basta acessar o pom.xml e alterar o java.version para a versão desejada
-```mermaid
 classDiagram
     class EMPRESA {
         +ID_Empresa: Integer
@@ -109,13 +108,13 @@ classDiagram
         +ID_Empresa: Integer
     }
 
-    EMPRESA "1" --o{ "1..*" USUARIOS : possui
-    EMPRESA "1" --o{ "1..*" CLIENTES : possui
-    EMPRESA "1" --o{ "1..*" VENDAS : realiza
-    EMPRESA "1" --o{ "1..*" MATERIAIS : gerencia
-    EMPRESA "1" --o{ "1..*" CONTAS_RECEBER : possui
+    EMPRESA "1" o-- "1..*" USUARIOS : possui
+    EMPRESA "1" o-- "1..*" CLIENTES : possui
+    EMPRESA "1" o-- "1..*" VENDAS : realiza
+    EMPRESA "1" o-- "1..*" MATERIAIS : gerencia
+    EMPRESA "1" o-- "1..*" CONTAS_RECEBER : possui
 
-    PERFIS_USUARIO "1" --o{ "1..*" USUARIOS : classifica
+    PERFIS_USUARIO "1" o-- "1..*" USUARIOS : classifica
 
     USUARIOS "1" o-- "0..1" VENDAS : realiza
     USUARIOS "1" o-- "0..*" MOVIMENTACAO_ESTOQUE : efetua
