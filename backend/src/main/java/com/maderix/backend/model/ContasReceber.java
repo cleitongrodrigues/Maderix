@@ -3,7 +3,6 @@ package com.maderix.backend.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.maderix.backend.repository.EmpresaRepository;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
