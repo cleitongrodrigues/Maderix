@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "USUARIOS")
 public class Usuarios{
+
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Usuario")

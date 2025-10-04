@@ -5,12 +5,10 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import m
 
 @Entity
 @Table(name = "MATERIAIS")
 public class Materiais {
-
     @Id
     @Column(name = "ID_Material")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
