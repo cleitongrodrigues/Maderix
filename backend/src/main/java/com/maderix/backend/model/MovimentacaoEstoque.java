@@ -3,6 +3,7 @@ package com.maderix.backend.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.maderix.backend.enums.TipoMovimento;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,8 +28,9 @@ public class MovimentacaoEstoque {
     @JoinColumn(name = "ID_Usuario")
     private Usuarios ID_Usuario;
 
-    @Column(name = "Tipo_Movimento", nullable = false, length = 50) // Adequar com a regra do banco depois (Criari um enum com os tipos de movimentação e passar aqui)
-    private String Tipo_Movimetno;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Tipo_Movimento", nullable = false, length = 50)
+    private TipoMovimento Tipo_Movimento;
 
     @Column(name = "Quantidade", nullable = false)
     private Integer Quantidade;
@@ -77,12 +79,12 @@ public class MovimentacaoEstoque {
         this.ID_Usuario = ID_Usuario;
     }
 
-    public String getTipo_Movimetno() {
-        return Tipo_Movimetno;
+    public TipoMovimento getTipo_Movimento() {
+        return Tipo_Movimento;
     }
 
-    public void setTipo_Movimetno(String tipo_Movimetno) {
-        Tipo_Movimetno = tipo_Movimetno;
+    public void setTipo_Movimento(TipoMovimento tipo_Movimento) {
+        Tipo_Movimento = tipo_Movimento;
     }
 
     public Integer getQuantidade() {

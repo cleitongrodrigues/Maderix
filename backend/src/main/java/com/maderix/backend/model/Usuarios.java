@@ -20,7 +20,7 @@ public class Usuarios{
 
     @ManyToOne
     @JoinColumn(name = "ID_Perfil", nullable = false)
-    private Integer ID_Perfil;
+    private PerfisUsuario  ID_Perfil;
 
     @Column(name = "NM_Usuario", length = 150, nullable = false)
     private String NM_Usuario;
@@ -56,11 +56,11 @@ public class Usuarios{
         this.ID_Empresa = ID_Empresa;
     }
 
-    public Integer getID_Perfil() {
+    public PerfisUsuario getID_Perfil() {
         return ID_Perfil;
     }
 
-    public void setID_Perfil(Integer ID_Perfil) {
+    public void setID_Perfil(PerfisUsuario ID_Perfil) {
         this.ID_Perfil = ID_Perfil;
     }
 

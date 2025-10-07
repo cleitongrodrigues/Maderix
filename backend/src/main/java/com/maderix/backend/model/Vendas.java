@@ -2,6 +2,7 @@ package com.maderix.backend.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.maderix.backend.service.EmpresaService;
 import jakarta.persistence.*;
@@ -26,18 +27,21 @@ public class Vendas {
 
     @ManyToOne
     @JoinColumn(name = "ID_Usuario")
-    private Integer ID_Usuario;
+    private Usuarios ID_Usuario;
 
     @Column(name = "Valor_Total", nullable = false, precision = 10, scale = 2)
     private BigDecimal Valor_Total;
 
     @Column(name = "Status_Venda", length = (50),nullable = false)
-    @org.hibernate.annotations.ColumnDefault("'ABERTA'")
+    @org.hibernate.annotations.ColumnDefault("ABERTA")
     private String Status_Venda;
 
     @Column(name = "DT_Venda", updatable = false)
     @CreationTimestamp
     private LocalDateTime DT_Venda;
+
+    @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ItensVenda> itensVendas;
 
     public Vendas(){}
 
@@ -65,11 +69,11 @@ public class Vendas {
         this.ID_Empresa = ID_Empresa;
     }
 
-    public Integer getID_Usuario() {
+    public Usuarios getID_Usuario() {
         return ID_Usuario;
     }
 
-    public void setID_Usuario(Integer ID_Usuario) {
+    public void setID_Usuario(Usuarios ID_Usuario) {
         this.ID_Usuario = ID_Usuario;
     }
 
@@ -95,5 +99,13 @@ public class Vendas {
 
     public void setDT_Venda(LocalDateTime DT_Venda) {
         this.DT_Venda = DT_Venda;
+    }
+
+    public List<ItensVenda> getItensVendas() {
+        return itensVendas;
+    }
+
+    public void setItensVendas(List<ItensVenda> itensVendas) {
+        this.itensVendas = itensVendas;
     }
 }
