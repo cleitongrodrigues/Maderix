@@ -27,14 +27,14 @@
                               ,CONSTRAINT FK_Usuario_Perfil  FOREIGN KEY (ID_Perfil)  REFERENCES PERFIS_USUARIO(ID_Perfil));
     GO
 
-            CREATE TABLE dbo.CLIENTES (ID_Cliente     Integer        IDENTITY PRIMARY KEY
-                                      ,ID_Empresa     Integer        NOT NULL
-                                      ,NM_Cliente     Varchar(150)   COLLATE Latin1_General_CI_AS NOT NULL
-                                      ,Tel_Cliente    Varchar(20)    COLLATE Latin1_General_CI_AS
-                                      ,Email          Varchar(100)   COLLATE Latin1_General_CI_AS
-                                      ,DT_Cad_Cliente Datetime       NOT NULL DEFAULT GETDATE()
-                                      ,CONSTRAINT FK_Cliente_Empresa FOREIGN KEY (ID_Empresa) REFERENCES EMPRESA(ID_Empresa));
-            GO
+CREATE TABLE dbo.CLIENTES (ID_Cliente     Integer        IDENTITY PRIMARY KEY
+                          ,ID_Empresa     Integer        NOT NULL
+                          ,NM_Cliente     Varchar(150)   COLLATE Latin1_General_CI_AS NOT NULL
+                          ,Tel_Cliente    Varchar(20)    COLLATE Latin1_General_CI_AS
+                          ,Email          Varchar(100)   COLLATE Latin1_General_CI_AS
+                          ,DT_Cad_Cliente Datetime       NOT NULL DEFAULT GETDATE()
+                          ,CONSTRAINT FK_Cliente_Empresa FOREIGN KEY (ID_Empresa) REFERENCES EMPRESA(ID_Empresa));
+GO
 
     CREATE TABLE dbo.VENDAS (ID_Venda     Integer        IDENTITY PRIMARY KEY
                             ,ID_Cliente   Integer        NOT NULL

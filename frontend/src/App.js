@@ -2,10 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
-import Home from "./pages/Home/Home";
-import Estoque from "./pages/Produto/Estoque/Estoque";
-import Produto from "./pages/Produto/Cadastro_Produto/Produto";
 import Menu from "./pages/Menu/Menu";
+import AppRoutes from "./AppRoutes";
 import "./App.css";
 
 function App() {
@@ -26,12 +24,7 @@ function App() {
         <Menu />
       </aside>
       <main className="content">
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/estoque" element={<Estoque />} />
-          <Route path="/produto" element={<Produto />} />
-          <Route path="/clientes" element={<Produto />} />
-        </Routes>
+        <AppRoutes />
       </main>
     </div>
   );

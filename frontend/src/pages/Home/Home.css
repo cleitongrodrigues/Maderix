@@ -125,20 +125,21 @@
 .quick-actions button {
   display: block;
   width: 100%;
-  padding: 10px;
+  padding: var(--btn-padding);
   margin-bottom: 10px;
-  background: #ff7700;
-  color: white;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--btn-radius);
   cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: var(--btn-font-weight);
+  font-size: var(--btn-font-size);
   transition: all 0.3s ease;
+  box-shadow: var(--btn-shadow);
 }
 
 .quick-actions button:hover {
-  background: #e06600;
+  background: var(--btn-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--btn-shadow-hover);
 }

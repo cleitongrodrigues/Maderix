@@ -1,0 +1,14 @@
+.unidades-page {
+  padding: 16px;
+  width: 84vw;
+  margin: auto;
+}
+
+.unidades-page h1 {
+  margin-bottom: 8px;
+}
+
+.page.unidades-page { 
+  width: 84vw !important; 
+  margin: auto !important; 
+}
