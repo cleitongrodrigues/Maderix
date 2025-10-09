@@ -1,13 +1,18 @@
 import React, { useState, useCallback } from "react";
 import Produto from "../Cadastro_Produto/Produto"; // Adicione esta importação
+import Pagination from "../../../components/Pagination/Pagination";
+import ActionButtons from "../../../components/ActionButtons";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./Estoque.css";
 
 const ITEMS_PER_PAGE = 10; 
 
 function Estoque() {
   const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const [openMenuId, setOpenMenuId] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // --- Funções de Lógica ---
   const toggleMenu = useCallback((id) => {
@@ -26,6 +31,12 @@ function Estoque() {
     setOpenMenuId(null); 
   };
 
+  // novo: ação de gerar relatório (placeholder)
+  const handleGenerateReport = () => {
+    // implementar integração real com backend/gerador de PDF/CSV aqui
+    alert('Gerando relatório de estoque...');
+  };
+
   // --- Dados e Paginação ---
   const [produtos] = useState(() => 
     Array.from({ length: 35 }, (_, i) => ({
@@ -36,9 +47,9 @@ function Estoque() {
     }))
   );
 
-  const totalPages = Math.ceil(produtos.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(produtos.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
   const currentProducts = produtos.slice(startIndex, endIndex);
 
   const goToPage = (page) => {
@@ -67,12 +78,24 @@ function Estoque() {
     <div className="home"> 
       <h1>Estoque de Produtos</h1>
 
+      <div style={{ marginBottom: 12 }}>
+        <NavLink to="/estoque/movimentacoes">Ver Movimentações</NavLink>
+      </div>
+
       <div className="home-content"> 
         <div className="product-list-block recent-activity">
-          <div className="quick-actions" style={{ marginBottom: "20px" }}>
-            <button onClick={() => setIsModalOpen(true)}>
-              Cadastrar Produto
-            </button>
+          <div className="quick-actions" style={{ marginBottom: "20px", display: 'flex', gap: 12 }}>
+            <div className="actions-inner">
+              <button onClick={() => setIsModalOpen(true)}>
+                Cadastrar Produto
+              </button>
+              <button onClick={() => navigate('/estoque/movimentacoes')}>
+                Ver Movimentações
+              </button>
+              <button onClick={handleGenerateReport}>
+                Gerar Relatório
+              </button>
+            </div>
           </div>
           
           <div className="card table-wrapper"> 
@@ -83,7 +106,7 @@ function Estoque() {
                   <th>Nome</th>
                   <th>Quantidade</th>
                   <th>Preço</th>
-                  <th style={{ width: '80px' }}>Ações</th>
+                  <th className="col-actions">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -94,24 +117,7 @@ function Estoque() {
                     <td>{produto.quantidade}</td>
                     <td>{produto.preco}</td>
                     <td className="actions-cell">
-                      <div className="action-dropdown-container">
-                        <button 
-                          className="btn-action-trigger" 
-                          onClick={() => toggleMenu(produto.id)}
-                        >
-                          &#x22EE; 
-                        </button>
-                        {openMenuId === produto.id && (
-                          <div className="action-dropdown-menu">
-                            <button onClick={() => handleEdit(produto.id)}>
-                              Editar
-                            </button>
-                            <button onClick={() => handleDelete(produto.id)} className="delete-btn">
-                              Excluir
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                      <ActionButtons onEdit={() => handleEdit(produto.id)} onDelete={() => handleDelete(produto.id)} />
                     </td>
                   </tr>
                 ))}
@@ -119,24 +125,14 @@ function Estoque() {
             </table>
           </div>
           
-          {totalPages > 1 && (
-            <div className="pagination-controls">
-              <button 
-                onClick={() => goToPage(currentPage - 1)} 
-                disabled={currentPage === 1}
-                className="pagination-button nav-button"
-              >
-                Anterior
-              </button>
-              {renderPaginationButtons()}
-              <button 
-                onClick={() => goToPage(currentPage + 1)} 
-                disabled={currentPage === totalPages}
-                className="pagination-button nav-button"
-              >
-                Próxima
-              </button>
-            </div>
+          {produtos.length > 0 && (
+            <Pagination
+              totalItems={produtos.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={(p) => setCurrentPage(p)}
+              showCount={true}
+            />
           )}
         </div>
 
@@ -150,7 +146,7 @@ function Estoque() {
             <h3>Produtos em Falta</h3>
             <p>{produtos.filter(p => p.quantidade < 5).length}</p>
           </div>
-          <button>Gerar Relatório de Estoque</button>
+          {/* botão de gerar relatório foi movido para ações rápidas */}
         </div>
       </div>
 
@@ -159,6 +155,9 @@ function Estoque() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
       />
+
+      {/* Outlet para rotas-filhas, ex.: /estoque/movimentacoes */}
+      <Outlet />
     </div>
   );
 }

@@ -1,0 +1,120 @@
+.contas-page {
+  padding: 16px;
+}
+
+.contas-page h1 {
+  margin-bottom: 8px;
+  color: var(--primary-color);
+}
+
+.page-actions button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  cursor: pointer;
+}
+
+/* Make summary row and table wrapper use full available width (no max-width) */
+.summary-row.card,
+.card.table-wrapper {
+  width: 100%;
+  margin: 0 0 16px 0;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* Ensure summary cards distribute evenly inside the full-width container */
+.summary-row.card { display:flex; gap:12px; align-items:stretch; }
+.summary-row.card .card-summary { flex: 1 1 0; }
+
+/* Table styling - reuse clients-table style used across the app */
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.clients-table th,
+.clients-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border: 1px solid #eee;
+}
+
+.clients-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.clients-table tbody tr {
+  height: 44px;
+}
+
+.clients-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* Actions column and controls layout */
+.clients-table th.col-actions,
+.clients-table td.actions-cell {
+  width: 220px;
+  text-align: center;
+}
+
+.clients-table td.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* keep icons left, toggle right */
+  gap: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* fix overflow: use fixed table layout so column widths are respected */
+.clients-table { table-layout: fixed; }
+
+/* ensure actions cell clips overflow if content is larger than column */
+.clients-table td.actions-cell { overflow: hidden; }
+
+/* make icon buttons slightly smaller so they take less space */
+.action-buttons .btn-action-trigger { width: 32px; height: 32px; padding: 4px; }
+
+/* ensure action buttons group doesn't force the cell to grow too much */
+.action-btns-group { display:flex; gap:8px; align-items:center; flex: 0 0 auto; overflow: hidden; }
+.toggle-group { display:flex; align-items:center; flex: 0 0 auto; }
+
+/* Toggle (Marcar Pago) button: ensure space and prevent overlap */
+.btn-action-trigger.toggle-btn {
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 120px;
+  max-width: 220px;
+  padding: 6px 10px;
+  white-space: nowrap; /* prevent wrap */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: rgba(13, 110, 253, 0.06);
+  color: #0d6efd;
+}
+
+/* small screens: stack groups */
+@media (max-width: 920px) {
+  .summary-row.card, .card.table-wrapper { padding: 0 12px; }
+}
+
+@media (max-width: 720px) {
+  .clients-table th.col-actions, .clients-table td.actions-cell { width: auto; }
+  .clients-table td.actions-cell { flex-direction: column; align-items: stretch; }
+  .action-buttons { margin-bottom: 8px; }
+  .btn-action-trigger.toggle-btn { width: 100%; min-width: 0; }
+  .action-btns-group { justify-content: flex-start; overflow: visible; }
+  .toggle-group { margin-top: 6px; }
+}

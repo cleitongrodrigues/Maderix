@@ -1,25 +1,57 @@
+/* Theme variables for easy global maintenance */
+:root {
+  --menu-width: 240px;
+  --menu-bg: #2f353a;
+  --content-padding: 24px;
+  --page-width: 100%; /* flexible by default, pages will use max-width to limit growth */
+  --page-max-width: 1400px; /* cap page width on very large screens */
+  --page-padding: 40px;
+  --page-radius: 12px;
+  --page-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  --primary-color: #ff7700; /* laranja principal */
+  --accent-color: #ffa500; /* variação laranja */
+  --bg-color: #ffffff;
+  --card-bg: #fff;
+  --card-border: #e6e6e6;
+  --text-default: #2f353a;
+  --muted-text: #666666;
+
+  /* Button design system (use these variables across the app) */
+  --btn-bg: var(--primary-color);
+  --btn-hover: #e06600;
+  --btn-text: #ffffff;
+  --btn-padding: 10px 18px;
+  --btn-font-size: 15px;
+  --btn-font-weight: 700;
+  --btn-radius: 8px;
+  --btn-min-width: 140px;
+  --btn-flex-basis: 160px;
+  --btn-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  --btn-shadow-hover: 0 6px 14px rgba(0,0,0,0.12);
+}
+
 /* Layout básico com menu lateral fixo */
 .app-layout {
   display: flex;
   min-height: 100vh; /* Garante que o layout ocupe toda a altura da tela */
   width: 100%; /* Garante que o layout ocupe toda a largura da tela */
-  background: #fff;
+  background: var(--bg-color);
   margin: 0;
   padding: 0;
 }
 
 .sidebar {
-  width: 240px; /* Define a largura fixa do menu */
-  background: #2f353a; /* Cor de fundo do menu */
+  width: var(--menu-width); /* Define a largura fixa do menu */
+  background: var(--menu-bg); /* Cor de fundo do menu */
   color: white;
-  border-right: 1px solid #e6e6e6;
+  border-right: 1px solid var(--card-border);
   box-sizing: border-box;
   flex-shrink: 0; /* Impede que o menu lateral encolha */
 }
 
 .content {
   flex: 1; /* Faz o conteúdo ocupar o restante do espaço */
-  padding: 24px;
+  padding: var(--content-padding);
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Garante que o conteúdo seja organizado em coluna */
@@ -53,6 +85,52 @@
 }
 
 .menu a.active-link {
-  color: #ffa500; /* Cor laranja para o link ativo */
+  color: var(--accent-color); /* Cor laranja para o link ativo */
   font-weight: bold;
+}
+
+/* Shared page layout moved from shared/Page.css */
+.page {
+  background-color: var(--bg-color);
+  padding: var(--page-padding);
+  border-radius: var(--page-radius);
+  box-shadow: var(--page-shadow);
+  width: var(--page-width);
+  height: auto;
+  margin: auto;
+  text-align: left;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.home-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.table-wrapper { padding: 0; border: none; box-shadow: none; background: var(--card-bg); overflow-x: auto; }
+
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; color: var(--text-default); }
+
+/* Global primary button style to enforce consistent color (orange with white text) */
+.btn-primary {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: var(--btn-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary:hover { background: var(--btn-hover); box-shadow: var(--btn-shadow-hover); }
+
+/* Ensure page-level action buttons inherit white text when using theme background */
+.page .page-actions > button,
+.page .page-header button,
+.page .page-actions button {
+  color: var(--btn-text);
 }

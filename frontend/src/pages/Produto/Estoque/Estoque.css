@@ -29,6 +29,13 @@
     border-bottom: 2px solid #e6e6e6;
 }
 
+/* Coluna Ações: largura fixa e centralizada */
+.stock-table th.col-actions,
+.stock-table td.actions-cell {
+    width: 80px;
+    text-align: center;
+}
+
 /* Estilo do Corpo da Tabela */
 .stock-table tbody td {
     padding: 10px 16px;
@@ -48,12 +55,11 @@
 
 /* CRUCIAL: Garante que a célula seja a referência para o menu e não se expanda. */
 .actions-cell {
-    position: relative; 
-    text-align: center; 
-    white-space: nowrap; 
-    /* Remove o padding que causava altura inconsistente com outras células */
-    /* Garante que o conteúdo da célula esteja verticalmente alinhado */
-    vertical-align: middle; 
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 /* Botão de Acionamento (os três pontos) */
@@ -115,50 +121,17 @@
     color: #c82333;
 }
 
-/* -------------------------------------- */
-/* ESTILOS DE PAGINAÇÃO */
-/* -------------------------------------- */
+/* Ações inline (ícone editar / excluir) - substitui o dropdown */
+.action-buttons { display:flex; gap:8px; align-items:center; }
+.action-buttons .btn-action-trigger { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; cursor:pointer; line-height:1; }
+.action-buttons .btn-action-trigger.edit-btn { background:#ffb74d; color:#fff; }
+.action-buttons .btn-action-trigger.delete-btn { background:transparent; color:#d00; border:1px solid rgba(220,53,69,0.12); }
 
-.pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 8px;
-}
+/* Desativar dropdown antigo caso ainda exista markup */
+.action-dropdown-menu { display:none !important; }
 
-.pagination-button {
-    background: #f8f9fa;
-    color: #2f353a;
-    border: 1px solid #e6e6e6;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.pagination-button.active {
-    background: #ff7700;
-    color: white;
-    border-color: #ff7700;
-    font-weight: bold;
-}
-
-.pagination-button:not(.active):hover {
-    background: #eeeeee;
-}
-
-.pagination-button.nav-button {
-    min-width: 80px;
-}
-
-.pagination-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    background: #f8f9fa;
-    color: #6c757d;
-}
+/* Paginação: estilos centralizados em components/Pagination/Pagination.css
+   Removidos estilos locais duplicados para evitar conflitos. */
 
 /* -------------------------------------- */
 /* ESTILOS DE RESUMO LATERAL */
@@ -182,4 +155,143 @@
     font-size: 1.4rem;
     font-weight: bold;
     color: #ff7700;
+}
+
+/* Quick actions that sit above the products table (inside the product-list-block) */
+.product-list-block > .quick-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: nowrap; /* do not wrap to next line */
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%; /* match the width of the table container */
+    box-sizing: border-box;
+    margin-bottom: 16px;
+    overflow-x: auto; /* allow horizontal scroll if container is too small */
+    -webkit-overflow-scrolling: touch;
+    justify-content: center; /* center buttons */
+    padding: 6px 4px; /* small padding so centered content has breathing room when scrolling */
+}
+
+/* Make action buttons share available space evenly */
+.product-list-block > .quick-actions {
+    justify-content: space-between; /* distribute space between buttons */
+    padding: 6px 4px;
+    overflow-x: auto; /* keep scroll if needed */
+}
+
+.product-list-block > .quick-actions button {
+    flex: 1 1 0; /* let each button grow/shrink to share space */
+    min-width: 0; /* allow shrinking below content if necessary */
+    max-width: none;
+}
+
+/* Keep gap visual spacing by converting gap to margins for flexible sizing in some browsers */
+.product-list-block > .quick-actions > button + button {
+    margin-left: 12px;
+}
+
+.product-list-block > .quick-actions button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none; /* use accent button style to ensure visibility */
+    background: var(--accent-color, #ff7700);
+    color: #fff;
+    cursor: pointer;
+    min-width: 90px; /* allow smaller width so more buttons fit on one line */
+    white-space: nowrap;
+    flex: 0 1 140px; /* can shrink but has a preferred width */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: background 0.12s, transform 0.08s;
+}
+
+.product-list-block > .quick-actions button:hover {
+    background: #e06600;
+    transform: translateY(-1px);
+}
+
+/* Inner container to keep buttons centered and limit max width */
+.actions-inner {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 640px; /* limit width so buttons don't stick to edges */
+    margin: 0 auto; /* center inner block */
+}
+
+/* Ensure actions-inner buttons behave as before */
+.actions-inner > button {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Use Home buttons' exact colors and shadow for consistency */
+.product-list-block > .quick-actions button,
+.actions-inner > button {
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    padding: var(--btn-padding) !important;
+    font-size: var(--btn-font-size) !important;
+    font-weight: var(--btn-font-weight) !important;
+    border-radius: var(--btn-radius) !important;
+    min-width: var(--btn-min-width) !important;
+    flex: 1 1 var(--btn-flex-basis) !important;
+    box-shadow: var(--btn-shadow);
+    border: none !important;
+}
+
+.product-list-block > .quick-actions button:hover,
+.actions-inner > button:hover {
+    background: var(--btn-hover) !important;
+    box-shadow: var(--btn-shadow-hover) !important;
+}
+
+/* Ensure button text doesn't overflow visually */
+.product-list-block > .quick-actions button,
+.actions-inner > button {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Balance top/bottom spacing for the quick-actions area */
+.product-list-block > .quick-actions {
+    padding: 14px 8px; /* increase vertical padding to even top and bottom */
+    margin-bottom: 22px; /* ensure consistent gap to the table below */
+}
+
+@media (max-width: 520px) {
+    .product-list-block > .quick-actions {
+        flex-wrap: wrap; /* allow wrap on very small screens */
+        justify-content: center; /* center wrapped items */
+    }
+    .product-list-block > .quick-actions button {
+        flex: 1 1 45%;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+}
+
+@media (max-width: 640px) {
+    .actions-inner {
+        max-width: 100%;
+        padding: 0 8px;
+        justify-content: center;
+    }
+    .actions-inner > button {
+        flex: 1 1 120px;
+    }
+}
+
+@media (max-width: 900px) {
+    .product-list-block > .quick-actions {
+        justify-content: center; /* more forgiving on medium screens */
+    }
+    .product-list-block > .quick-actions button {
+        flex: 1 1 140px;
+    }
 }

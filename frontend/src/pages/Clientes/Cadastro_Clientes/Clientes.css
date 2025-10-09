@@ -1,0 +1,234 @@
+.clientes-page {
+  background-color: #ffffff;
+  padding: 8px 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  width: 84vw;
+  margin: 12px auto;
+  text-align: left;
+  position: relative;
+  box-sizing: border-box;
+  /* Use an internal scroll like Usuarios so the sticky header behaves reliably.
+     This matches .page.usuarios-page which uses max-height + overflow-y:auto */
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+/* Sticky header and summary so content scrolls behind them */
+
+.clientes-cabecalho-fixo {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* keep above table but below app-level overlays */
+  background: #ffffff;
+  padding: 10px 0; /* slightly larger touch area */
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 0 !important;
+}
+
+/* Ensure table content is not hidden behind sticky summary: add top spacing */
+.clientes-page .table-wrapper { margin-top: 12px; }
+
+/* Make the internal scroll area start below the sticky header and ensure it scrolls independently */
+.clientes-page .home-content {
+  /* this area will scroll inside .clientes-page */
+  display: block; /* keep table full width inside */
+}
+
+/* Mantém o layout em duas colunas similar ao Estoque/Home */
+.home-content, .clientes-page .home-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.product-list-block {
+  flex: 1 1 auto;
+}
+
+.quick-actions {
+  width: 100%; /* coluna lateral fixa */
+  display: block;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Replace sidebar summary with full-width summary-row */
+.summary-row.card {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.summary-row.card .card-summary {
+  flex: 1 1 0;
+  padding: 6px;
+  text-align: left;
+}
+
+/* make summary text slightly smaller to fit */
+.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; }
+.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; }
+
+/* Clean up quick-actions overrides (they caused button size issues elsewhere). Keep generic small button styles only. */
+.quick-actions button { padding: 8px 10px; font-size: 0.95rem; border-radius: 6px; align-self: flex-start; width: auto; }
+
+/* Ensure the 'Novo Cliente' button uses site primary variables and doesn't stretch */
+.clientes-page .product-list-block .page-actions > button,
+.clientes-page .product-list-block .page-actions > .btn-primary {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  cursor: pointer;
+  height: 36px;
+  min-height: 36px;
+  line-height: 1;
+  font-size: 14px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Make the table wrapper fill its column and remove extra inner padding */
+.table-wrapper {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: white;
+  overflow-x: auto;
+}
+
+/* Denser table to match visual compactness requested */
+.clients-table { width: 100%; border-collapse: collapse; }
+.clients-table th, .clients-table td { padding: 6px 8px; text-align: left; border: 1px solid #eee; }
+.clients-table th { background: #f8f9fa; font-weight: 600; font-size: 0.95rem; }
+.clients-table tbody tr { height: 36px; }
+.clients-table tbody tr:hover { background: #fafafa; }
+
+/* Coluna de Ações: largura fixa e alinhamento central */
+.clients-table th.col-actions,
+.clients-table td.actions-cell {
+  width: 80px;
+  text-align: center;
+}
+
+/* Keep actions dropdown behavior consistent */
+.actions-cell { position: relative; /* agora um flex container para centralizar os botões */ display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.btn-action-trigger { background: none; border: none; color: #555; font-size: 1.25em; cursor: pointer; padding: 0 6px; }
+.action-dropdown-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 100; background: white; border: 1px solid #e6e6e6; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.12); min-width: 120px; }
+.action-dropdown-menu button { display:block; width:100%; padding:8px 12px; border:none; background:transparent; text-align:left; }
+.delete-btn { color: #d00; }
+
+/* Ações inline (ícone editar / excluir) - substitui o dropdown */
+.action-buttons { display:flex; gap:8px; align-items:center; }
+.action-buttons .btn-action-trigger { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; cursor:pointer; line-height:1; }
+.action-buttons .btn-action-trigger.edit-btn { background:#ffb74d; color:#fff; }
+.action-buttons .btn-action-trigger.delete-btn { background:transparent; color:#d00; border:1px solid rgba(220,53,69,0.12); }
+
+/* Remover o dropdown (não usado mais) */
+.action-dropdown-menu { display:none !important; }
+
+/* Paginação: estilos centralizados em components/Pagination/Pagination.css
+  Removidos estilos locais duplicados para evitar conflitos. */
+
+/* Summary card adjustments */
+.card-summary { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:10px; margin-bottom:10px; text-align:center; }
+
+/* Place summaries side-by-side inside the quick-actions column */
+.quick-actions {
+  width: 100%; /* coluna lateral fixa */
+  display: block;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quick-actions .card-summary {
+  display: inline-block;
+  width: calc(50% - 6px);
+  margin-bottom: 0; /* remove spacing so both align */
+  box-sizing: border-box;
+}
+
+/* Ensure the two summaries sit on the same row */
+.quick-actions .card-summary + .card-summary { margin-left: 12px; }
+
+@media (max-width: 900px) {
+  /* on smaller widths, stack summaries vertically */
+  .quick-actions { width: 100%; }
+  .quick-actions .card-summary { display: block; width: 100%; margin-left: 0; }
+  .summary-block { width: 100%; flex-direction: column; }
+   .home-content { flex-direction: column; }
+}
+
+@media (max-height: 700px) {
+  /* For small viewports we no longer constrain .clientes-page height to allow natural scrolling
+     and keep sticky header/summary behavior consistent. */
+  .clients-table tbody tr { height: 34px; }
+}
+
+/* Ensure modal buttons/layout unaffected */
+.modal-content { max-width: 760px; }
+
+/* Make modal form buttons consistent and not too tall */
+.produto-container .button-container button,
+.produto-container .button-container .btn-small {
+  padding: 6px 10px;
+  min-height: 36px;
+  line-height: 1;
+  font-size: 0.95rem;
+  border-radius: 6px;
+}
+
+/* Make inputs, textarea and selects in the cliente modal match visually */
+.produto-container input,
+.produto-container select,
+.produto-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #dcdcdc);
+  border-radius: 8px;
+  background: var(--input-bg, #fff);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: box-shadow 0.12s ease, border-color 0.12s ease;
+  height: 40px;
+}
+
+/* Make native select look like an input and add a custom arrow */
+.produto-container select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #999 50%),
+                    linear-gradient(135deg, #999 50%, transparent 50%),
+                    linear-gradient(to right, transparent, transparent);
+  background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 13px) calc(50% - 3px), 100% 0;
+  background-size: 8px 8px, 8px 8px, 1px 100%;
+  background-repeat: no-repeat;
+  padding-right: 36px; /* space for arrow */
+}
+
+.produto-container input:focus,
+.produto-container select:focus,
+.produto-container textarea:focus {
+  border-color: var(--accent-color, #ff7700);
+  box-shadow: 0 0 0 3px rgba(255,119,0,0.08);
+}
+
+/* Ensure labels align nicely above controls */
+.produto-container label { display:block; margin-bottom:6px; font-weight:600; }
+
+/* Slightly reduce modal content max-width to match input proportions (optional) */
+.modal-content { max-width: 760px; }

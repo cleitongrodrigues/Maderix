@@ -6,10 +6,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #2f353a, #3e464d);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  min-height: 100vh; /* allow app layout to control content sizing */
+  -webkit-font-smoothing: antialiased;
 }
 
 code {

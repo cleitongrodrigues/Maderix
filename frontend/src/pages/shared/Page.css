@@ -1,0 +1,23 @@
+.page {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  width: var(--page-width);
+  max-width: var(--page-max-width);
+  height: auto;
+  margin: auto;
+  text-align: left;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.home-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.table-wrapper { padding: 0; border: none; box-shadow: none; background: white; overflow-x: auto; }
+
+.card { background: #fff; border: 1px solid #e6e6e6; border-radius: 8px; padding: 12px; }
