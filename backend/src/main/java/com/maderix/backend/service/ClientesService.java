@@ -25,4 +25,19 @@ public class ClientesService {
         return clientesRepository.findById(id);
     }
 
+    public void deletarCliente(Integer id){
+        clientesRepository.deleteById(id);
+    }
+
+    public Clientes atualizaClientes(Integer id, Clientes detalhCliente){
+        Clientes clienteExistente = clientesRepository.findById(id)
+                                                      .orElseThrow(() -> new RuntimeException("Cliente com o id: " + id + " não encontrado"));
+
+        clienteExistente.setNM_Cliente(detalhCliente.getNM_Cliente());
+        clienteExistente.setEmail(detalhCliente.getEmail());
+        clienteExistente.setTel_Cliente(detalhCliente.getTel_Cliente());
+        
+        return clientesRepository.save(clienteExistente);
+    }
+
 }

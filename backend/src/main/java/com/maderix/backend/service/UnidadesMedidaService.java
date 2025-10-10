@@ -22,4 +22,16 @@ public class UnidadesMedidaService {
     public Optional<UnidadesMedida> buscarUnidadeMedidaPorId(Integer id){
         return unidadesMedidaRepository.findById(id);
     }
+    public void deletarUnidadeMedida(Integer id){
+        unidadesMedidaRepository.deleteById(id);
+    }
+    public UnidadesMedida atualizaUnidadeMedida(Integer id, UnidadesMedida detalheunidadesMedida){
+        UnidadesMedida unidadeMedidaExistente = unidadesMedidaRepository.findById(id)
+                                                                        .orElseThrow(() -> new RuntimeException("Unidade de Medida com o id: " + id + " não encontrado"));
+
+        unidadeMedidaExistente.setSigla(detalheunidadesMedida.getSigla());
+        unidadeMedidaExistente.setDescricao(detalheunidadesMedida.getDescricao());
+
+        return unidadesMedidaRepository.save(unidadeMedidaExistente);
+    }
 }
