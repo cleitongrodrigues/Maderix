@@ -21,8 +21,17 @@ public class PerfisUsuarioService {
         return perfisUsuarioRepository.findAll();
     }
 
-    public Optional<PerfisUsuario> buscarPerilPorId(Integer id){
+    public Optional<PerfisUsuario> buscarPerfilPorId(Integer id){
         return perfisUsuarioRepository.findById(id);
     }
 
+
+    public PerfisUsuario atualizarPerfil (Integer id, PerfisUsuario detalhePerfil){
+        PerfisUsuario perfilExistente = perfisUsuarioRepository.findById(id)
+                                                              .orElseThrow(() -> new RuntimeException("Perfil com o id: " + id + " não encontrado"));
+
+        perfilExistente.setNM_Perfil(detalhePerfil.getNM_Perfil());
+
+        return perfisUsuarioRepository.save(perfilExistente);
+    }
 }

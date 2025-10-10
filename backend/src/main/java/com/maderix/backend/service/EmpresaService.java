@@ -29,4 +29,15 @@ public class EmpresaService {
         empresaRepository.deleteById(id);
     }
 
+    public Empresa atualizarEmpresa(Integer id, Empresa detalheEmpresa){
+        Empresa empresaExistente = empresaRepository.findById(id)
+                                               .orElseThrow(() -> new RuntimeException("Empresa com o id: " + id + " não encontrado"));
+
+        empresaExistente.setCNPJ(detalheEmpresa.getCNPJ());
+        empresaExistente.setNM_Fantasia(detalheEmpresa.getNM_Fantasia());
+        empresaExistente.setRZ_Social(detalheEmpresa.getRZ_Social());
+
+        return empresaRepository.save(empresaExistente);
+    }
+
 }

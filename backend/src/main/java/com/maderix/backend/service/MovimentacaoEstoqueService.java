@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MovimentacaoEstoqueService {
@@ -42,6 +43,10 @@ public class MovimentacaoEstoqueService {
 
     public List<MovimentacaoEstoque> buscarMovimentacoes(){
         return movimentacaoEstoqueRepository.findAll();
+    }
+
+    public Optional<MovimentacaoEstoque> buscarMovimentacoesPorId(Integer id){
+        return movimentacaoEstoqueRepository.findById(id);
     }
 
 }

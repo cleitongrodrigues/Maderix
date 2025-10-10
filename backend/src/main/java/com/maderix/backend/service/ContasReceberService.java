@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,10 @@ public class ContasReceberService {
         conta.setPago(false);
 
         return contasReceberRepository.save(conta);
+    }
+
+    public List<ContasReceber> buscarTodasContasReceber(){
+        return contasReceberRepository.findAll();
     }
 
     public Optional<ContasReceber> buscarPorId(Integer id) {
