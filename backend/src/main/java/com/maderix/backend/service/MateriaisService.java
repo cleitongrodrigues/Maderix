@@ -29,4 +29,18 @@ public class MateriaisService {
     public void deletarMaterial(Integer id){
         materiaisRepository.deleteById(id);
     }
+
+    public Materiais atualizarMaterial(Integer id, Materiais materialDetalhes) {
+        Materiais materialExistente = materiaisRepository.findById(id)
+            .orElseThrow(() -> new  RuntimeException("Material com ID" + id + "não encontrado."));
+
+        materialExistente.setNM_Material(materialDetalhes.getNM_Material());
+        materialExistente.setDescricao(materialDetalhes.getDescricao());
+        materialExistente.setEstoque_Atual(materialDetalhes.getEstoque_Atual());
+        materialExistente.setPreco_Custo(materialDetalhes.getPreco_Custo());
+        materialExistente.setID_Empresa(materialDetalhes.getID_Empresa());
+        materialExistente.setID_Unidade(materialDetalhes.getID_Unidade());
+
+        return materiaisRepository.save(materialExistente);
+    }
 }
