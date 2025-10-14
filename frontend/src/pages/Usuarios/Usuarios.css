@@ -24,6 +24,22 @@
   align-items: start;
 }
 
+/* Sticky header + summary: keep header and summary cards fixed while table scrolls
+   This mirrors the behavior used by Clientes and relies on the page container
+   having max-height + overflow-y:auto so the internal content scrolls. */
+.usuarios-cabecalho-fixo {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* above table rows but below global overlays */
+  background: #ffffff;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 0 !important;
+}
+
+/* Ensure table content is not hidden behind the sticky header */
+.page.usuarios-page .table-wrapper { margin-top: 12px; }
+
 .table-wrapper {
   grid-column: 1 / 2;
   grid-row: 2 / 3;

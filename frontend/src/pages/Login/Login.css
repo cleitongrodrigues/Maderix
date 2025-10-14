@@ -8,6 +8,21 @@
   text-align: center;
 }
 
+/* Page-level centering wrapper used only on the login route */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px; /* breathing room on small screens */
+  box-sizing: border-box;
+  background: linear-gradient(135deg, rgba(47,53,58,0.85), rgba(62,70,77,0.95));
+}
+
+@media (max-width: 480px) {
+  .login-container { padding: 20px; width: 100%; }
+}
+
 .login-container h1 {
   margin-bottom: 25px;
   color: #2f353a;
@@ -83,4 +98,12 @@
 
 .login-container .extra-links a:hover {
   color: #ff7700;
+}
+
+/* Disabled inputs & buttons when submitting */
+.login-container input:disabled,
+.login-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: saturate(0.9);
 }

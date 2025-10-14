@@ -3,6 +3,12 @@ import "./Clientes.css";
 import ClienteForm from "./ClienteForm";
 import Pagination from "../../../components/Pagination/Pagination";
 import ActionButtons from "../../../components/ActionButtons";
+import useDelayedLoader from "../../../hooks/useDelayedLoader";
+import InlineSpinner from "../../../components/InlineSpinner/InlineSpinner";
+import TableSkeleton from "../../../components/TableSkeleton/TableSkeleton";
+import SearchBar from "../../../components/SearchBar/SearchBar";
+import formatPhone from "../../../utils/formatPhone";
+import Highlight from "../../../components/Highlight/Highlight";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -69,10 +75,25 @@ function Clientes() {
     fetchClientes();
   }, [fetchClientes]);
 
-  const totalPages = Math.max(1, Math.ceil(clientes.length / ITEMS_PER_PAGE));
+  const showLoader = useDelayedLoader(loading, { delay: 200 });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredClients = clientes.filter((c) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    const id = String(c.ID_Cliente ?? c.id ?? c.ID ?? "").toLowerCase();
+    const nome = (c.NM_Cliente ?? c.nome ?? c.name ?? "").toLowerCase();
+    const email = (c.Email ?? c.email ?? "").toLowerCase();
+    return id.includes(q) || nome.includes(q) || email.includes(q);
+  });
+
+  // reset to first page when search changes
+  useEffect(() => { setCurrentPage(1); }, [searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredClients.length / ITEMS_PER_PAGE));
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentClients = clientes.slice(startIndex, endIndex);
+  const filteredCurrent = filteredClients.slice(startIndex, endIndex);
 
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -126,7 +147,10 @@ function Clientes() {
   return (
     <div className="clientes-page">
       <div className="clientes-cabecalho-fixo">
-        <h1>Clientes</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <h1>Clientes</h1>
+          {showLoader && <InlineSpinner />}
+        </div>
 
         {isMock && (
           <div style={{ marginBottom: 8, color: "#666" }}>
@@ -158,9 +182,16 @@ function Clientes() {
 
       <div className="home-content">
         <div className="product-list-block recent-activity">
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <div style={{ marginLeft: 12 }}>
+              <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>Novo Cliente</button>
+            </div>
+          </div>
 
           {loading ? (
-            <div>Carregando clientes...</div>
+            // layout: ID (0.6), Nome (2), Tel (1), Email (1.5), Data (1), Ações (0.8)
+            <TableSkeleton rows={8} layout={[0.6,2,1,1.5,1,0.8]} />
           ) : error ? (
             <div className="error">{error}</div>
           ) : (
@@ -177,12 +208,12 @@ function Clientes() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentClients.length === 0 ? (
+                  {filteredCurrent.length === 0 ? (
                     <tr>
                       <td colSpan={6}>Nenhum cliente encontrado.</td>
                     </tr>
                   ) : (
-                    currentClients.map((cliente) => {
+                    filteredCurrent.map((cliente) => {
                       const id = cliente.ID_Cliente ?? cliente.id ?? cliente.ID;
                       const nome = cliente.NM_Cliente ?? cliente.nome ?? cliente.name;
                       const tel = cliente.Tel_Cliente ?? cliente.tel ?? cliente.telefone ?? "";
@@ -191,10 +222,10 @@ function Clientes() {
 
                       return (
                         <tr key={id}>
-                          <td>{id}</td>
-                          <td>{nome}</td>
-                          <td>{tel}</td>
-                          <td>{email}</td>
+                          <td><Highlight text={String(id)} query={searchQuery} /></td>
+                          <td><Highlight text={nome} query={searchQuery} /></td>
+                          <td>{formatPhone(tel)}</td>
+                          <td><Highlight text={email} query={searchQuery} /></td>
                           <td>{dt ? new Date(dt).toLocaleString() : ""}</td>
                           <td className="actions-cell">
                               <div className="action-buttons">
@@ -210,9 +241,9 @@ function Clientes() {
             </div>
           )}
 
-          {clientes.length > 0 && (
+          {filteredClients.length > 0 && (
             <Pagination
-              totalItems={clientes.length}
+              totalItems={filteredClients.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={(p) => setCurrentPage(p)}

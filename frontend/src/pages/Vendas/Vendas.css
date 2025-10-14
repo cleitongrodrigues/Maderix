@@ -1,5 +1,5 @@
 .vendas-page { padding: 16px; }
-.vendas-page h1 { margin-bottom: 8px; }
+.vendas-page h1 { margin-bottom: 8px; color: var(--primary-color); }
 /* Estilos básicos para a página de vendas */
 .page.vendas-page {
   padding: 24px;
@@ -18,8 +18,11 @@
   width: 100%;
   max-width: 420px;
   padding: 10px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+  height: 40px;
 }
 
 .filters-row {
@@ -37,9 +40,18 @@
 
 .filters-row select,
 .filters-row input[type="date"] {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  box-sizing: border-box;
+  height: 40px;
+}
+
+/* Ensure select and date inputs use consistent font/color */
+.filters-row select, .filters-row input[type="date"], .vendas-toolbar input {
+  color: var(--text-default);
+  font-size: 14px;
 }
 
 .vendas-table {

@@ -1,6 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./Vendas.css";
 import Pagination from "../../components/Pagination/Pagination";
+import SearchBar from "../../components/SearchBar/SearchBar";
+import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
+import Highlight from "../../components/Highlight/Highlight";
 
 const mockSales = [
 	{ id: 1001, date: "2025-10-01T09:12:00", customer: "João Silva", itemsCount: 3, total: 125.5, payment: "PIX", seller: "Maria", status: "CONCLUÍDA", notes: "Entrega rápida", items: [{ sku: "PEN-01", name: "Caneta Azul", qty: 2, unitPrice: 2.5 }, { sku: "NB-01", name: "Caderno 100 folhas", qty: 1, unitPrice: 120.5 }] },
@@ -56,6 +59,9 @@ function Vendas() {
 		});
 	}, [sales, filter, statusFilter, dateFrom, dateTo]);
 
+	// reset page when filters change
+	useEffect(() => { setPage(1); }, [filter, statusFilter, dateFrom, dateTo]);
+
 	const totalItems = filtered.length;
 	const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 	const currentPage = Math.min(page, totalPages);
@@ -67,11 +73,7 @@ function Vendas() {
 			<h1>Vendas</h1>
 
 			<div className="vendas-toolbar">
-				<input
-					placeholder="Buscar por ID, cliente ou vendedor..."
-					value={filter}
-					onChange={(e) => { setFilter(e.target.value); setPage(1); }}
-				/>
+				<SearchBar value={filter} onChange={(v) => setFilter(v)} placeholder="Buscar por ID, cliente ou vendedor..." />
 
 				<div className="filters-row">
 					<label>
@@ -96,7 +98,11 @@ function Vendas() {
 				</div>
 			</div>
 
-			<table className="vendas-table">
+			{filtered.length === 0 && !filter ? null : null}
+			{filtered.length === 0 && filter ? (
+				<div>Nenhuma venda encontrada.</div>
+			) : (
+				<table className="vendas-table">
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -113,9 +119,9 @@ function Vendas() {
 				<tbody>
 					{visible.map((s) => (
 						<tr key={s.id} className={s.status === "CANCELADA" ? "muted" : ""}>
-							<td>{s.id}</td>
+							<td><Highlight text={String(s.id)} query={filter} /></td>
 							<td>{new Date(s.date).toLocaleString()}</td>
-							<td>{s.customer}</td>
+							<td><Highlight text={s.customer} query={filter} /></td>
 							<td>{s.itemsCount}</td>
 							<td>{formatCurrency(s.total)}</td>
 							<td>{s.payment}</td>
@@ -131,7 +137,8 @@ function Vendas() {
 						</tr>
 					))}
 				</tbody>
-			</table>
+					</table>
+				)}
 
 			<Pagination
 				totalItems={totalItems}

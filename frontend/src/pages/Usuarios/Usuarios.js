@@ -5,6 +5,12 @@ import Pagination from "../../components/Pagination/Pagination";
 import ActionButtons from "../../components/ActionButtons";
 import sampleUsuarios from "./sampleUsuarios";
 import "./Usuarios.css";
+import useDelayedLoader from "../../hooks/useDelayedLoader";
+import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
+import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
+import SearchBar from "../../components/SearchBar/SearchBar";
+import Highlight from "../../components/Highlight/Highlight";
+
 
 const USE_MOCK = true;
 const ITEMS_PER_PAGE = 10;
@@ -73,6 +79,23 @@ function Usuarios() {
   const totalPages = Math.max(1, Math.ceil(usuarios.length / pageSize));
   const startIndex = (currentPage - 1) * pageSize;
   const currentItems = usuarios.slice(startIndex, startIndex + pageSize);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filtered = usuarios.filter((u) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (String(u.ID_Usuario ?? u.id ?? "").toLowerCase().includes(q) ||
+      (u.NM_Usuario ?? u.nome ?? "").toLowerCase().includes(q) ||
+      (u.Login ?? "").toLowerCase().includes(q) ||
+      (u.Email ?? "").toLowerCase().includes(q)
+    );
+  });
+
+  useEffect(() => { setCurrentPage(1); }, [searchQuery]);
+
+  const totalPagesFiltered = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const startIndexFiltered = (currentPage - 1) * pageSize;
+  const currentItemsFiltered = filtered.slice(startIndexFiltered, startIndexFiltered + pageSize);
 
   const openCreate = () => {
     setEditing(null);
@@ -164,14 +187,17 @@ function Usuarios() {
 
   return (
     <div className="page usuarios-page">
-      <div className="page-header">
-        <h1>Usuários</h1>
-        <div className="page-actions">
-          <button onClick={openCreate}>Novo Usuário</button>
+      <div className="usuarios-cabecalho-fixo">
+        <div className="page-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h1>Usuários</h1>
+            {useDelayedLoader(loading, { delay: 200 }) && <InlineSpinner />}
+          </div>
+          <div className="page-actions">
+            <button onClick={openCreate}>Novo Usuário</button>
+          </div>
         </div>
-      </div>
 
-      <div className="usuarios-content">
         <div className="summary-row">
           <div className="card-summary">
             <h3>Total</h3>
@@ -187,9 +213,16 @@ function Usuarios() {
           </div>
         </div>
 
-        <div className="table-wrapper card">
+      </div>
+
+      <div className="table-wrapper card">
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <div />
+          </div>
           {loading ? (
-            <div>Carregando...</div>
+            // layout: ID(0.6), Nome(1.5), Login(1), Perfil(1), Email(1.6), Ativo(0.6), DT(1), Ações(0.8)
+            <TableSkeleton rows={8} layout={[0.6,1.5,1,1,1.6,0.6,1,0.8]} />
           ) : (
             <>
               <table className="usuarios-table">
@@ -206,13 +239,13 @@ function Usuarios() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((u) => (
+                  {currentItemsFiltered.map((u) => (
                     <tr key={u.ID_Usuario ?? u.id}>
-                      <td>{u.ID_Usuario ?? u.id}</td>
-                      <td>{u.NM_Usuario ?? u.nome}</td>
-                      <td>{u.Login}</td>
-                      <td>{u.PerfilNome ?? "-"}</td>
-                      <td>{u.Email}</td>
+                      <td><Highlight text={String(u.ID_Usuario ?? u.id)} query={searchQuery} /></td>
+                      <td><Highlight text={u.NM_Usuario ?? u.nome} query={searchQuery} /></td>
+                      <td><Highlight text={u.Login} query={searchQuery} /></td>
+                      <td><Highlight text={u.PerfilNome ?? "-"} query={searchQuery} /></td>
+                      <td><Highlight text={u.Email} query={searchQuery} /></td>
                       <td>{u.Ativo ? "Sim" : "Não"}</td>
                       <td>{u.DT_Cad_Usuario ? new Date(u.DT_Cad_Usuario).toLocaleDateString() : "-"}</td>
                       <td className="actions-cell">
@@ -230,9 +263,9 @@ function Usuarios() {
                 </tbody>
               </table>
 
-              {usuarios.length > 0 && (
+              {filtered.length > 0 && (
                 <Pagination
-                  totalItems={usuarios.length}
+                  totalItems={filtered.length}
                   pageSize={pageSize}
                   currentPage={currentPage}
                   onPageChange={(p) => setCurrentPage(p)}
@@ -240,9 +273,8 @@ function Usuarios() {
                 />
               )}
             </>
-          )}
-        </div>
-      </div>
+      )}
+    </div>
 
       {isFormOpen && (
         <UsuarioForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSave={handleSave} initialData={editing} />

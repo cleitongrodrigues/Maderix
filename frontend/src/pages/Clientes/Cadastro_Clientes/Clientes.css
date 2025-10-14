@@ -111,7 +111,7 @@
 
 /* Denser table to match visual compactness requested */
 .clients-table { width: 100%; border-collapse: collapse; }
-.clients-table th, .clients-table td { padding: 6px 8px; text-align: left; border: 1px solid #eee; }
+.clients-table th, .clients-table td { padding: 10px 12px; text-align: left; border: 1px solid #eee; }
 .clients-table th { background: #f8f9fa; font-weight: 600; font-size: 0.95rem; }
 .clients-table tbody tr { height: 36px; }
 .clients-table tbody tr:hover { background: #fafafa; }
@@ -159,6 +159,9 @@
   margin-bottom: 0; /* remove spacing so both align */
   box-sizing: border-box;
 }
+
+/* Search input local style */
+.search-input { box-sizing: border-box; font-size: 14px; }
 
 /* Ensure the two summaries sit on the same row */
 .quick-actions .card-summary + .card-summary { margin-left: 12px; }

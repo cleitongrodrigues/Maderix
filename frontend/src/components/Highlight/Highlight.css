@@ -1,0 +1,6 @@
+.hl-mark {
+  background: linear-gradient(90deg, rgba(255,183,77,0.25), rgba(255,183,77,0.15));
+  padding: 0 4px;
+  border-radius: 3px;
+  color: inherit;
+}
