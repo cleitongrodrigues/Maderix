@@ -144,31 +144,75 @@ function Clientes() {
     });
   };
 
+  // Handlers para cards de resumo - preparados para navegação a relatórios
+  const handleCardClick = (cardType) => {
+    // TODO: Implementar navegação para tela de relatórios
+    // Quando a tela de relatórios for criada, descomentar uma das opções abaixo:
+    
+    // Opção 1: Usando React Router
+    // import { useNavigate } from 'react-router-dom';
+    // const navigate = useNavigate();
+    // if (cardType === 'total') {
+    //   navigate('/relatorios?tipo=todos-clientes');
+    // } else if (cardType === 'recentes') {
+    //   navigate('/relatorios?tipo=clientes-recentes');
+    // }
+    
+    // Opção 2: Filtrar tabela atual (solução temporária)
+    // if (cardType === 'recentes') {
+    //   // Filtrar para mostrar apenas últimos 7 dias
+    //   console.log('Filtrar para últimos 7 dias');
+    // } else if (cardType === 'total') {
+    //   // Remover filtros
+    //   console.log('Mostrar todos');
+    // }
+    
+    console.log(`Card clicado: ${cardType}`);
+    alert(`Funcionalidade em desenvolvimento!\n\nEste card redirecionará para a tela de relatórios quando implementada.\n\nTipo: ${cardType === 'total' ? 'Todos os Clientes' : 'Clientes Recentes (7 dias)'}`);
+  };
+
   return (
     <div className="clientes-page">
-      <div className="clientes-cabecalho-fixo">
-        <div className="titulo-clientes">
-          <h1>CLIENTES</h1>
-        </div>
-        <div className="summary-row card">
-          <div className="card-summary">
-            <h3>Total de Clientes</h3>
-            <p>{clientes.length}</p>
+      <div className="clientes-container">
+        <div className="clientes-cabecalho-fixo">
+          <div className="titulo-clientes">
+            <h1>👥 CLIENTES</h1>
           </div>
-          <div className="card-summary">
-            <h3>Clientes últimos 7 dias</h3>
-            <p>{clientes.filter(c => {
-              const dt = new Date(c.DT_Cad_Cliente ?? c.dtCadCliente ?? c.createdAt ?? null);
-              if (!dt || isNaN(dt)) return false;
-              const diff = (Date.now() - dt.getTime()) / (1000 * 60 * 60 * 24);
-              return diff <= 7;
-            }).length}</p>
+          <div className="summary-row card">
+          <div 
+            className="card-summary clickable" 
+            onClick={() => handleCardClick('total')}
+            title="Clique para ver relatório completo"
+          >
+            <div className="card-icon">👥</div>
+            <div className="card-content">
+              <h3>Total de Clientes</h3>
+              <p>{clientes.length}</p>
+            </div>
+          </div>
+          <div 
+            className="card-summary clickable" 
+            onClick={() => handleCardClick('recentes')}
+            title="Clique para ver relatório de clientes recentes"
+          >
+            <div className="card-icon">📈</div>
+            <div className="card-content">
+              <h3>Clientes últimos 7 dias</h3>
+              <p>{clientes.filter(c => {
+                const dt = new Date(c.DT_Cad_Cliente ?? c.dtCadCliente ?? c.createdAt ?? null);
+                if (!dt || isNaN(dt)) return false;
+                const diff = (Date.now() - dt.getTime()) / (1000 * 60 * 60 * 24);
+                return diff <= 7;
+              }).length}</p>
+            </div>
           </div>
         </div>
         <div className="acoes-pagina">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <SearchBar value={searchQuery} onChange={setSearchQuery} inputClassName="header-search" />
           <div style={{ marginLeft: 12 }}>
-            <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>Novo Cliente</button>
+            <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>
+              <span className="btn-icon">+</span> Novo Cliente
+            </button>
           </div>
         </div>
       </div>
@@ -240,6 +284,7 @@ function Clientes() {
           )}
         </div>
       </div>
+      </div> {/* Fecha clientes-container */}
 
       <ClienteForm
         isOpen={isFormOpen}

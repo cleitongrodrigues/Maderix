@@ -91,18 +91,21 @@ function Movimentacoes() {
 
   return (
     <div className="page movimentacoes-page">
-      <div className="page-header">
-        <h1>Movimentações de Estoque</h1>
-        <div className="page-actions">
-          <input placeholder="Pesquisar por produto, usuário ou tipo" className="search-input" value={filter} onChange={e => setFilter(e.target.value)} />
-          <button className="btn-primary" onClick={openCreate}>Nova Movimentação</button>
+      <div className="movimentacoes-container">
+        <div className="movimentacoes-cabecalho-fixo">
+          <div className="page-header">
+            <h1>📊 Movimentações de Estoque</h1>
+          <div className="page-actions">
+            <input placeholder="Pesquisar por produto, usuário ou tipo" className="search-input header-search" value={filter} onChange={e => setFilter(e.target.value)} />
+            <button className="btn-primary header-action-btn" onClick={openCreate}>Nova Movimentação</button>
+          </div>
         </div>
-      </div>
 
-      <div className="summary-row card">
-        <div className="card-summary"><h3>Total</h3><p>{total}</p></div>
-        <div className="card-summary"><h3>Entradas</h3><p>{entradas}</p></div>
-        <div className="card-summary"><h3>Saídas</h3><p>{saidas}</p></div>
+        <div className="summary-row card">
+          <div className="card-summary"><h3>Total</h3><p>{total}</p></div>
+          <div className="card-summary"><h3>Entradas</h3><p>{entradas}</p></div>
+          <div className="card-summary"><h3>Saídas</h3><p>{saidas}</p></div>
+        </div>
       </div>
 
       <div className="card table-wrapper">
@@ -122,22 +125,42 @@ function Movimentacoes() {
                 </tr>
               </thead>
               <tbody>
-                {pageItems.map(it => (
-                  <tr key={it.ID_Mov ?? it.id}>
-                    <td>{it.ID_Mov ?? it.id}</td>
-                    <td>{it.Tipo}</td>
-                    <td>{it.Produto}</td>
-                    <td>{it.Quantidade}</td>
-                    <td>{it.Data ? new Date(it.Data).toLocaleDateString() : '-'}</td>
-                    <td>{it.Usuario}</td>
-                    <td className="cell-obs">{it.Observacao || '-'}</td>
-                    <td className="actions-cell">
-                      <div className="action-dropdown-container">
-                        <ActionButtons onEdit={() => openEdit(it)} onDelete={() => handleDelete(it.ID_Mov ?? it.id)} />
-                      </div>
+                {pageItems.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="mensagem-vazia">
+                      {filter ? (
+                        <div className="empty-state">
+                          <span className="empty-icon">🔍</span>
+                          <p>Nenhuma movimentação encontrada</p>
+                          <small>Tente buscar com outros termos</small>
+                        </div>
+                      ) : (
+                        <div className="empty-state">
+                          <span className="empty-icon">📦</span>
+                          <p>Nenhuma movimentação registrada</p>
+                          <small>Clique em "Nova Movimentação" para registrar entrada ou saída de produtos</small>
+                        </div>
+                      )}
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  pageItems.map(it => (
+                    <tr key={it.ID_Mov ?? it.id}>
+                      <td>{it.ID_Mov ?? it.id}</td>
+                      <td>{it.Tipo}</td>
+                      <td>{it.Produto}</td>
+                      <td>{it.Quantidade}</td>
+                      <td>{it.Data ? new Date(it.Data).toLocaleDateString() : '-'}</td>
+                      <td>{it.Usuario}</td>
+                      <td className="cell-obs">{it.Observacao || '-'}</td>
+                      <td className="actions-cell">
+                        <div className="action-dropdown-container">
+                          <ActionButtons onEdit={() => openEdit(it)} onDelete={() => handleDelete(it.ID_Mov ?? it.id)} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
 
@@ -145,6 +168,7 @@ function Movimentacoes() {
           </>
         )}
       </div>
+      </div> {/* Fecha movimentacoes-container */}
 
       {isOpen && <MovimentacoesForm isOpen={isOpen} onClose={() => setIsOpen(false)} onSave={(s) => { handleSave(s); setIsOpen(false); }} initialData={editing} />}
     </div>

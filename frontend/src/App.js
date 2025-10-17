@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
 import Menu from "./pages/Menu/Menu";
+import TopBar from "./components/TopBar/TopBar";
+import CompanySelector from "./components/CompanySelector";
 import AppRoutes from "./AppRoutes";
+import { MenuProvider, useMenu } from "./contexts/MenuContext";
 import "./App.css";
 
 function App() {
-  const location = useLocation(); // Hook para obter a rota atual
+  const location = useLocation();
+  const { menuCollapsed, setMenuCollapsed } = useMenu();
+  const [companySelectorOpen, setCompanySelectorOpen] = useState(false);
+  const [empresaAtual, setEmpresaAtual] = useState({ nome: 'Maderix Móveis Ltda', estado: 'SP' });
+
+  const handleSelectCompany = (empresa) => {
+    setEmpresaAtual(empresa);
+    setCompanySelectorOpen(false);
+  };
 
   // Verifica se está na rota de login
   const isLoginPage = location.pathname === "/";
@@ -19,21 +30,38 @@ function App() {
     </Routes>
   ) : (
     // Renderiza o layout geral com o menu e conteúdo
-    <div className="app-layout">
-      <aside className="sidebar">
-        <Menu />
-      </aside>
-      <main className="content">
-        <AppRoutes />
-      </main>
-    </div>
+    <>
+      <div className={`app-layout ${menuCollapsed ? 'menu-collapsed' : ''}`}>
+        <TopBar 
+          menuCollapsed={menuCollapsed} 
+          onToggleMenu={() => setMenuCollapsed(!menuCollapsed)}
+          empresaAtual={empresaAtual}
+          onOpenCompanySelector={() => setCompanySelectorOpen(true)}
+        />
+        <aside className="sidebar">
+          <Menu onToggleCollapse={setMenuCollapsed} />
+        </aside>
+        <main className={`content ${menuCollapsed ? 'content-expanded' : ''}`}>
+          <AppRoutes />
+        </main>
+      </div>
+
+      {/* Modal de Seleção de Empresa */}
+      <CompanySelector 
+        isOpen={companySelectorOpen}
+        onClose={() => setCompanySelectorOpen(false)}
+        onSelectCompany={handleSelectCompany}
+      />
+    </>
   );
 }
 
 export default function AppWrapper() {
   return (
     <Router>
-      <App />
+      <MenuProvider>
+        <App />
+      </MenuProvider>
     </Router>
   );
 }

@@ -55,6 +55,11 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
       alert("Selecione uma empresa");
       return;
     }
+    // Validação de email
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("Email inválido. Por favor, insira um email válido.");
+      return;
+    }
 
     setSaving(true);
     const payload = { ID_Empresa: idEmpresa, NM_Cliente: nome, Tel_Cliente: telefone, Email: email };
@@ -101,61 +106,91 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-container cliente-form-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h1>{initialData ? "Editar Cliente" : "Novo Cliente"}</h1>
-          <button className="modal-close-btn" onClick={onClose}>×</button>
+          <h2>{initialData ? "Editar Cliente" : "Novo Cliente"}</h2>
+          <button className="btn-close" onClick={onClose}>&times;</button>
         </div>
 
-        <div className="produto-container">
-          <form onSubmit={handleSubmit}>
-            <div className="input-row">
-              <div style={{ flex: 1 }}>
-                <label htmlFor="empresa">Empresa</label>
-                <select id="empresa" value={idEmpresa} onChange={(e) => setIdEmpresa(Number(e.target.value))}>
-                  <option value="">-- selecione --</option>
-                  {empresas.map((emp) => (
-                    <option key={emp.ID_Empresa ?? emp.id} value={emp.ID_Empresa ?? emp.id}>
-                      {emp.NM_Fantasia ?? emp.nmFantasia ?? emp.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+        <form className="modal-body" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="empresa">Empresa *</label>
+            <select 
+              id="empresa" 
+              value={idEmpresa} 
+              onChange={(e) => setIdEmpresa(Number(e.target.value))}
+              disabled={saving}
+              required
+            >
+              <option value="">-- Selecione uma empresa --</option>
+              {empresas.map((emp) => (
+                <option key={emp.ID_Empresa ?? emp.id} value={emp.ID_Empresa ?? emp.id}>
+                  {emp.NM_Fantasia ?? emp.nmFantasia ?? emp.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className="input-row">
-              <div style={{ flex: 1 }}>
-                <label htmlFor="nome">Nome</label>
-                <input id="nome" type="text" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome do cliente" />
-              </div>
-            </div>
+          <div className="form-group">
+            <label htmlFor="nome">Nome *</label>
+            <input 
+              id="nome" 
+              type="text" 
+              value={nome} 
+              onChange={(e) => setNome(e.target.value)} 
+              placeholder="Nome completo do cliente"
+              disabled={saving}
+              required
+            />
+          </div>
 
-            <div className="input-row">
-              <div style={{ flex: 1 }}>
-                <label htmlFor="telefone">Telefone</label>
-                <input id="telefone" type="text" value={telefone} onChange={(e) => setTelefone(formatPhone(e.target.value))} onBlur={(e) => setTelefone(formatPhone(e.target.value))} placeholder="(11) 99999-9999" />
-              </div>
-              <div style={{ flex: 1, marginLeft: 12 }}>
-                <label htmlFor="email">Email</label>
-                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@exemplo.com" />
-              </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="telefone">Telefone</label>
+              <input 
+                id="telefone" 
+                type="text" 
+                value={telefone} 
+                onChange={(e) => setTelefone(formatPhone(e.target.value))} 
+                onBlur={(e) => setTelefone(formatPhone(e.target.value))} 
+                placeholder="(11) 99999-9999"
+                disabled={saving}
+              />
             </div>
-
-            {initialData && (
-              <div className="input-row">
-                <div style={{ flex: 1 }}>
-                  <label>Data de Cadastro</label>
-                  <div>{initialData.DT_Cad_Cliente ? new Date(initialData.DT_Cad_Cliente).toLocaleString() : ""}</div>
-                </div>
-              </div>
-            )}
-
-            <div className="button-container" style={{ marginTop: 12 }}>
-              <button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar"}</button>
-              <button type="button" onClick={onClose} style={{ marginLeft: 8 }}>Cancelar</button>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input 
+                id="email" 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                placeholder="email@exemplo.com"
+                disabled={saving}
+              />
             </div>
-          </form>
-        </div>
+          </div>
+
+          {initialData && initialData.DT_Cad_Cliente && (
+            <div className="info-box">
+              <strong>📅 Data de Cadastro:</strong> {new Date(initialData.DT_Cad_Cliente).toLocaleString('pt-BR')}
+            </div>
+          )}
+
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary" disabled={saving}>
+              {saving ? (
+                <>
+                  <span className="spinner-small"></span> Salvando...
+                </>
+              ) : (
+                initialData ? "Salvar Alterações" : "Cadastrar Cliente"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
