@@ -17,6 +17,14 @@ function Empresa() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
+  // Função para formatar CNPJ
+  const formatarCNPJ = (cnpj) => {
+    if (!cnpj) return '-';
+    const apenasNumeros = cnpj.replace(/\D/g, '');
+    if (apenasNumeros.length !== 14) return cnpj;
+    return apenasNumeros.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  };
+
   useEffect(() => {
     if (USE_MOCK) {
       setEmpresas(sampleEmpresas);
@@ -105,6 +113,10 @@ function Empresa() {
     );
   });
 
+  // Stats para os cards
+  const totalEmpresas = empresas.length;
+  const empresasAtivas = empresas.length; // Pode ser filtrado por status no futuro
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
@@ -114,21 +126,57 @@ function Empresa() {
 
   return (
     <div className="pagina empresa-page">
-      <header className="cabecalho-empresa">
-        <h1>Empresas</h1>
-        <div className="acoes-empresa">
+      <div className="empresa-container">
+        {/* Cabeçalho fixo */}
+        <div className="empresa-cabecalho-fixo">
+          <div className="titulo-empresa">
+            <h1>🏢 Empresas</h1>
+          </div>
+        <div className="acoes-pagina">
           <input
-            className="busca-empresa"
-            placeholder="Buscar por nome ou CNPJ"
+            type="text"
+            className="search-input"
+            placeholder="Buscar por nome, CNPJ ou razão social..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
-          <button className="btn-primary" onClick={openNew}>Nova Empresa</button>
+          <button className="btn-primary" onClick={openNew}>
+            <span className="btn-icon">+</span>
+            Nova Empresa
+          </button>
         </div>
-      </header>
 
-      {loading && <div>Carregando...</div>}
-      {error && <div className="error">{error}</div>}
+        {/* Cards de resumo */}
+        <div className="linha-resumo card">
+          <div className="card-summary">
+            <span className="card-icon">🏢</span>
+            <div className="card-content">
+              <h3>Total de Empresas</h3>
+              <p>{totalEmpresas}</p>
+              <small>Cadastradas no sistema</small>
+            </div>
+          </div>
+          <div className="card-summary">
+            <span className="card-icon">✅</span>
+            <div className="card-content">
+              <h3>Empresas Ativas</h3>
+              <p>{empresasAtivas}</p>
+              <small>Em operação</small>
+            </div>
+          </div>
+          <div className="card-summary">
+            <span className="card-icon">📊</span>
+            <div className="card-content">
+              <h3>Resultados da Busca</h3>
+              <p>{filtered.length}</p>
+              <small>Empresas filtradas</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {loading && <div className="loading-message">⏳ Carregando empresas...</div>}
+      {error && <div className="error-message">⚠️ {error}</div>}
 
       {/* table wrapper like Clientes page to keep exact alignment and spacing */}
       <div className="card area-tabela">
@@ -136,35 +184,40 @@ function Empresa() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Nome fantasia</th>
+              <th>Nome Fantasia</th>
               <th>CNPJ</th>
-              <th>Razão social</th>
-              <th>Data cadastro</th>
-                    <th className="col-acoes">Ações</th>
+              <th>Razão Social</th>
+              <th>Data Cadastro</th>
+              <th className="col-acoes">Ações</th>
             </tr>
           </thead>
           <tbody>
-            {pageData.map((e) => (
-              <tr key={e.ID_Empresa ?? e.id}>
-                <td>{e.ID_Empresa ?? e.id}</td>
-                <td>{e.NM_Fantasia ?? e.nmFantasia}</td>
-                <td>{e.CNPJ ?? e.cnpj}</td>
-                <td>{e.RZ_Social ?? e.rz_Social}</td>
-                <td>{e.DT_Cad_Empresa ? new Date(e.DT_Cad_Empresa).toLocaleString() : ""}</td>
-                <td className="celula-acoes">
-                  <div className="container-dropdown-acoes">
-                    <ActionButtons
-                      onEdit={() => openEdit(e)}
-                      onDelete={() => handleDelete(e)}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {pageData.length === 0 && (
+            {pageData.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>Nenhuma empresa encontrada</td>
+                <td colSpan="6">Nenhuma empresa encontrada.</td>
               </tr>
+            ) : (
+              pageData.map((e) => (
+                <tr key={e.ID_Empresa ?? e.id}>
+                  <td>{e.ID_Empresa ?? e.id}</td>
+                  <td><strong>{e.NM_Fantasia ?? e.nmFantasia}</strong></td>
+                  <td className="cnpj-cell">{formatarCNPJ(e.CNPJ ?? e.cnpj)}</td>
+                  <td>{e.RZ_Social ?? e.rz_Social}</td>
+                  <td>
+                    {e.DT_Cad_Empresa 
+                      ? new Date(e.DT_Cad_Empresa).toLocaleDateString('pt-BR') 
+                      : "-"}
+                  </td>
+                  <td className="celula-acoes">
+                    <div className="botoes-acao">
+                      <ActionButtons
+                        onEdit={() => openEdit(e)}
+                        onDelete={() => handleDelete(e)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -177,6 +230,7 @@ function Empresa() {
         onPageChange={(p) => setPage(p)}
         showCount={true}
       />
+      </div> {/* Fecha empresa-container */}
 
       {openForm && (
         <EmpresaForm

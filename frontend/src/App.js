@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
@@ -8,6 +8,7 @@ import "./App.css";
 
 function App() {
   const location = useLocation(); // Hook para obter a rota atual
+  const [menuCollapsed, setMenuCollapsed] = useState(false);
 
   // Verifica se está na rota de login
   const isLoginPage = location.pathname === "/";
@@ -21,9 +22,9 @@ function App() {
     // Renderiza o layout geral com o menu e conteúdo
     <div className="app-layout">
       <aside className="sidebar">
-        <Menu />
+        <Menu onToggleCollapse={setMenuCollapsed} />
       </aside>
-      <main className="content">
+      <main className={`content ${menuCollapsed ? 'content-expanded' : ''}`}>
         <AppRoutes />
       </main>
     </div>

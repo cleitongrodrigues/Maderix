@@ -1,14 +1,53 @@
-.movimentacoes-page { padding: 16px; }
-.movimentacoes-page h1 { margin-bottom: 8px; }
+.movimentacoes-page { 
+  padding: 20px; 
+  max-width: 1400px; 
+  margin: 0 auto; 
+  text-align: left; 
+  position: relative; 
+  box-sizing: border-box; 
+}
 
-.page-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+/* Sticky header and summary to replicate Clientes behavior */
+.movimentacoes-cabecalho-fixo {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 0 !important;
+}
+
+.movimentacoes-cabecalho-fixo .page-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding-top:6px; padding-bottom:6px; }
+.movimentacoes-cabecalho-fixo .page-header h1 { margin: 6px 0 8px 0; font-size: 1.25rem; color: #333; font-weight: 700; }
 .page-actions { display:flex; align-items:center; gap:8px; }
-.search-input { padding:8px; border:1px solid #ddd; border-radius:4px; }
+/* make input expand and keep button visible */
+.movimentacoes-cabecalho-fixo .page-actions { display:flex; gap:8px; align-items:center; }
+.movimentacoes-cabecalho-fixo .page-actions .search-input {
+  flex: 1 1 auto;
+  min-width: 360px; /* ensure placeholder fits on desktop */
+  box-sizing: border-box;
+  font-size: 15px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color, #dcdcdc);
+  border-radius: 6px;
+  height: 48px;
+  line-height: 1;
+  cursor: text;
+  caret-color: var(--text-default, #2f353a);
+}
+.movimentacoes-cabecalho-fixo .page-actions .search-input:focus { outline: none; border-color: var(--accent-color, #ff7700); box-shadow: 0 0 0 3px rgba(255,119,0,0.08); }
+/* ensure button doesn't shrink and stays readable */
+.movimentacoes-cabecalho-fixo .page-actions .btn-primary { flex: 0 0 auto; min-width: 120px; min-height: 48px; }
 /* Use global .btn-primary from App.css for consistent theme */
 
 .card { background:#fff; border-radius:8px; padding:12px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
 .summary-row { display:flex; gap:12px; margin-bottom:12px; }
-.card-summary { padding:12px; background:#f7f9fc; border-radius:8px; flex:1; text-align:center; }
+/* summary style matching Clientes: full-width card with bordered inner summaries */
+.summary-row.card { width: 100%; display: flex; gap: 12px; align-items: stretch; padding: 8px; margin-bottom: 12px; background: #fff; border: 1px solid #e6e6e6; border-radius: 8px; box-sizing: border-box; }
+.summary-row.card .card-summary { flex: 1 1 0; padding: 6px; text-align: left; }
+.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; }
+.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; }
 .card.table-wrapper { padding:0; }
 .clients-table { width:100%; border-collapse:collapse; }
 .clients-table th, .clients-table td { padding:10px; border-bottom:1px solid #eee; text-align:left; }
@@ -26,4 +65,56 @@
   .clients-table th, .clients-table td { font-size:13px; }
   .action-dropdown-container { justify-content:flex-start; }
   .col-actions { width: 70px; }
+}
+
+@media (max-width: 640px) {
+  /* stack search and button vertically on very small screens to keep both visible */
+  .movimentacoes-cabecalho-fixo .page-actions { flex-direction: column; align-items: stretch; }
+  .movimentacoes-cabecalho-fixo .page-actions .search-input { width: 100%; min-width: 0; }
+  .movimentacoes-cabecalho-fixo .page-actions .btn-primary { width: 100%; min-width: 0; }
+}
+
+/* =================================== */
+/* MENSAGEM DE TABELA VAZIA */
+/* =================================== */
+
+.mensagem-vazia {
+    text-align: center;
+    padding: 60px 20px !important;
+    background: #f8f9fa !important;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 0.4s ease;
+}
+
+.empty-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.empty-state small {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.5;
+    }
+    to {
+        opacity: 1;
+    }
 }

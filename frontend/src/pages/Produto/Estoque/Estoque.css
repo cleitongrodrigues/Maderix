@@ -1,4 +1,17 @@
 /* -------------------------------------- */
+/* ESTOQUE - Container Principal */
+/* -------------------------------------- */
+
+.pagina-estoque {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: left;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* -------------------------------------- */
 /* ESTOQUE - Estilos da Tabela (Mantendo o Padrão Home) */
 /* -------------------------------------- */
 
@@ -233,12 +246,51 @@
     margin: 0; /* align to left of page container */
     padding: 0; /* keep no extra horizontal padding */
     box-sizing: border-box;
+    /* layout title on left and actions (search/buttons) on right */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; /* allow quick-actions to wrap to next line */
+    gap: 12px;
 }
 
 .pagina-estoque .pagina-inner .acoes-rapidas-interna,
 .pagina-estoque .pagina-inner .botoes-internos {
     width: 100%;
 }
+
+/* Overrides when the buttons container is used in the header: don't force full width */
+.container-botoes .botoes-internos { width: auto !important; display: flex; align-items: center; }
+.container-botoes .acoes-internas { width: auto !important; display: flex; gap: 8px; align-items: center; }
+.container-botoes .buttons-left { display: flex; gap: 8px; align-items: center; }
+.container-botoes { display: flex; justify-content: flex-end; align-items: center; }
+
+/* Ensure actions container is pushed to the far right of the header row */
+.pagina-estoque .pagina-inner .container-botoes { margin-left: auto; }
+
+/* Strong overrides scoped to the header to prevent full-width behavior */
+.pagina-estoque .pagina-inner > .container-botoes,
+.pagina-estoque .pagina-inner > .container-botoes .acoes-cabecalho {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+}
+
+/* Ensure internal grid layout doesn't force full-width in header */
+.pagina-estoque .pagina-inner > .container-botoes .botoes-internos {
+    display: flex !important;
+    grid-template-columns: none !important;
+    width: auto !important;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Prevent header buttons from flexing/growing (there are broader rules that make them flex:1) */
+.pagina-estoque .pagina-inner > .container-botoes .acoes-internas > button {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+}
+.container-botoes .buttons-actions { width: auto; }
 
 .bloco-lista {
     flex: 1 1 0; /* main column grows to take remaining space */
@@ -255,8 +307,28 @@ quick-actions, .acoes-rapidas {
 /* ensure quick-actions items stack vertically inside the sidebar */
 .quick-actions { display: flex; flex-direction: column; gap: 12px; }
 
+/* ensure quick-actions (summary cards) sit on their own row under the title/actions */
+.pagina-estoque .top-quick-actions,
+.pagina-estoque .quick-actions { flex: 1 1 100%; }
+
+/* ensure the title and the actions container don't stretch full width */
+.pagina-estoque .titulo-estoque { flex: 0 0 auto; }
+.container-botoes.acoes-cabecalho { flex: 0 0 auto; }
+
 /* keep inner action buttons centered but not overflowing */
 .acoes-internas { display:flex; gap:12px; width:100%; }
+
+/* Make the header actions responsive: input grows, buttons keep size */
+.acoes-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.acoes-cabecalho .acoes-internas { display:flex; gap:8px; align-items:center; flex: 1 1 auto; }
+.acoes-cabecalho .search-input { flex: 1 1 auto; min-width: 360px; box-sizing: border-box; padding: 10px 14px; border: 1px solid var(--border-color, #dcdcdc); border-radius: 6px; height: 48px; line-height: 1; }
+.acoes-cabecalho .acoes-internas > button { flex: 0 0 auto; min-width: 120px; }
+
+@media (max-width: 640px) {
+    .acoes-cabecalho { flex-direction: column; align-items: stretch; }
+    .acoes-cabecalho .acoes-internas { flex-direction: column; gap:8px; }
+    .acoes-cabecalho .acoes-internas > button { width: 100%; }
+}
 
 .acoes-rapidas .card-summary, .quick-actions .card-summary { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:10px; margin-bottom:10px; text-align:center; }
 
@@ -314,15 +386,15 @@ quick-actions, .acoes-rapidas {
 }
 
 /* make buttons taller and visually balanced */
-.buttons-left .acoes-internas > button { padding: 10px 16px; min-height: 44px; }
+.buttons-left .acoes-internas > button { padding: 10px 16px; min-height: 48px; }
 
 /* search input styling */
 .search-input {
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 6px;
     border: 1px solid var(--border-color, #dcdcdc);
-    min-height: 44px;
-    height: 44px; /* force exact height to match buttons */
+    min-height: 48px;
+    height: 48px; /* force exact height to match buttons */
     line-height: 1.2;
     box-sizing: border-box;
 }
@@ -633,4 +705,245 @@ quick-actions, .acoes-rapidas {
 /* CORREÇÃO 2: força os botões do header a não crescerem e não atropelarem o input */
 .pagina-estoque .acoes-cabecalho .acoes-internas > button {
     flex: 0 0 auto !important;
+}
+
+/* ===== MELHORIAS VISUAIS - ESTOQUE ===== */
+
+/* Ícones nos botões */
+.btn-icon {
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+/* Cards de resumo com ícones e layout moderno (igual Clientes) */
+.card-resumo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e6e6e6 !important;
+}
+
+.card-resumo.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #ff7700 !important;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    flex: 1;
+}
+
+.card-content h3 {
+    margin: 0 !important;
+    font-size: 0.9rem !important;
+    color: #666 !important;
+    font-weight: 500 !important;
+}
+
+.card-content p {
+    margin: 0 !important;
+    font-size: 2rem !important;
+    font-weight: bold !important;
+    color: #333 !important;
+}
+
+/* Card de alerta (produtos em falta) com destaque visual */
+.card-resumo.alerta .card-icon {
+    color: #ff9800;
+}
+
+.card-resumo.alerta {
+    border-color: #ffa726 !important;
+    background: #fff9f0 !important;
+}
+
+.card-resumo.alerta:hover {
+    border-color: #ff9800 !important;
+    background: #fff3e0 !important;
+}
+
+/* Zebra striping na tabela */
+.pagina-estoque .tabela-estoque tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+/* Hover effect na tabela (mais destacado) */
+.pagina-estoque .tabela-estoque tbody tr:hover {
+    background: #f0f7ff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+/* Alerta visual para baixo estoque */
+.pagina-estoque .tabela-estoque tbody tr.baixo-estoque {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.pagina-estoque .tabela-estoque tbody tr.baixo-estoque:hover {
+    background: #ffe0b2 !important;
+}
+
+/* Ícone de alerta na célula de quantidade */
+.icone-alerta {
+    color: #ff9800;
+    margin-right: 6px;
+    font-size: 1.1em;
+}
+
+/* Card ativo (quando filtro está aplicado) */
+.card-resumo.ativo {
+    border-color: #ff7700 !important;
+    background: linear-gradient(135deg, #fff5eb 0%, #ffffff 100%) !important;
+    box-shadow: 0 4px 12px rgba(255, 119, 0, 0.2);
+    transform: scale(1.02);
+}
+
+.card-resumo.alerta.ativo {
+    border-color: #ff9800 !important;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%) !important;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+}
+
+/* Badge de filtro ativo */
+.badge-filtro-ativo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ff7700 0%, #ff9500 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(255, 119, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.badge-texto {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-limpar-filtro {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.btn-limpar-filtro:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Animação suave na tabela ao filtrar */
+.pagina-estoque .tabela-estoque tbody {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.5;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* =================================== */
+/* ORDENAÇÃO DE COLUNAS */
+/* =================================== */
+
+.th-ordenavel {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.th-ordenavel:hover {
+    background: #e9ecef !important;
+}
+
+.seta-ordem {
+    margin-left: 6px;
+    font-size: 0.9em;
+    color: #ff7700;
+    font-weight: bold;
+}
+
+/* =================================== */
+/* MENSAGEM DE TABELA VAZIA */
+/* =================================== */
+
+.mensagem-vazia {
+    text-align: center;
+    padding: 60px 20px !important;
+    background: #f8f9fa !important;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 0.4s ease;
+}
+
+.empty-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.empty-state small {
+    color: #6c757d;
+    font-size: 0.95rem;
 }

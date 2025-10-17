@@ -1,17 +1,10 @@
 .clientes-page {
-  background-color: #ffffff;
-  padding: 8px 24px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-  width: 84vw;
-  margin: 12px auto;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
   text-align: left;
   position: relative;
   box-sizing: border-box;
-  /* Use an internal scroll like Usuarios so the sticky header behaves reliably.
-     This matches .page.usuarios-page which uses max-height + overflow-y:auto */
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
 }
 
 /* Sticky header and summary so content scrolls behind them */
@@ -21,9 +14,33 @@
   top: 0;
   z-index: 50; /* keep above table but below app-level overlays */
   background: #ffffff;
-  padding: 8px 0; /* reduce vertical padding to make header slightly shorter */
+  padding: 8px 0;
   border-bottom: 1px solid rgba(0,0,0,0.06);
-  margin-bottom: 0 !important;
+  margin-bottom: 12px;
+  /* layout: título e ações na mesma linha, cards em linha separada */
+  display: flex;
+  flex-wrap: wrap; /* Permite quebra para próxima linha */
+  align-items: center;
+  gap: 12px; /* Espaçamento entre elementos */
+  
+  /* Reseta a altura mínima imposta pelo App.css */
+  min-height: auto !important;
+}
+
+/* Define a ordem e largura dos elementos */
+.clientes-cabecalho-fixo .titulo-clientes {
+  order: 1; /* Título à esquerda */
+  flex: 0 0 auto; /* Não cresce nem encolhe */
+}
+
+.clientes-cabecalho-fixo .acoes-pagina {
+  order: 2; /* Ações à direita */
+  flex: 1 1 auto; /* Cresce para ocupar espaço restante */
+}
+
+.clientes-cabecalho-fixo .summary-row {
+  order: 3; /* Cards na próxima linha */
+  flex: 1 1 100%; /* Ocupa toda a largura da linha */
 }
 
 /* Título da página CLIENTES: tamanho e peso explícitos para consistência */
@@ -39,27 +56,32 @@
 .clientes-cabecalho-fixo .acoes-pagina {
   display: flex;
   gap: 10px;
-  margin-bottom: 12px;
   align-items: center;
-  justify-content: space-between;
-  padding-top: 6px; /* reduce extra top padding */
+  justify-content: flex-end; /* Alinha input e botão à direita */
 }
 
 .acoes-pagina-botoes { margin-left: 12px; }
 
 /* Aumenta largura horizontal do input de busca quando estiver no header fixo */
 .clientes-cabecalho-fixo .acoes-pagina .search-input {
-  min-width: 1100px;
+  flex: 1 1 auto; /* allow input to grow/shrink */
+  min-width: 360px; /* ensure placeholder fits on desktop */
   box-sizing: border-box;
   font-size: 15px;
-  padding: 8px 12px; /* reduce padding slightly to match button height */
+  padding: 10px 14px; /* adjusted so placeholder fits */
   border: 1px solid var(--border-color, #dcdcdc);
   border-radius: 6px;
   transition: box-shadow 0.12s ease, border-color 0.12s ease;
   cursor: text; /* ensure I-beam cursor on inputs */
   caret-color: var(--text-default, #2f353a); /* make caret visible and dark */
-  height: 40px; /* match button height */
+  height: 48px; /* increased height */
   line-height: 1;
+}
+
+/* ensure the summary row sits below the header row */
+.clientes-cabecalho-fixo .summary-row.card { 
+  width: 100%;
+  margin: 0; /* Remove margens, o gap do flex-direction: column controla o espaçamento */
 }
 
 /* foco: borda laranja e sombra sutil quando o input do header estiver selecionado */
@@ -77,15 +99,26 @@
 }
 
 /* Ensure content below header is spaced so it isn't covered by the sticky header */
-.clientes-page .conteudo-pagina { margin-top: 12px; }
+.clientes-page .conteudo-pagina { margin-top: 16px; }
 
 /* Aumenta o botão 'Novo Cliente' que está no header fixo sem alterar globalmente */
 .clientes-cabecalho-fixo .acoes-pagina .btn-primary {
-  padding: 8px 14px;
-  font-size: 14px;
-  min-height: 40px; /* slightly smaller to reduce header height */
+  padding: 10px 16px;
+  font-size: 15px;
+  min-height: 48px; /* match increased input height */
   border-radius: 8px;
   margin-right: 8px; /* pequeno espaçamento à direita do botão */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.btn-icon {
+  font-size: 18px;
+  line-height: 1;
+  color: #ffffff;
+  font-weight: bold;
 }
 /* Ensure table content is not hidden behind sticky summary: add top spacing */
 .clientes-page .area-tabela { margin-top: 12px; }
@@ -121,7 +154,7 @@
   gap: 12px;
   align-items: stretch;
   padding: 8px;
-  margin-bottom: 12px;
+  margin: 0;
   background: #fff;
   border: 1px solid #e6e6e6;
   border-radius: 8px;
@@ -130,13 +163,46 @@
 
 .summary-row.card .card-summary {
   flex: 1 1 0;
-  padding: 6px;
+  padding: 12px;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fafafa;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.summary-row.card .card-summary.clickable {
+  cursor: pointer;
+}
+
+.summary-row.card .card-summary.clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-color, #ff7700);
+  background: #ffffff;
+}
+
+.summary-row.card .card-summary.clickable:active {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.card-content {
+  flex: 1;
 }
 
 /* make summary text slightly smaller to fit */
-.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; }
-.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; }
+.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; color: #666; }
+.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; color: #333; }
 
 /* Clean up quick-actions overrides (they caused button size issues elsewhere). Keep generic small button styles only. */
 .quick-actions button { padding: 8px 10px; font-size: 0.95rem; border-radius: 6px; align-self: flex-start; width: auto; }
@@ -174,8 +240,22 @@
 .tabela-clientes { width: 100%; border-collapse: collapse; }
 .tabela-clientes th, .tabela-clientes td { padding: 10px 12px; text-align: left; border: 1px solid #eee; }
 .tabela-clientes th { background: #f8f9fa; font-weight: 600; font-size: 0.95rem; }
-.tabela-clientes tbody tr { height: 36px; }
-.tabela-clientes tbody tr:hover { background: #fafafa; }
+.tabela-clientes tbody tr { 
+  height: 36px; 
+  transition: background-color 0.2s ease;
+}
+
+/* Zebra striping - linhas alternadas */
+.tabela-clientes tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Hover effect */
+.tabela-clientes tbody tr:hover { 
+  background: #f0f7ff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
 
 /* Coluna de Ações: largura fixa e alinhamento central */
 .tabela-clientes th.col-acoes,
@@ -255,8 +335,7 @@
   .tabela-clientes tbody tr { height: 34px; }
 }
 
-/* Ensure modal buttons/layout unaffected */
-.modal-content { max-width: 760px; }
+/* Ensure modal buttons/layout unaffected - removido para evitar conflito */
 
 /* Make modal form buttons consistent and not too tall */
 .produto-container .button-container button,
@@ -308,5 +387,204 @@
 /* Ensure labels align nicely above controls */
 .produto-container label { display:block; margin-bottom:6px; font-weight:600; }
 
-/* Slightly reduce modal content max-width to match input proportions (optional) */
-.modal-content { max-width: 760px; }
+/* ===== MODAL DE CLIENTE MELHORADO ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.cliente-form-modal {
+  max-width: 600px;
+  width: 95%;
+}
+
+.cliente-form-modal .modal-body {
+  padding: 24px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cliente-form-modal .form-group {
+  margin-bottom: 20px;
+}
+
+.cliente-form-modal .form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.cliente-form-modal .form-group input,
+.cliente-form-modal .form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.cliente-form-modal .form-group input:focus,
+.cliente-form-modal .form-group select:focus {
+  outline: none;
+  border-color: var(--accent-color, #ff7700);
+  box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
+}
+
+.cliente-form-modal .form-group input:disabled,
+.cliente-form-modal .form-group select:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Form row - dois campos lado a lado */
+.cliente-form-modal .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Info box para data de cadastro */
+.cliente-form-modal .info-box {
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent-color, #ff7700);
+  font-size: 14px;
+  color: #555;
+}
+
+.cliente-form-modal .info-box strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+/* Footer com botões */
+.cliente-form-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e6e6e6;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.cliente-form-modal .btn-primary,
+.cliente-form-modal .btn-secondary {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cliente-form-modal .btn-primary {
+  background: var(--accent-color, #ff7700);
+  color: white;
+}
+
+.cliente-form-modal .btn-primary:hover:not(:disabled) {
+  background: #e66a00;
+}
+
+.cliente-form-modal .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cliente-form-modal .btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cliente-form-modal .btn-secondary:hover:not(:disabled) {
+  background: #d0d0d0;
+}
+
+/* Spinner pequeno para loading */
+.spinner-small {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .cliente-form-modal .form-row {
+    grid-template-columns: 1fr;
+  }
+}

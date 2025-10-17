@@ -1,320 +1,352 @@
 /* =================================== */
-/* ESTILOS GERAIS DO COMPONENTE PRODUTO */
+/* ESTILOS MODERNOS DO MODAL DE PRODUTO */
 /* =================================== */
 
-/* Container principal da página de produto */
-.produto-container {
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-.produto-container h1 {
-  margin-bottom: 25px;
-  color: #2f353a;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.produto-container h1::after {
-  content: "";
-  display: block;
-  width: 50px;
-  height: 3px;
-  background-color: #ff7700;
-  margin: 8px auto 0;
-  border-radius: 2px;
-}
-
-/* Formulário */
-.produto-container form {
-  display: flex;
-  flex-direction: column;
-}
-
-/* =================================== */
-/* ESTILOS DOS INPUTS E LABELS */
-/* =================================== */
-
-/* Layout de inputs lado a lado */
-.input-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  align-items: flex-start;
-}
-
-.input-row div {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.input-row label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-  font-size: 14px;
-  text-align: left;
-}
-
-/* Inputs e textareas */
-.produto-container input,
-.produto-container textarea {
-  width: 100%;
-  padding: 14px;
-  margin: 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  background-color: #f7f7f7;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.produto-container input:focus,
-.produto-container textarea:focus {
-  border-color: #ff7700;
-  box-shadow: 0 0 6px rgba(255, 119, 0, 0.5);
-  background-color: #fff;
-  outline: none;
-}
-
-.produto-container textarea {
-  resize: vertical;
-  min-height: 80px;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-.produto-container textarea::placeholder {
-  color: #999;
-  font-style: italic;
-}
-
-/* =================================== */
-/* ESTILOS DOS BOTÕES */
-/* =================================== */
-
-/* Container dos botões */
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-/* Botões gerais */
-.button-container button,
-.produto-container button {
-  width: 180px;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
-}
-
-/* Botão primário (Salvar) */
-.button-container button[type="submit"],
-.produto-container button[type="submit"] {
-  background-color: #ff7700;
-  color: #ffffff;
-}
-
-.button-container button[type="submit"]:hover,
-.produto-container button[type="submit"]:hover {
-  background-color: #e06600;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Botão secundário (Cancelar) */
-.button-container button[type="button"] {
-  background-color: #6c757d;
-  color: #ffffff;
-}
-
-.button-container button[type="button"]:hover {
-  background-color: #5a6268;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Estado ativo dos botões */
-.button-container button:active,
-.produto-container button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
-}
-
-/* =================================== */
-/* ESTILOS DO MODAL */
-/* =================================== */
-
-/* Overlay do modal */
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  animation: modalFadeIn 0.3s ease;
+  animation: fadeIn 0.2s ease;
 }
 
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Conteúdo do modal */
-.modal-content {
+/* Modal Container */
+.modal-container.modal-produto {
   background: white;
   border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 800px;
+  max-width: 850px;
   max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  position: relative;
-  animation: modalSlideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
 }
 
-@keyframes modalSlideIn {
+@keyframes slideUp {
   from {
-    transform: translateY(-50px);
     opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Cabeçalho do modal */
+/* Modal Header */
 .modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid #e9ecef;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
-  border-bottom: 1px solid #eee;
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   border-radius: 12px 12px 0 0;
 }
 
-.modal-header h1 {
+.modal-header h2 {
   margin: 0;
-  color: #2f353a;
-  font-size: 24px;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
 }
 
-/* Botão de fechar do modal */
-.modal-close-btn {
+.btn-close {
   background: none;
   border: none;
-  font-size: 28px;
+  font-size: 2rem;
+  color: #999;
   cursor: pointer;
-  color: #666;
   padding: 0;
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
+  line-height: 1;
 }
 
-.modal-close-btn:hover {
+.btn-close:hover {
+  background: #f8f9fa;
   color: #ff7700;
-  background-color: #f0f0f0;
+  transform: rotate(90deg);
 }
 
-/* Ajustes específicos para o modal */
-.modal-content .produto-container {
-  box-shadow: none;
-  margin: 0;
-  padding: 30px 40px 40px;
-  border-radius: 0;
+.btn-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.modal-content .produto-container h1 {
-  display: none; /* Remove o título duplicado */
+/* Modal Body */
+.modal-body {
+  padding: 32px;
+  overflow-y: auto;
+  flex: 1;
 }
 
-/* Botões específicos do modal */
-.modal-content .button-container {
-  margin-top: 40px;
+/* Form Groups */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  flex: 1;
+  min-width: 0;
 }
 
-.modal-content .button-container button {
-  width: 150px;
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ff7700;
+  box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
+}
+
+.form-group input:disabled,
+.form-group textarea:disabled,
+.form-group select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+/* Form Row (inputs lado a lado) */
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Wrapper para inputs de preço com prefixo R$ */
+.preco-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.preco-prefix {
+  position: absolute;
+  left: 16px;
+  font-weight: 600;
+  color: #495057;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-preco {
+  padding-left: 42px !important;
+}
+
+/* Info Box (data de cadastro) */
+.info-box {
+  background: #e7f3ff;
+  border-left: 4px solid #2196F3;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  color: #1976D2;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Info Box Margem de Lucro */
+.info-box-margem {
+  background: #f8f9fa;
+  border-left: 4px solid #28a745;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 20px 32px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Botões do Footer */
+.btn-cancelar,
+.btn-salvar {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cancelar {
+  background: white;
+  color: #6c757d;
+  border: 2px solid #dee2e6;
+}
+
+.btn-cancelar:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.btn-salvar {
+  background: linear-gradient(135deg, #ff7700 0%, #ff9500 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 119, 0, 0.3);
+}
+
+.btn-salvar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 119, 0, 0.4);
+}
+
+.btn-salvar:disabled,
+.btn-cancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner pequeno */
+.spinner-small {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* =================================== */
 /* RESPONSIVIDADE */
 /* =================================== */
 
+/* Tablets e dispositivos médios */
 @media (max-width: 768px) {
-  .modal-content {
+  .modal-container.modal-produto {
     width: 95%;
-    margin: 20px;
+    max-height: 95vh;
   }
-  
+
   .modal-header {
-    padding: 15px 20px;
+    padding: 20px 24px;
   }
-  
-  .modal-content .produto-container {
-    padding: 20px;
+
+  .modal-header h2 {
+    font-size: 1.25rem;
   }
-  
-  .input-row {
+
+  .modal-body {
+    padding: 24px;
+  }
+
+  .form-row {
     flex-direction: column;
     gap: 0;
   }
-  
-  .input-row div {
-    margin-bottom: 15px;
+
+  .form-row .form-group {
+    margin-bottom: 20px;
   }
-  
-  .button-container {
-    flex-direction: column;
-    align-items: center;
+
+  .modal-footer {
+    padding: 16px 24px;
+    flex-direction: column-reverse;
   }
-  
-  .button-container button {
+
+  .btn-cancelar,
+  .btn-salvar {
     width: 100%;
-    max-width: 200px;
+    justify-content: center;
   }
 }
 
+/* Smartphones */
 @media (max-width: 480px) {
-  .modal-header h1 {
-    font-size: 20px;
+  .modal-header {
+    padding: 16px 20px;
   }
-  
-  .produto-container input,
-  .produto-container textarea {
-    padding: 12px;
-    font-size: 14px;
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 0.95rem;
+    padding: 10px 14px;
+  }
+
+  .info-box,
+  .info-box-margem {
+    font-size: 0.85rem;
+    padding: 10px 14px;
   }
 }

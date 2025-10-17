@@ -1,6 +1,6 @@
 /* Theme variables for easy global maintenance */
 :root {
-  --menu-width: 240px;
+  --menu-width: 280px; /* Atualizado para o novo menu */
   --menu-bg: #2f353a;
   --content-padding: 24px;
   --page-width: 100%; /* flexible by default, pages will use max-width to limit growth */
@@ -41,66 +41,75 @@
 }
 
 .sidebar {
-  width: var(--menu-width); /* Define a largura fixa do menu */
-  background: var(--menu-bg); /* Cor de fundo do menu */
-  color: white;
-  border-right: 1px solid var(--card-border);
-  box-sizing: border-box;
   flex-shrink: 0; /* Impede que o menu lateral encolha */
+  /* Largura, background e estilos são gerenciados pelo Menu.css */
 }
 
 .content {
   flex: 1; /* Faz o conteúdo ocupar o restante do espaço */
+  margin-left: 280px; /* Compensa a largura do menu fixo */
   padding: var(--content-padding);
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Garante que o conteúdo seja organizado em coluna */
   justify-content: flex-start; /* Alinha o conteúdo ao topo */
   overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja maior que a tela */
+  transition: margin-left 0.3s ease; /* Animação suave quando o menu recolhe */
 }
 
-/* Estilo específico para o menu */
-.menu {
-  height: 100vh; /* Faz o menu ocupar toda a altura da tela */
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  box-sizing: border-box;
+/* Ajusta o conteúdo quando o menu estiver recolhido */
+.content-expanded {
+  margin-left: 80px !important;
 }
 
-.menu h1 {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+/* Estilos do menu movidos para Menu.css */
+
+/* ===== PADRÃO GLOBAL PARA TODAS AS PÁGINAS ===== */
+/* Garante que todas as páginas tenham exatamente o mesmo tamanho */
+.page,
+.home-page,
+.clientes-page,
+.vendas-page,
+.contas-page,
+.empresa-page,
+.movimentacoes-page,
+.pagina-estoque,
+.usuarios-page,
+.perfis-page,
+.unidades-page {
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: calc(100vh - 48px) !important;
 }
 
-.menu a {
-  color: white;
-  text-decoration: none;
-  margin: 8px 0;
-  font-size: 1rem;
-}
-
-.menu a:hover {
-  text-decoration: underline;
-}
-
-.menu a.active-link {
-  color: var(--accent-color); /* Cor laranja para o link ativo */
-  font-weight: bold;
+/* Container interno das páginas com efeito de card elevado */
+.page > *:first-child,
+.home-page > .home-container,
+.clientes-page > .clientes-container,
+.vendas-page > .vendas-container,
+.contas-page > .contas-container,
+.empresa-page > .empresa-container,
+.movimentacoes-page > .movimentacoes-container,
+.pagina-estoque > .estoque-container,
+.usuarios-page > .usuarios-container,
+.perfis-page > .perfis-container,
+.unidades-page > .unidades-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  min-height: calc(100vh - 136px); /* 48px content padding + 40px margin + 48px extra */
 }
 
 /* Shared page layout moved from shared/Page.css */
 .page {
-  background-color: var(--bg-color);
-  padding: var(--page-padding);
-  border-radius: var(--page-radius);
-  box-shadow: var(--page-shadow);
-  width: var(--page-width);
-  height: auto;
-  margin: auto;
   text-align: left;
   position: relative;
-  box-sizing: border-box;
 }
 
 .home-content {
@@ -133,4 +142,32 @@
 .page .page-header button,
 .page .page-actions button {
   color: var(--btn-text);
+}
+
+/* Reusable header utilities for search inputs and header action buttons */
+.header-search {
+  flex: 1 1 auto;
+  min-width: 280px;
+  height: 48px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  font-size: 15px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  line-height: 1;
+  caret-color: var(--text-default);
+  cursor: text;
+}
+
+.header-search:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(255,119,0,0.08);
+}
+
+.header-action-btn {
+  min-height: 48px;
+  padding: 10px 16px;
+  white-space: nowrap;
+  font-size: var(--btn-font-size);
 }

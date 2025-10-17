@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./Empresa.css";
 
-export default function EmpresaForm({ empresa = null, onClose, onSaved }) {
+export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = false }) {
   const [nmFantasia, setNmFantasia] = useState("");
   const [rzSocial, setRzSocial] = useState("");
   const [cnpj, setCnpj] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -12,10 +15,16 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved }) {
       setNmFantasia(empresa.NM_Fantasia ?? empresa.nmFantasia ?? "");
       setRzSocial(empresa.RZ_Social ?? empresa.rz_Social ?? "");
       setCnpj(empresa.CNPJ ?? empresa.cnpj ?? "");
+      setEndereco(empresa.Endereco ?? empresa.endereco ?? "");
+      setTelefone(empresa.Telefone ?? empresa.telefone ?? "");
+      setEmail(empresa.Email ?? empresa.email ?? "");
     } else {
       setNmFantasia("");
       setRzSocial("");
       setCnpj("");
+      setEndereco("");
+      setTelefone("");
+      setEmail("");
     }
   }, [empresa]);
 
@@ -35,13 +44,44 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved }) {
     return v;
   }
 
+  function formatTelefone(v) {
+    const nums = (v || "").replace(/\D/g, "").slice(0, 11);
+    if (nums.length <= 2) return nums;
+    if (nums.length <= 6) return `(${nums.slice(0,2)}) ${nums.slice(2)}`;
+    if (nums.length <= 10) return `(${nums.slice(0,2)}) ${nums.slice(2,6)}-${nums.slice(6)}`;
+    return `(${nums.slice(0,2)}) ${nums.slice(2,7)}-${nums.slice(7)}`;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!nmFantasia.trim()) return alert("Nome fantasia é obrigatório");
-    if (cnpj && !validarCnpj(cnpj)) return alert("CNPJ inválido (use 14 dígitos)");
+    
+    // Validações
+    if (!nmFantasia.trim()) {
+      alert("❌ Nome fantasia é obrigatório!");
+      return;
+    }
+    if (!rzSocial.trim()) {
+      alert("❌ Razão social é obrigatória!");
+      return;
+    }
+    if (cnpj && !validarCnpj(cnpj)) {
+      alert("❌ CNPJ inválido! Deve conter 14 dígitos.");
+      return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("❌ Email inválido!");
+      return;
+    }
 
     setSaving(true);
-    const payload = { NM_Fantasia: nmFantasia.trim(), RZ_Social: rzSocial.trim() || null, CNPJ: cnpj || null };
+    const payload = { 
+      NM_Fantasia: nmFantasia.trim(), 
+      RZ_Social: rzSocial.trim(), 
+      CNPJ: cnpj.replace(/\D/g, '') || null,
+      Endereco: endereco.trim() || null,
+      Telefone: telefone.replace(/\D/g, '') || null,
+      Email: email.trim() || null
+    };
 
     try {
       const url = empresa ? `/api/empresas/${empresa.ID_Empresa ?? empresa.id}` : "/api/empresas";
@@ -52,57 +92,133 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved }) {
         throw new Error(txt || `Status ${res.status}`);
       }
       const saved = await res.json();
+      alert(empresa ? "✅ Empresa atualizada com sucesso!" : "✅ Empresa cadastrada com sucesso!");
       onSaved && onSaved(saved);
       onClose && onClose();
     } catch (err) {
-      alert("Erro ao salvar: " + (err.message || err));
+      alert("❌ Erro ao salvar: " + (err.message || err));
     } finally {
       setSaving(false);
     }
   }
 
+  const isEdicao = !!empresa;
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-container empresa-form-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h1>{empresa ? "Editar Empresa" : "Nova Empresa"}</h1>
-          <button className="modal-close-btn" onClick={onClose}>×</button>
+          <h2>{isEdicao ? "✏️ Editar Empresa" : "🏢 Nova Empresa"}</h2>
+          <button className="btn-close" onClick={onClose} disabled={saving}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="empresa-form">
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Nome fantasia*</label>
-              <input value={nmFantasia} onChange={(e) => setNmFantasia(e.target.value)} maxLength={150} required />
-            </div>
-          </div>
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            {/* Informação de cadastro (apenas na edição) */}
+            {isEdicao && empresa.DT_Cad_Empresa && (
+              <div className="info-box">
+                📅 Cadastrada em: {new Date(empresa.DT_Cad_Empresa).toLocaleDateString('pt-BR')} às {new Date(empresa.DT_Cad_Empresa).toLocaleTimeString('pt-BR')}
+              </div>
+            )}
 
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Razão social</label>
-              <input value={rzSocial} onChange={(e) => setRzSocial(e.target.value)} maxLength={150} />
-            </div>
-          </div>
-
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>CNPJ</label>
-              <input value={cnpj} onChange={(e) => setCnpj(formatCnpj(e.target.value))} onBlur={(e) => setCnpj(formatCnpj(e.target.value))} placeholder="Somente dígitos ou formatado" />
-            </div>
-          </div>
-
-          {empresa && (
-            <div className="input-row">
-              <div style={{ flex: 1 }}>
-                <label>Data de cadastro</label>
-                <div>{empresa.DT_Cad_Empresa ? new Date(empresa.DT_Cad_Empresa).toLocaleString() : ""}</div>
+            {/* Linha 1: Nome Fantasia e Razão Social */}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="nmFantasia">Nome Fantasia *</label>
+                <input
+                  id="nmFantasia"
+                  type="text"
+                  value={nmFantasia}
+                  onChange={(e) => setNmFantasia(e.target.value)}
+                  placeholder="Ex: Maderix Ltda"
+                  maxLength={150}
+                  disabled={saving}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="rzSocial">Razão Social *</label>
+                <input
+                  id="rzSocial"
+                  type="text"
+                  value={rzSocial}
+                  onChange={(e) => setRzSocial(e.target.value)}
+                  placeholder="Ex: Maderix Comércio Ltda"
+                  maxLength={150}
+                  disabled={saving}
+                  required
+                />
               </div>
             </div>
-          )}
 
-          <div className="button-container" style={{ marginTop: 12 }}>
-            <button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar"}</button>
-            <button type="button" onClick={onClose} style={{ marginLeft: 8 }}>Cancelar</button>
+            {/* Linha 2: CNPJ */}
+            <div className="form-group">
+              <label htmlFor="cnpj">CNPJ</label>
+              <input
+                id="cnpj"
+                type="text"
+                value={cnpj}
+                onChange={(e) => setCnpj(formatCnpj(e.target.value))}
+                onBlur={(e) => setCnpj(formatCnpj(e.target.value))}
+                placeholder="00.000.000/0000-00"
+                disabled={saving}
+              />
+            </div>
+
+            {/* Linha 3: Endereço */}
+            <div className="form-group">
+              <label htmlFor="endereco">Endereço Completo</label>
+              <input
+                id="endereco"
+                type="text"
+                value={endereco}
+                onChange={(e) => setEndereco(e.target.value)}
+                placeholder="Rua, número, bairro, cidade - UF"
+                disabled={saving}
+              />
+            </div>
+
+            {/* Linha 4: Telefone e Email */}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="telefone">Telefone</label>
+                <input
+                  id="telefone"
+                  type="text"
+                  value={telefone}
+                  onChange={(e) => setTelefone(formatTelefone(e.target.value))}
+                  onBlur={(e) => setTelefone(formatTelefone(e.target.value))}
+                  placeholder="(11) 99999-9999"
+                  disabled={saving}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="contato@empresa.com"
+                  disabled={saving}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary" disabled={saving}>
+              {saving ? (
+                <>
+                  <span className="spinner-small"></span> Salvando...
+                </>
+              ) : (
+                isEdicao ? "💾 Salvar Alterações" : "🏢 Cadastrar Empresa"
+              )}
+            </button>
           </div>
         </form>
       </div>

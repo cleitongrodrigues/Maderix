@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import UsuarioForm from "./UsuarioForm";
-import ChangePasswordModal from "./ChangePasswordModal";
 import Pagination from "../../components/Pagination/Pagination";
 import ActionButtons from "../../components/ActionButtons";
 import sampleUsuarios from "./sampleUsuarios";
@@ -37,8 +36,7 @@ function Usuarios() {
   const pageSize = 10;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [isPwdOpen, setIsPwdOpen] = useState(false);
-  const [pwdTarget, setPwdTarget] = useState(null);
+  const [filtroAtivo, setFiltroAtivo] = useState(null); // 'ativos' ou 'inativos'
 
   useEffect(() => {
     async function fetchUsuarios() {
@@ -82,16 +80,27 @@ function Usuarios() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filtered = usuarios.filter((u) => {
+    // Filtro de busca
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return true;
-    return (String(u.ID_Usuario ?? u.id ?? "").toLowerCase().includes(q) ||
-      (u.NM_Usuario ?? u.nome ?? "").toLowerCase().includes(q) ||
-      (u.Login ?? "").toLowerCase().includes(q) ||
-      (u.Email ?? "").toLowerCase().includes(q)
-    );
+    if (q) {
+      const match = (String(u.ID_Usuario ?? u.id ?? "").toLowerCase().includes(q) ||
+        (u.NM_Usuario ?? u.nome ?? "").toLowerCase().includes(q) ||
+        (u.Login ?? "").toLowerCase().includes(q) ||
+        (u.Email ?? "").toLowerCase().includes(q));
+      if (!match) return false;
+    }
+
+    // Filtro de status ativo/inativo
+    if (filtroAtivo === 'ativos') {
+      return u.Ativo === true;
+    } else if (filtroAtivo === 'inativos') {
+      return u.Ativo === false;
+    }
+
+    return true;
   });
 
-  useEffect(() => { setCurrentPage(1); }, [searchQuery]);
+  useEffect(() => { setCurrentPage(1); }, [searchQuery, filtroAtivo]);
 
   const totalPagesFiltered = Math.max(1, Math.ceil(filtered.length / pageSize));
   const startIndexFiltered = (currentPage - 1) * pageSize;
@@ -167,59 +176,97 @@ function Usuarios() {
     }
   };
 
-  const openChangePassword = (u) => {
-    setPwdTarget(u);
-    setIsPwdOpen(true);
-  };
-
-  const handlePwdChanged = (id) => {
-    setIsPwdOpen(false);
-    setPwdTarget(null);
-    alert("Senha alterada com sucesso (simulado)");
-  };
-
   const goToPage = (p) => {
     if (p < 1 || p > totalPages) return;
     setCurrentPage(p);
   };
 
+  // Handler para clicar nos cards
+  const handleCardClick = (tipo) => {
+    if (filtroAtivo === tipo) {
+      // Se clicar no mesmo card, remove filtro
+      setFiltroAtivo(null);
+    } else {
+      // Aplica filtro do card
+      setFiltroAtivo(tipo);
+    }
+    setCurrentPage(1); // Reset página
+  };
+
   const uniqueProfiles = Array.from(new Set(usuarios.map(u => u.PerfilNome).filter(Boolean)));
+  const totalAtivos = usuarios.filter(u => u.Ativo).length;
+  const percentualAtivos = usuarios.length > 0 ? Math.round((totalAtivos / usuarios.length) * 100) : 0;
 
   return (
     <div className="page usuarios-page">
-      <div className="usuarios-cabecalho-fixo">
-        <div className="cabecalho-pagina">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <h1>Usuários</h1>
+      <div className="usuarios-container">
+        <div className="usuarios-cabecalho-fixo">
+          <div className="cabecalho-pagina">
+            <div className="titulo-usuarios">
+              <h1>👥 Usuários</h1>
             {useDelayedLoader(loading, { delay: 200 }) && <InlineSpinner />}
           </div>
           <div className="acoes-pagina">
-            <button onClick={openCreate}>Novo Usuário</button>
+            <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Buscar usuário..." />
+            <button className="btn-primary" onClick={openCreate}>
+              <span className="btn-icon">+</span>
+              Novo Usuário
+            </button>
           </div>
         </div>
 
-        <div className="summary-row">
-          <div className="card-summary">
-            <h3>Total</h3>
-            <p>{usuarios.length}</p>
+        <div className="summary-row card">
+          <div 
+            className={`card-summary clickable ${filtroAtivo === 'ativos' ? 'ativo' : ''}`}
+            onClick={() => handleCardClick('ativos')}
+            title="Clique para filtrar usuários ativos"
+          >
+            <span className="card-icon">✅</span>
+            <div className="card-content">
+              <h3>Usuários Ativos</h3>
+              <p>{totalAtivos}</p>
+              <small>{percentualAtivos}% do total</small>
+            </div>
+          </div>
+          <div 
+            className={`card-summary clickable ${filtroAtivo === 'inativos' ? 'ativo' : ''}`}
+            onClick={() => handleCardClick('inativos')}
+            title="Clique para filtrar usuários inativos"
+          >
+            <span className="card-icon">⭕</span>
+            <div className="card-content">
+              <h3>Usuários Inativos</h3>
+              <p>{usuarios.length - totalAtivos}</p>
+              <small>Desativados no sistema</small>
+            </div>
           </div>
           <div className="card-summary">
-            <h3>Ativos</h3>
-            <p>{usuarios.filter(u => u.Ativo).length}</p>
-          </div>
-          <div className="card-summary">
-            <h3>Perfis</h3>
-            <p>{uniqueProfiles.length} perfil{uniqueProfiles.length !== 1 ? 's' : ''}</p>
+            <span className="card-icon">👔</span>
+            <div className="card-content">
+              <h3>Perfis Cadastrados</h3>
+              <p>{uniqueProfiles.length}</p>
+              <small>{uniqueProfiles.join(', ') || 'Nenhum'}</small>
+            </div>
           </div>
         </div>
+
+        {/* Badge de filtro ativo */}
+        {filtroAtivo && (
+          <div className="badge-filtro-ativo">
+            Filtro ativo: {filtroAtivo === 'ativos' ? 'Usuários Ativos' : 'Usuários Inativos'}
+            <button 
+              className="btn-limpar-filtro" 
+              onClick={() => setFiltroAtivo(null)}
+              title="Limpar filtro"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
       </div>
 
   <div className="area-tabela card">
-          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
-            <div />
-          </div>
           {loading ? (
             // layout: ID(0.6), Nome(1.5), Login(1), Perfil(1), Email(1.6), Ativo(0.6), DT(1), Ações(0.8)
             <TableSkeleton rows={8} layout={[0.6,1.5,1,1,1.6,0.6,1,0.8]} />
@@ -233,33 +280,54 @@ function Usuarios() {
                     <th>Login</th>
                     <th>Perfil</th>
                     <th>Email</th>
-                    <th>Ativo</th>
-                    <th>DT_Cad</th>
+                    <th>Telefone</th>
+                    <th>Status</th>
                     <th className="col-acoes">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsFiltered.map((u) => (
-                    <tr key={u.ID_Usuario ?? u.id}>
-                      <td><Highlight text={String(u.ID_Usuario ?? u.id)} query={searchQuery} /></td>
-                      <td><Highlight text={u.NM_Usuario ?? u.nome} query={searchQuery} /></td>
-                      <td><Highlight text={u.Login} query={searchQuery} /></td>
-                      <td><Highlight text={u.PerfilNome ?? "-"} query={searchQuery} /></td>
-                      <td><Highlight text={u.Email} query={searchQuery} /></td>
-                      <td>{u.Ativo ? "Sim" : "Não"}</td>
-                      <td>{u.DT_Cad_Usuario ? new Date(u.DT_Cad_Usuario).toLocaleDateString() : "-"}</td>
-                      <td className="celula-acoes">
-                        <div className="botoes-acao">
-                          <ActionButtons
-                            onEdit={() => handleEdit(u)}
-                            onDelete={() => handleDelete(u.ID_Usuario ?? u.id)}
-                          />
-                          <button className="btn-action-trigger pwd-btn" onClick={() => openChangePassword(u)}>🔑</button>
-                          <button className="btn-action-trigger toggle-btn" onClick={() => handleToggleActive(u)}>{u.Ativo ? 'Desativar' : 'Ativar'}</button>
-                        </div>
-                      </td>
+                  {currentItemsFiltered.length === 0 ? (
+                    <tr>
+                      <td colSpan="8">Nenhum usuário encontrado.</td>
                     </tr>
-                  ))}
+                  ) : (
+                    currentItemsFiltered.map((u) => (
+                      <tr key={u.ID_Usuario ?? u.id}>
+                        <td><Highlight text={String(u.ID_Usuario ?? u.id)} query={searchQuery} /></td>
+                        <td><strong><Highlight text={u.NM_Usuario ?? u.nome} query={searchQuery} /></strong></td>
+                        <td><Highlight text={u.Login} query={searchQuery} /></td>
+                        <td>
+                          <span className="perfil-badge">
+                            <Highlight text={u.PerfilNome ?? "-"} query={searchQuery} />
+                          </span>
+                        </td>
+                        <td><Highlight text={u.Email} query={searchQuery} /></td>
+                        <td className="telefone-cell">{u.Tel_Usuario || "-"}</td>
+                        <td>
+                          {u.Ativo ? (
+                            <span className="status-badge status-ativo">✅ Ativo</span>
+                          ) : (
+                            <span className="status-badge status-inativo">⭕ Inativo</span>
+                          )}
+                        </td>
+                        <td className="celula-acoes">
+                          <div className="botoes-acao">
+                            <ActionButtons
+                              onEdit={() => handleEdit(u)}
+                              onDelete={() => handleDelete(u.ID_Usuario ?? u.id)}
+                            />
+                            <button 
+                              className={`btn-toggle ${u.Ativo ? 'btn-desativar' : 'btn-ativar'}`}
+                              onClick={() => handleToggleActive(u)}
+                              title={u.Ativo ? 'Desativar usuário' : 'Ativar usuário'}
+                            >
+                              {u.Ativo ? '⏸️ Desativar' : '▶️ Ativar'}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
 
@@ -273,15 +341,12 @@ function Usuarios() {
                 />
               )}
             </>
-      )}
-    </div>
+          )}
+        </div> {/* Fecha area-tabela */}
+      </div> {/* Fecha usuarios-container */}
 
       {isFormOpen && (
         <UsuarioForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSave={handleSave} initialData={editing} />
-      )}
-
-      {isPwdOpen && (
-        <ChangePasswordModal isOpen={isPwdOpen} onClose={() => setIsPwdOpen(false)} user={pwdTarget} onSaved={() => handlePwdChanged(pwdTarget?.ID_Usuario ?? pwdTarget?.id)} />
       )}
     </div>
   );

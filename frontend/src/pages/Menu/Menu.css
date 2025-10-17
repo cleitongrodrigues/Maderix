@@ -1,99 +1,500 @@
+/* ============================================
+   MENU LATERAL MODERNO E PROFISSIONAL
+   ============================================ */
+
 .menu {
-  width: 240px;
+  width: 280px;
   height: 100vh;
-  background: #2f353a;
+  background: linear-gradient(180deg, #1a1d29 0%, #2d3142 100%);
   color: white;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  box-sizing: border-box;
   position: fixed;
   top: 0;
   left: 0;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  transition: width 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.menu h1 {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+/* Menu Recolhido */
+.menu.menu-collapsed {
+  width: 80px;
 }
 
-.menu a {
-  color: #dcdcdc;
-  text-decoration: none;
-  margin: 8px 0;
-  font-size: 1rem;
-  padding: 6px 8px;
-  border-radius: 6px;
+.menu-collapsed .menu-user {
+  padding: 12px 8px;
   background: transparent;
-  transition: background-color 0.15s, color 0.15s;
+  border-color: transparent;
 }
 
-.menu a:hover {
-  background: rgba(255,255,255,0.03);
-  color: #fff;
+.menu-collapsed .user-info {
+  display: none;
+}
+
+.menu-collapsed .brand-text {
+  display: none;
+}
+
+.menu-collapsed .section-label {
+  display: none;
+}
+
+.menu-collapsed .menu-text {
+  display: none;
+}
+
+.menu-collapsed .menu-arrow {
+  display: none;
+}
+
+.menu-collapsed .menu-badge {
+  display: none;
+}
+
+.menu-collapsed .submenu {
+  display: none;
+}
+
+/* Scrollbar customizada */
+.menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   HEADER DO MENU
+   ============================================ */
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.brand-icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.brand-text h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  white-space: nowrap;
+}
+
+.brand-text span {
+  font-size: 11px;
+  color: #a0a6b1;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.menu-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.menu-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.menu-collapsed .menu-toggle-btn {
+  margin: 0 auto;
+}
+
+/* ============================================
+   PERFIL DO USUÁRIO
+   ============================================ */
+
+.menu-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.menu-user:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #a0a6b1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-collapsed .user-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+/* ============================================
+   NAVEGAÇÃO
+   ============================================ */
+
+.menu-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.menu-section {
+  margin-bottom: 8px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 24px 8px;
+  margin-top: 8px;
+}
+
+.menu-item-wrapper {
+  position: relative;
+}
+
+.menu-collapsed .menu-item-wrapper {
+  position: static;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin: 2px 12px;
+  color: #cbd5e1;
   text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  width: calc(100% - 24px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+  user-select: none;
 }
 
-.menu a.active-link {
-  color: var(--accent-color, #FFA500) !important; /* Cor laranja para o link ativo */
-  font-weight: bold;
-  background: transparent !important;
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-/* Submenu styles */
-.menu .menu-toggle {
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transform: translateX(2px);
+}
+
+.menu-item.active {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.menu-item.active::before {
+  opacity: 1;
+}
+
+.menu-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-arrow {
+  font-size: 10px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.menu-item-toggle.open .menu-arrow {
+  transform: rotate(0deg);
+}
+
+.menu-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.badge-warning {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.badge-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Menu Colapsado - Centralizar ícones */
+.menu-collapsed .menu-item {
+  justify-content: center;
+  padding: 12px 8px;
+}
+
+.menu-collapsed .menu-icon {
+  margin: 0;
+}
+
+/* ============================================
+   SUBMENU
+   ============================================ */
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 12px 8px 12px;
+  padding-left: 36px;
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+/* Submenu Flyout - Para menu recolhido */
+.submenu-flyout {
+  position: fixed;
+  left: 80px;
+  background: linear-gradient(180deg, #252936 0%, #2d3142 100%);
+  border-radius: 8px;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  min-width: 200px;
+  z-index: 1001;
+  animation: slideInRight 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.flyout-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 8px;
-  background: none;
-  border: none;
-  padding: 6px 8px;
-  margin: 6px 0;
-  color: inherit;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 6px;
-  transition: background-color 0.15s, color 0.15s;
 }
 
-.menu .menu-toggle:hover {
-  background: rgba(255,255,255,0.03);
-  color: #fff;
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
 }
 
-.menu .submenu {
-  margin-top: 6px;
-  margin-left: 8px;
+.submenu-item {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-left: 8px;
-  border-left: 2px solid rgba(255,255,255,0.03);
-}
-
-.menu .sub-link {
-  color: #dcdcdc;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #94a3b8;
   text-decoration: none;
-  padding: 6px 8px;
   border-radius: 6px;
-  font-size: 0.95rem;
-  transition: background-color 0.15s, color 0.15s;
+  font-size: 13px;
+  font-weight: 500;
   background: transparent;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.menu .sub-link:hover {
-  background: rgba(255,255,255,0.03);
-  color: #fff;
+.submenu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  transform: translateX(2px);
 }
 
-/* Ativo do submenu: apenas texto laranja, sem fundo */
-.menu .sub-active {
-  color: #FFA500 !important; /* texto laranja */
+.submenu-item.active {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
   font-weight: 600;
-  background: transparent !important; /* sem fundo laranja */
 }
 
-/* Small helper to ensure submenu links don't inherit large margins */
-.menu .submenu a {
-  margin: 0;
+.submenu-icon {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.submenu-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================
+   FOOTER - SAIR
+   ============================================ */
+
+.menu-footer {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.menu-item-logout {
+  color: #ef4444 !important;
+}
+
+.menu-item-logout:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .menu {
+    transform: translateX(-100%);
+  }
+
+  .menu.menu-open {
+    transform: translateX(0);
+  }
+
+  .menu-collapsed {
+    transform: translateX(-100%);
+  }
 }

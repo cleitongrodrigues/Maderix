@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function SearchBar({ value = '', onChange, placeholder = 'Buscar por nome, email ou ID...', debounce = 300 }) {
+export default function SearchBar({ value = '', onChange, placeholder = 'Buscar por nome, email ou ID...', debounce = 300, inputClassName = '' }) {
   const [internal, setInternal] = useState(value);
 
   useEffect(() => setInternal(value), [value]);
@@ -13,7 +13,7 @@ export default function SearchBar({ value = '', onChange, placeholder = 'Buscar 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <input
-        className="search-input"
+        className={"search-input" + (inputClassName ? ` ${inputClassName}` : '')}
         placeholder={placeholder}
         value={internal}
         onChange={(e) => setInternal(e.target.value)}

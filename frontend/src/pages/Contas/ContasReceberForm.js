@@ -6,29 +6,49 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
   const [cliente, setCliente] = useState('');
   const [valor, setValor] = useState('');
   const [vencimento, setVencimento] = useState('');
+  const [observacoes, setObservacoes] = useState('');
   const [saving, setSaving] = useState(false);
 
-  function formatCurrency(v) {
-    const nums = String(v || '').replace(/[^0-9\-,.]/g, '').replace(/,/g, '.');
-    if (!nums) return '';
-    const num = parseFloat(nums);
-    if (Number.isNaN(num)) return '';
-    return num.toFixed(2).replace('.', ',');
-  }
+  // Função para formatar valor como moeda brasileira
+  const formatarMoeda = (valor) => {
+    if (!valor) return '';
+    const numero = typeof valor === 'string' ? parseFloat(valor.replace(/\./g, '').replace(',', '.')) : valor;
+    if (isNaN(numero)) return '';
+    return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
 
-  function parseCurrency(v) {
-    if (!v) return 0;
-    return Number(String(v).replace(/\./g, '').replace(/,/g, '.')) || 0;
-  }
+  // Função para converter moeda formatada para número
+  const parseMoneyToNumber = (valorFormatado) => {
+    if (!valorFormatado) return 0;
+    return parseFloat(valorFormatado.replace(/\./g, '').replace(',', '.'));
+  };
+
+  // Handler para mudanças no campo de valor
+  const handleValorChange = (valor) => {
+    // Remove tudo que não é número
+    const apenasNumeros = valor.replace(/\D/g, '');
+    if (apenasNumeros === '') {
+      setValor('');
+      return;
+    }
+    // Converte para número e formata
+    const numero = parseFloat(apenasNumeros) / 100;
+    setValor(formatarMoeda(numero));
+  };
 
   useEffect(() => {
     if (initialData) {
       setNumero(initialData.Numero || '');
       setCliente(initialData.Cliente || '');
-      setValor(initialData.Valor != null ? formatCurrency(initialData.Valor) : '');
+      setValor(initialData.Valor != null ? formatarMoeda(initialData.Valor) : '');
       setVencimento(initialData.Vencimento ? new Date(initialData.Vencimento).toISOString().slice(0,10) : '');
+      setObservacoes(initialData.Observacoes || '');
     } else {
-      setNumero(''); setCliente(''); setValor(''); setVencimento('');
+      setNumero('');
+      setCliente('');
+      setValor('');
+      setVencimento('');
+      setObservacoes('');
     }
   }, [initialData, isOpen]);
 
@@ -36,10 +56,41 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!numero.trim() || !cliente.trim() || !valor) return alert('Número, Cliente e Valor são obrigatórios');
+    
+    // Validações
+    if (!numero.trim()) {
+      alert('❌ Número da conta é obrigatório!');
+      return;
+    }
+    if (!cliente.trim()) {
+      alert('❌ Nome do cliente é obrigatório!');
+      return;
+    }
+    if (!valor) {
+      alert('❌ Valor da conta é obrigatório!');
+      return;
+    }
+    
+    const valorNumerico = parseMoneyToNumber(valor);
+    if (valorNumerico <= 0) {
+      alert('❌ Valor deve ser maior que zero!');
+      return;
+    }
+    
+    if (!vencimento) {
+      alert('❌ Data de vencimento é obrigatória!');
+      return;
+    }
+
     setSaving(true);
     try {
-      const payload = { Numero: numero, Cliente: cliente, Valor: parseCurrency(valor), Vencimento: new Date(vencimento).toISOString() };
+      const payload = { 
+        Numero: numero, 
+        Cliente: cliente, 
+        Valor: valorNumerico, 
+        Vencimento: new Date(vencimento).toISOString(),
+        Observacoes: observacoes
+      };
       const url = initialData ? `/api/contas/${initialData.ID_Conta ?? initialData.id}` : '/api/contas';
       const method = initialData ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -49,42 +100,133 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
       onClose && onClose();
     } catch (err) {
       const fakeId = Math.floor(Math.random() * 100000) + 1000;
-      const obj = { ID_Conta: initialData ? (initialData.ID_Conta ?? initialData.id) : fakeId, Numero: numero, Cliente: cliente, Valor: parseCurrency(valor), Vencimento: new Date(vencimento).toISOString(), Pago: false, DT_Cad_Conta: new Date().toISOString() };
+      const obj = { 
+        ID_Conta: initialData ? (initialData.ID_Conta ?? initialData.id) : fakeId, 
+        Numero: numero, 
+        Cliente: cliente, 
+        Valor: valorNumerico, 
+        Vencimento: new Date(vencimento).toISOString(), 
+        Observacoes: observacoes,
+        Pago: initialData?.Pago || false, 
+        DT_Cad_Conta: initialData?.DT_Cad_Conta || new Date().toISOString() 
+      };
       onSave && onSave(obj);
       onClose && onClose();
     } finally { setSaving(false); }
   };
 
+  const isEdicao = !!initialData;
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header"><h1>{initialData ? 'Editar Conta' : 'Nova Conta'}</h1><button onClick={onClose}>×</button></div>
+      <div className="modal-container conta-form-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>{isEdicao ? '✏️ Editar Conta a Receber' : '💰 Nova Conta a Receber'}</h2>
+          <button className="btn-close" onClick={onClose} disabled={saving}>×</button>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Número</label>
-              <input value={numero} onChange={(e) => setNumero(e.target.value)} />
+          <div className="modal-body">
+            {/* Informação de cadastro (apenas na edição) */}
+            {isEdicao && initialData.DT_Cad_Conta && (
+              <div className="info-box">
+                📅 Cadastrada em: {new Date(initialData.DT_Cad_Conta).toLocaleDateString('pt-BR')} às {new Date(initialData.DT_Cad_Conta).toLocaleTimeString('pt-BR')}
+              </div>
+            )}
+
+            {/* Status da conta (apenas na edição) */}
+            {isEdicao && (
+              <div className={`info-box-status ${initialData.Pago ? 'status-paga-box' : 'status-aberta-box'}`}>
+                <strong>Status:</strong> {initialData.Pago ? '✅ Conta Paga' : '🕐 Conta em Aberto'}
+              </div>
+            )}
+
+            {/* Linha 1: Número e Cliente */}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="numero">Número da Conta *</label>
+                <input
+                  id="numero"
+                  type="text"
+                  value={numero}
+                  onChange={(e) => setNumero(e.target.value)}
+                  placeholder="Ex: 001/2025"
+                  disabled={saving}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="cliente">Nome do Cliente *</label>
+                <input
+                  id="cliente"
+                  type="text"
+                  value={cliente}
+                  onChange={(e) => setCliente(e.target.value)}
+                  placeholder="Ex: João Silva"
+                  disabled={saving}
+                  required
+                />
+              </div>
             </div>
-            <div style={{ flex: 1, marginLeft: 12 }}>
-              <label>Cliente</label>
-              <input value={cliente} onChange={(e) => setCliente(e.target.value)} />
+
+            {/* Linha 2: Valor e Vencimento */}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="valor">Valor (R$) *</label>
+                <div className="preco-wrapper">
+                  <span className="preco-prefix">R$</span>
+                  <input
+                    id="valor"
+                    type="text"
+                    className="input-preco"
+                    value={valor}
+                    onChange={(e) => handleValorChange(e.target.value)}
+                    placeholder="0,00"
+                    disabled={saving}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="vencimento">Data de Vencimento *</label>
+                <input
+                  id="vencimento"
+                  type="date"
+                  value={vencimento}
+                  onChange={(e) => setVencimento(e.target.value)}
+                  disabled={saving}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Observações */}
+            <div className="form-group">
+              <label htmlFor="observacoes">Observações</label>
+              <textarea
+                id="observacoes"
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+                placeholder="Informações adicionais sobre a conta..."
+                rows="3"
+                disabled={saving}
+              />
             </div>
           </div>
 
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Valor</label>
-              <input value={valor} onChange={(e) => setValor(e.target.value)} onBlur={(e) => setValor(formatCurrency(e.target.value))} placeholder="0,00" />
-            </div>
-            <div style={{ flex: 1, marginLeft: 12 }}>
-              <label>Vencimento</label>
-              <input type="date" value={vencimento} onChange={(e) => setVencimento(e.target.value)} />
-            </div>
-          </div>
-
-          <div className="button-container" style={{ marginTop: 12 }}>
-            <button type="submit" disabled={saving}>{saving ? 'Salvando...' : 'Salvar'}</button>
-            <button type="button" onClick={onClose} style={{ marginLeft: 8 }}>Cancelar</button>
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary" disabled={saving}>
+              {saving ? (
+                <>
+                  <span className="spinner-small"></span> Salvando...
+                </>
+              ) : (
+                isEdicao ? "💾 Salvar Alterações" : "💰 Cadastrar Conta"
+              )}
+            </button>
           </div>
         </form>
       </div>
