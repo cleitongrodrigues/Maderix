@@ -81,18 +81,18 @@ function ContasReceber() {
 
   return (
     <div className="page contas-page">
-      <div className="page-header"><h1>Contas a Receber</h1><div className="page-actions"><button onClick={openCreate}>Nova Conta</button></div></div>
+      <div className="cabecalho-pagina"><h1>Contas a Receber</h1><div className="acoes-pagina"><button onClick={openCreate}>Nova Conta</button></div></div>
 
-      <div className="summary-row card">
+      <div className="linha-resumo card">
         <div className="card-summary"><h3>Total</h3><p>{total}</p></div>
         <div className="card-summary"><h3>Vencidas</h3><p>{vencidas}</p></div>
         <div className="card-summary"><h3>Abertas</h3><p>{abertas}</p></div>
       </div>
 
-      <div className="card table-wrapper">
+      <div className="card area-tabela">
         {loading ? <div>Carregando...</div> : (
           <>
-            <table className="clients-table">
+            <table className="tabela-contas">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -101,7 +101,7 @@ function ContasReceber() {
                   <th>Valor</th>
                   <th>Vencimento</th>
                   <th>Pago</th>
-                  <th className="col-actions">Ações</th>
+                  <th className="col-acoes">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,11 +113,11 @@ function ContasReceber() {
                     <td>{typeof c.Valor === 'number' ? c.Valor.toFixed(2) : c.Valor}</td>
                     <td>{c.Vencimento ? new Date(c.Vencimento).toLocaleDateString() : '-'}</td>
                     <td>{c.Pago ? 'Sim' : 'Não'}</td>
-                    <td className="actions-cell">
-                      <div className="action-btns-group">
+                    <td className="celula-acoes">
+                      <div className="grupo-botoes-acao">
                         <ActionButtons onEdit={() => openEdit(c)} onDelete={() => handleDelete(c.ID_Conta ?? c.id)} />
                       </div>
-                      <div className="toggle-group">
+                      <div className="grupo-toggle">
                         <button
                           className="btn-action-trigger toggle-btn"
                           onClick={() => togglePago(c)}

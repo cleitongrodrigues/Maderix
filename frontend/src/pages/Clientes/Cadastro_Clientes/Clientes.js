@@ -147,18 +147,9 @@ function Clientes() {
   return (
     <div className="clientes-page">
       <div className="clientes-cabecalho-fixo">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <h1>Clientes</h1>
-          {showLoader && <InlineSpinner />}
+        <div className="titulo-clientes">
+          <h1>CLIENTES</h1>
         </div>
-
-        {isMock && (
-          <div style={{ marginBottom: 8, color: "#666" }}>
-            Exibindo dados fictícios (apenas para visualização). Integre o backend para ver dados reais.
-          </div>
-        )}
-
-        {/* Resumo Rápido full-width acima da lista */}
         <div className="summary-row card">
           <div className="card-summary">
             <h3>Total de Clientes</h3>
@@ -174,20 +165,17 @@ function Clientes() {
             }).length}</p>
           </div>
         </div>
-
-        <div className="page-actions" style={{ marginBottom: 12 }}>
-          <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>Novo Cliente</button>
+        <div className="acoes-pagina">
+          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <div style={{ marginLeft: 12 }}>
+            <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>Novo Cliente</button>
+          </div>
         </div>
       </div>
 
-      <div className="home-content">
-        <div className="product-list-block recent-activity">
-          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
-            <div style={{ marginLeft: 12 }}>
-              <button className="btn-primary" onClick={() => { setEditingItem(null); setIsFormOpen(true); }}>Novo Cliente</button>
-            </div>
-          </div>
+      <div className="conteudo-pagina">
+        <div className="bloco-lista atividade-recente">
+          
 
           {loading ? (
             // layout: ID (0.6), Nome (2), Tel (1), Email (1.5), Data (1), Ações (0.8)
@@ -195,8 +183,8 @@ function Clientes() {
           ) : error ? (
             <div className="error">{error}</div>
           ) : (
-            <div className="card table-wrapper">
-              <table className="clients-table">
+            <div className="card area-tabela">
+              <table className="tabela-clientes">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -204,7 +192,7 @@ function Clientes() {
                     <th>Telefone</th>
                     <th>Email</th>
                     <th>Data de Cadastro</th>
-                    <th className="col-actions">Ações</th>
+                    <th className="col-acoes">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -227,8 +215,8 @@ function Clientes() {
                           <td>{formatPhone(tel)}</td>
                           <td><Highlight text={email} query={searchQuery} /></td>
                           <td>{dt ? new Date(dt).toLocaleString() : ""}</td>
-                          <td className="actions-cell">
-                              <div className="action-buttons">
+                          <td className="celula-acoes">
+                              <div className="botoes-acao">
                                 <ActionButtons onEdit={() => handleEdit(id)} onDelete={() => handleDelete(id)} />
                               </div>
                           </td>

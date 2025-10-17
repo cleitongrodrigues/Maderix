@@ -113,12 +113,12 @@ function Empresa() {
   }, [totalPages]);
 
   return (
-    <div className="page empresa-page">
-      <header className="empresa-header">
+    <div className="pagina empresa-page">
+      <header className="cabecalho-empresa">
         <h1>Empresas</h1>
-        <div className="empresa-actions">
+        <div className="acoes-empresa">
           <input
-            className="empresa-search"
+            className="busca-empresa"
             placeholder="Buscar por nome ou CNPJ"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -131,8 +131,8 @@ function Empresa() {
       {error && <div className="error">{error}</div>}
 
       {/* table wrapper like Clientes page to keep exact alignment and spacing */}
-      <div className="card table-wrapper">
-        <table className="clients-table">
+      <div className="card area-tabela">
+        <table className="tabela-empresas">
           <thead>
             <tr>
               <th>ID</th>
@@ -140,7 +140,7 @@ function Empresa() {
               <th>CNPJ</th>
               <th>Razão social</th>
               <th>Data cadastro</th>
-              <th className="col-actions">Ações</th>
+                    <th className="col-acoes">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -151,8 +151,8 @@ function Empresa() {
                 <td>{e.CNPJ ?? e.cnpj}</td>
                 <td>{e.RZ_Social ?? e.rz_Social}</td>
                 <td>{e.DT_Cad_Empresa ? new Date(e.DT_Cad_Empresa).toLocaleString() : ""}</td>
-                <td className="actions-cell">
-                  <div className="action-dropdown-container">
+                <td className="celula-acoes">
+                  <div className="container-dropdown-acoes">
                     <ActionButtons
                       onEdit={() => openEdit(e)}
                       onDelete={() => handleDelete(e)}

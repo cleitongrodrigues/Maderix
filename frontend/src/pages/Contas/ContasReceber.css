@@ -7,7 +7,7 @@
   color: var(--primary-color);
 }
 
-.page-actions button {
+.acoes-pagina button {
   padding: 8px 12px;
   border-radius: 6px;
   background: var(--btn-bg);
@@ -16,9 +16,8 @@
   cursor: pointer;
 }
 
-/* Make summary row and table wrapper use full available width (no max-width) */
-.summary-row.card,
-.card.table-wrapper {
+.linha-resumo.card,
+.card.area-tabela {
   width: 100%;
   margin: 0 0 16px 0;
   box-sizing: border-box;
@@ -26,45 +25,44 @@
 }
 
 /* Ensure summary cards distribute evenly inside the full-width container */
-.summary-row.card { display:flex; gap:12px; align-items:stretch; }
-.summary-row.card .card-summary { flex: 1 1 0; }
+.linha-resumo.card { display:flex; gap:12px; align-items:stretch; }
+.linha-resumo.card .card-summary { flex: 1 1 0; }
 
-/* Table styling - reuse clients-table style used across the app */
-.clients-table {
+.tabela-contas {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-.clients-table th,
-.clients-table td {
+.tabela-contas th,
+.tabela-contas td {
   padding: 8px 10px;
   text-align: left;
   border: 1px solid #eee;
 }
 
-.clients-table th {
+.tabela-contas th {
   background: #f8f9fa;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
-.clients-table tbody tr {
+.tabela-contas tbody tr {
   height: 44px;
 }
 
-.clients-table tbody tr:hover {
+.tabela-contas tbody tr:hover {
   background: #fafafa;
 }
 
 /* Actions column and controls layout */
-.clients-table th.col-actions,
-.clients-table td.actions-cell {
+.tabela-contas th.col-acoes,
+.tabela-contas td.celula-acoes {
   width: 220px;
   text-align: center;
 }
 
-.clients-table td.actions-cell {
+.tabela-contas td.celula-acoes {
   display: flex;
   align-items: center;
   justify-content: space-between; /* keep icons left, toggle right */
@@ -83,8 +81,8 @@
 .action-buttons .btn-action-trigger { width: 32px; height: 32px; padding: 4px; }
 
 /* ensure action buttons group doesn't force the cell to grow too much */
-.action-btns-group { display:flex; gap:8px; align-items:center; flex: 0 0 auto; overflow: hidden; }
-.toggle-group { display:flex; align-items:center; flex: 0 0 auto; }
+.grupo-botoes-acao { display:flex; gap:8px; align-items:center; flex: 0 0 auto; overflow: hidden; }
+.grupo-toggle { display:flex; align-items:center; flex: 0 0 auto; }
 
 /* Toggle (Marcar Pago) button: ensure space and prevent overlap */
 .btn-action-trigger.toggle-btn {
@@ -107,14 +105,14 @@
 
 /* small screens: stack groups */
 @media (max-width: 920px) {
-  .summary-row.card, .card.table-wrapper { padding: 0 12px; }
+  .linha-resumo.card, .card.area-tabela { padding: 0 12px; }
 }
 
 @media (max-width: 720px) {
-  .clients-table th.col-actions, .clients-table td.actions-cell { width: auto; }
-  .clients-table td.actions-cell { flex-direction: column; align-items: stretch; }
+  .tabela-contas th.col-acoes, .tabela-contas td.celula-acoes { width: auto; }
+  .tabela-contas td.celula-acoes { flex-direction: column; align-items: stretch; }
   .action-buttons { margin-bottom: 8px; }
   .btn-action-trigger.toggle-btn { width: 100%; min-width: 0; }
-  .action-btns-group { justify-content: flex-start; overflow: visible; }
-  .toggle-group { margin-top: 6px; }
+  .grupo-botoes-acao { justify-content: flex-start; overflow: visible; }
+  .grupo-toggle { margin-top: 6px; }
 }

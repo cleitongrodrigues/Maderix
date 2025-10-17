@@ -80,23 +80,23 @@ function Unidades() {
   const pageItems = unidades.slice(start, start + PAGE_SIZE);
 
   return (
-    <div className="page unidades-page">
-      <div className="page-header">
+    <div className="pagina unidades-page">
+      <div className="cabecalho-pagina">
         <h1>Unidades</h1>
-        <div className="page-actions"><button onClick={openCreate}>Nova Unidade</button></div>
+        <div className="acoes-pagina"><button onClick={openCreate}>Nova Unidade</button></div>
       </div>
 
-      <div className="table-wrapper card">
+      <div className="area-tabela card">
         {loading ? <div>Carregando...</div> : (
           <>
-            <table className="usuarios-table">
+            <table className="tabela-unidades">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Sigla</th>
                   <th>Descrição</th>
                   <th>DT_Cad</th>
-                  <th className="col-actions">Ações</th>
+                  <th className="col-acoes">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -106,8 +106,8 @@ function Unidades() {
                     <td>{u.Sigla}</td>
                     <td>{u.Descricao}</td>
                     <td>{u.DT_Cad_Unidade ? new Date(u.DT_Cad_Unidade).toLocaleDateString() : '-'}</td>
-                    <td className="actions-cell">
-                      <div className="action-buttons">
+                    <td className="celula-acoes">
+                      <div className="botoes-acao">
                         <ActionButtons onEdit={() => openEdit(u)} onDelete={() => handleDelete(u.ID_Unidade ?? u.id)} />
                       </div>
                     </td>

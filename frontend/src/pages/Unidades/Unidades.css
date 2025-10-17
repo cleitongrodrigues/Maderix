@@ -12,3 +12,13 @@
   width: 84vw !important; 
   margin: auto !important; 
 }
+
+.unidades-page .cabecalho-pagina { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.unidades-page .acoes-pagina { display:flex; align-items:center; gap:8px; }
+
+.unidades-page .area-tabela { padding: 8px; }
+.unidades-page .tabela-unidades { width:100%; border-collapse:collapse; }
+.unidades-page .tabela-unidades th, .unidades-page .tabela-unidades td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left; }
+.unidades-page .col-acoes { width: 80px; text-align:center; }
+.unidades-page .celula-acoes { display:flex; align-items:center; justify-content:center; }
+.unidades-page .botoes-acao { display:flex; gap:8px; align-items:center; }

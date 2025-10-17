@@ -3,9 +3,9 @@ import "./Home.css";
 
 function Home() {
   return (
-    <div className="home">
+    <div className="pagina-home">
       <h1>Bem-vindo ao Sistema de Controle de Estoque</h1>
-      <div className="home-overview">
+      <div className="visao-geral">
         <div className="card">
           <h2>Total de Produtos</h2>
           <p>150</p>
@@ -19,8 +19,8 @@ function Home() {
           <p>12</p>
         </div>
       </div>
-      <div className="home-content">
-        <div className="recent-activity">
+      <div className="conteudo-pagina">
+        <div className="atividades-recentes">
           <h2>Atividades Recentes</h2>
           <ul>
             <li>Produto "Caneta Azul" adicionado ao estoque.</li>
@@ -28,7 +28,7 @@ function Home() {
             <li>Produto "Caderno" está em falta.</li>
           </ul>
         </div>
-        <div className="quick-actions">
+        <div className="acoes-rapidas">
           <h2>Ações Rápidas</h2>
           <button>Adicionar Produto</button>
           <button>Ver Estoque</button>

@@ -188,12 +188,12 @@ function Usuarios() {
   return (
     <div className="page usuarios-page">
       <div className="usuarios-cabecalho-fixo">
-        <div className="page-header">
+        <div className="cabecalho-pagina">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <h1>Usuários</h1>
             {useDelayedLoader(loading, { delay: 200 }) && <InlineSpinner />}
           </div>
-          <div className="page-actions">
+          <div className="acoes-pagina">
             <button onClick={openCreate}>Novo Usuário</button>
           </div>
         </div>
@@ -215,7 +215,7 @@ function Usuarios() {
 
       </div>
 
-      <div className="table-wrapper card">
+  <div className="area-tabela card">
           <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
             <div />
@@ -225,7 +225,7 @@ function Usuarios() {
             <TableSkeleton rows={8} layout={[0.6,1.5,1,1,1.6,0.6,1,0.8]} />
           ) : (
             <>
-              <table className="usuarios-table">
+              <table className="tabela-usuarios">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -235,7 +235,7 @@ function Usuarios() {
                     <th>Email</th>
                     <th>Ativo</th>
                     <th>DT_Cad</th>
-                    <th className="col-actions">Ações</th>
+                    <th className="col-acoes">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -248,8 +248,8 @@ function Usuarios() {
                       <td><Highlight text={u.Email} query={searchQuery} /></td>
                       <td>{u.Ativo ? "Sim" : "Não"}</td>
                       <td>{u.DT_Cad_Usuario ? new Date(u.DT_Cad_Usuario).toLocaleDateString() : "-"}</td>
-                      <td className="actions-cell">
-                        <div className="action-buttons">
+                      <td className="celula-acoes">
+                        <div className="botoes-acao">
                           <ActionButtons
                             onEdit={() => handleEdit(u)}
                             onDelete={() => handleDelete(u.ID_Usuario ?? u.id)}

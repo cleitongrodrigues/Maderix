@@ -2,18 +2,18 @@
 .page.perfis-page { margin: auto; }
 .perfis-page h1 { margin-bottom: 8px; }
 /* Basic styles for Perfis page, following the app theme variables in App.css */
-.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.page-actions button { background: var(--btn-bg); color: var(--btn-text); border: none; padding: var(--btn-padding); border-radius: var(--btn-radius); cursor:pointer; }
+.perfis-page .cabecalho-pagina { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.perfis-page .acoes-pagina button { background: var(--btn-bg); color: var(--btn-text); border: none; padding: var(--btn-padding); border-radius: var(--btn-radius); cursor:pointer; }
 .card-summary { background:#fff; padding:12px; border-radius:6px; box-shadow:var(--card-shadow); min-width:120px; }
-.summary-row { display:flex; gap:12px; margin-bottom:12px; }
-.table-wrapper.card { padding:12px; }
-.perfis-table { width:100%; border-collapse:collapse; }
-.perfis-table th, .perfis-table td { padding:8px; border-bottom:1px solid #eee; text-align:left; }
-.actions-cell { text-align:right; }
-.action-dropdown-container { display:flex; gap:8px; justify-content:flex-end; }
-.btn-action-trigger { width:34px; height:34px; border-radius:6px; border:none; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
-.edit-btn { background:#ffb74d; }
-.delete-btn { background:#ef5350; color:#fff; }
+.linha-resumo { display:flex; gap:12px; margin-bottom:12px; }
+.perfis-page .area-tabela.card { padding:12px; }
+.tabela-perfis { width:100%; border-collapse:collapse; }
+.tabela-perfis th, .tabela-perfis td { padding:8px; border-bottom:1px solid #eee; text-align:left; }
+.perfis-page .celula-acoes { text-align:right; }
+.perfis-page .action-dropdown-container { display:flex; gap:8px; justify-content:flex-end; }
+.perfis-page .btn-action-trigger { width:34px; height:34px; border-radius:6px; border:none; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+.perfis-page .edit-btn { background:#ffb74d; }
+.perfis-page .delete-btn { background:#ef5350; color:#fff; }
 .permissions-cell { max-width:400px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .modal-overlay { position:fixed; left:0; top:0; right:0; bottom:0; background: rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:2000; }
 .modal-content { background:#fff; padding:16px; border-radius:8px; width:720px; max-width:95%; }

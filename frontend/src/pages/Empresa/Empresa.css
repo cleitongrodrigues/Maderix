@@ -1,15 +1,15 @@
 .empresa-page { padding: 16px; }
 .empresa-page h1 { margin-bottom: 8px; }
 
-.empresa-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
-.empresa-actions { display:flex; align-items:center; gap:8px; }
-.empresa-search { padding:8px; border:1px solid #ddd; border-radius:4px; }
+.empresa-page .cabecalho-empresa { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.empresa-page .acoes-empresa { display:flex; align-items:center; gap:8px; }
+.empresa-page .busca-empresa { padding:8px; border:1px solid #ddd; border-radius:4px; }
 .btn-primary { background: var(--btn-bg); color: var(--btn-text); border:none; padding:8px 12px; border-radius:6px; cursor:pointer; box-shadow: var(--btn-shadow); }
 .btn-primary:hover { background: var(--btn-hover); box-shadow: var(--btn-shadow-hover); }
 .btn-small { padding:6px 8px; margin-right:6px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
 .btn-small.danger { border-color:#e66565; color:#e66565; }
-.empresa-table { width:100%; border-collapse:collapse; margin-top:12px; }
-.empresa-table th, .empresa-table td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left; }
+.empresa-page .tabela-empresas { width:100%; border-collapse:collapse; margin-top:12px; }
+.empresa-page .tabela-empresas th, .empresa-page .tabela-empresas td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left; }
 .pagination { margin-top:12px; display:flex; align-items:center; gap:8px; }
 
 /* Modal (reuse existing project classes if present) */
@@ -22,32 +22,32 @@
 .empresa-form input, .empresa-form select, .empresa-form textarea { width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; }
 .error { color:#d9534f; margin-top:8px; }
 /* Action buttons alignment (match other pages) */
-.col-actions { width: 80px; text-align: center; }
-.actions-cell { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
-.action-dropdown-container { display: flex; gap: 8px; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; }
-.action-buttons { display: flex; gap: 8px; align-items: center; }
-.btn-action-trigger { width: 36px; height: 36px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; cursor: pointer; line-height: 1; background: none; color: #555; font-size: 1.25em; padding: 0 6px; }
-.btn-action-trigger.edit-btn { background:#ffb74d; color:#fff; }
-.btn-action-trigger.delete-btn { background:transparent; color:#d00; border:1px solid rgba(220,53,69,0.12); }
+.empresa-page .col-acoes { width: 80px; text-align: center; }
+.empresa-page .celula-acoes { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.empresa-page .container-dropdown-acoes { display: flex; gap: 8px; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; }
+.empresa-page .botoes-acao { display: flex; gap: 8px; align-items: center; }
+.empresa-page .btn-action-trigger { width: 36px; height: 36px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; cursor: pointer; line-height: 1; background: none; color: #555; font-size: 1.25em; padding: 0 6px; }
+.empresa-page .btn-action-trigger.edit-btn { background:#ffb74d; color:#fff; }
+.empresa-page .btn-action-trigger.delete-btn { background:transparent; color:#d00; border:1px solid rgba(220,53,69,0.12); }
 
 /* ensure table rows align vertically */
-.empresa-table th, .empresa-table td { vertical-align: middle; }
+.empresa-page .tabela-empresas th, .empresa-page .tabela-empresas td { vertical-align: middle; }
 
 /* Force center alignment for action buttons inside clients-table actions cell */
-.card.table-wrapper .clients-table th.col-actions,
-.card.table-wrapper .clients-table td.actions-cell {
+.card.area-tabela .tabela-empresas th.col-acoes,
+.card.area-tabela .tabela-empresas td.celula-acoes {
   text-align: center !important;
 }
 
-.card.table-wrapper .clients-table td.actions-cell > .action-dropdown-container {
+.card.area-tabela .tabela-empresas td.celula-acoes > .container-dropdown-acoes {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
 }
 
-/* ensure the inner action-buttons also center their content */
-.card.table-wrapper .clients-table td.actions-cell .action-buttons {
+/* ensure the inner botoes-acao also center their content */
+.card.area-tabela .tabela-empresas td.celula-acoes .botoes-acao {
   margin: 0 auto !important;
   justify-content: center !important;
 }

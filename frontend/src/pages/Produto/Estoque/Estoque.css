@@ -121,6 +121,230 @@
     color: #c82333;
 }
 
+/* Versões com nomes em português (escopo página) para suportar renomeações de classe */
+.pagina-estoque .area-tabela {
+    padding: 0; 
+    border: none;
+    box-shadow: none;
+    background: white;
+    overflow-x: auto; 
+}
+
+.pagina-estoque .tabela-estoque {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    padding: 16px; 
+}
+
+.pagina-estoque .tabela-estoque thead th {
+    background: #f8f9fa; 
+    color: #333;
+    padding: 12px 16px;
+    font-size: 1.0rem;
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 2px solid #e6e6e6;
+}
+
+.pagina-estoque .tabela-estoque th.col-acoes,
+.pagina-estoque .tabela-estoque td.celula-acoes {
+    width: 80px;
+    text-align: center;
+}
+
+.pagina-estoque .tabela-estoque tbody td {
+    padding: 10px 16px;
+    color: #555;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.pagina-estoque .tabela-estoque tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* título dentro do cabeçalho fixo */
+.estoque-cabecalho-fixo .titulo-estoque {
+    padding: 12px 0 6px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.estoque-cabecalho-fixo .titulo-estoque h1 {
+    margin: 6px 0 8px 0;
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.pagina-estoque .celula-acoes {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.pagina-estoque .btn-action-trigger {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1.5em; 
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.pagina-estoque .btn-action-trigger:hover { color: #ff7700; }
+
+.pagina-estoque .action-dropdown-menu { position: absolute; top: calc(100% + 5px); right: 0; z-index: 100; background: white; border: 1px solid #e6e6e6; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); min-width: 120px; display:flex; flex-direction:column; overflow:hidden; }
+
+.pagina-estoque .action-dropdown-menu button { background:none; border:none; text-align:left; padding:8px 12px; cursor:pointer; color:#333; font-size:0.9em; width:100%; }
+
+.pagina-estoque .botoes-acao { display:flex; gap:8px; align-items:center; }
+.pagina-estoque .botoes-acao .btn-action-trigger { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; cursor:pointer; line-height:1; }
+.pagina-estoque .botoes-acao .btn-action-trigger.edit-btn { background:#ffb74d; color:#fff; }
+.pagina-estoque .botoes-acao .btn-action-trigger.delete-btn { background:transparent; color:#d00; border:1px solid rgba(220,53,69,0.12); }
+
+.pagina-estoque .action-dropdown-menu { display:none !important; }
+
+.conteudo-pagina {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: nowrap; /* keep two-column layout on wider screens */
+}
+
+/* assegura que o header fique acima do conteúdo quando fixo */
+.estoque-cabecalho-fixo {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 30;
+    padding: 8px 0 12px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+/* inner container to match the page/grid width and center content */
+.pagina-estoque .pagina-inner {
+    width: 100%;
+    max-width: none; /* allow inner to span full page container */
+    margin: 0; /* align to left of page container */
+    padding: 0; /* keep no extra horizontal padding */
+    box-sizing: border-box;
+}
+
+.pagina-estoque .pagina-inner .acoes-rapidas-interna,
+.pagina-estoque .pagina-inner .botoes-internos {
+    width: 100%;
+}
+
+.bloco-lista {
+    flex: 1 1 0; /* main column grows to take remaining space */
+    min-width: 320px; /* prevent collapsing too small */
+}
+
+quick-actions, .acoes-rapidas {
+    /* use CSS variable so layout can track global menu width; fallback to 300px */
+    flex: 0 0 var(--menu-width, 300px); /* fixed-ish sidebar width */
+    max-width: calc(var(--menu-width, 300px) + 60px);
+    box-sizing: border-box;
+}
+
+/* ensure quick-actions items stack vertically inside the sidebar */
+.quick-actions { display: flex; flex-direction: column; gap: 12px; }
+
+/* keep inner action buttons centered but not overflowing */
+.acoes-internas { display:flex; gap:12px; width:100%; }
+
+.acoes-rapidas .card-summary, .quick-actions .card-summary { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:10px; margin-bottom:10px; text-align:center; }
+
+/* estilos para as versões em português dos cards de resumo */
+.cards-resumo .card-resumo,
+.acoes-rapidas .card-resumo,
+.quick-actions .card-resumo {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+
+.acoes-internas > button { flex:1 1 0; min-width:0; }
+
+/* Header-specific: prevent header action buttons from flexing so the search input can take remaining space.
+   We use a more specific selector and !important to override the broad rule above that applies elsewhere. */
+.pagina-estoque .acoes-rapidas .acoes-internas > button {
+    flex: 0 0 auto !important;
+}
+
+.bloco-lista > .acoes-rapidas button,
+.acoes-internas > button { background: var(--btn-bg) !important; color: var(--btn-text) !important; padding: var(--btn-padding) !important; font-size: var(--btn-font-size) !important; font-weight: var(--btn-font-weight) !important; border-radius: var(--btn-radius) !important; min-width: var(--btn-min-width) !important; flex: 1 1 var(--btn-flex-basis) !important; box-shadow: var(--btn-shadow); border: none !important; }
+
+.acoes-internas > button:hover, .bloco-lista > .acoes-rapidas button:hover { background: var(--btn-hover) !important; box-shadow: var(--btn-shadow-hover) !important; }
+
+.bloco-lista > .acoes-rapidas { padding: 14px 8px; margin-bottom: 22px; flex: 1 1 100%; max-width: none; width: 100%; }
+
+/* Buttons area: mirror top quick-actions layout so left buttons column matches grid width */
+.container-botoes { width: 100%; }
+.botoes-internos { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: stretch; width: 100%; }
+.buttons-left { display: flex; align-items: stretch; width: 100%; }
+.buttons-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Container específico do header: input de busca + botões
+   Usar esta classe para controlar tamanho/fluxo sem afetar a sidebar quick-actions. */
+.acoes-cabecalho {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    /* permite crescer dentro do header e não ser tratado como sidebar fixo */
+    flex: 1 1 auto !important;
+    min-width: 0; /* crucial para permitir que filhos encolham */
+    margin-top: 12px; /* espaço acima do bloco de busca e botões */
+}
+
+.acoes-cabecalho .search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* make buttons taller and visually balanced */
+.buttons-left .acoes-internas > button { padding: 10px 16px; min-height: 44px; }
+
+/* search input styling */
+.search-input {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #dcdcdc);
+    min-height: 44px;
+    height: 44px; /* force exact height to match buttons */
+    line-height: 1.2;
+    box-sizing: border-box;
+}
+
+/* make search input grow to fill available space inside .acoes-internas */
+.search-input {
+    flex: 1 1 auto; /* allow input to grow/shrink inside the flex container */
+    min-width: 120px; /* reasonable minimum on very small screens */
+    margin-right: 12px;
+    margin-bottom: 0; /* remove extra bottom margin so input aligns with buttons */
+}
+
+@media (max-width: 900px) {
+    .search-input { width: 100%; max-width: 100%; }
+}
+
+@media (max-width: 900px) {
+    .buttons-inner { display: block; }
+    .buttons-left { margin-bottom: 10px; }
+    .buttons-actions { justify-content: center; }
+}
+
 /* Ações inline (ícone editar / excluir) - substitui o dropdown */
 .action-buttons { display:flex; gap:8px; align-items:center; }
 .action-buttons .btn-action-trigger { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; cursor:pointer; line-height:1; }
@@ -151,7 +375,22 @@
     color: #555;
 }
 
+/* h3/p para as versões em português */
+.cards-resumo .card-resumo h3,
+.acoes-rapidas .card-resumo h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+    color: #555;
+}
+
 .quick-actions .card-summary p {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff7700;
+}
+
+.cards-resumo .card-resumo p,
+.acoes-rapidas .card-resumo p {
     font-size: 1.4rem;
     font-weight: bold;
     color: #ff7700;
@@ -264,34 +503,134 @@
     margin-bottom: 22px; /* ensure consistent gap to the table below */
 }
 
-@media (max-width: 520px) {
-    .product-list-block > .quick-actions {
-        flex-wrap: wrap; /* allow wrap on very small screens */
-        justify-content: center; /* center wrapped items */
-    }
-    .product-list-block > .quick-actions button {
-        flex: 1 1 45%;
-        margin-left: 8px;
-        margin-right: 8px;
-    }
+@media (max-width: 900px) {
+    /* collapse into single column on smaller screens */
+    .conteudo-pagina { flex-direction: column; }
+    .quick-actions, .acoes-rapidas { flex: 1 1 auto; max-width: 100%; }
+    .bloco-lista { min-width: 0; }
 }
 
-@media (max-width: 640px) {
-    .actions-inner {
-        max-width: 100%;
-        padding: 0 8px;
-        justify-content: center;
-    }
-    .actions-inner > button {
-        flex: 1 1 120px;
-    }
+/* --- Top full-width summary (overrides sidebar quick-actions) --- */
+.pagina-estoque > .top-quick-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap; /* allow cards to wrap on narrow screens */
+    width: 100%;
+    margin: 0 0 18px 0; /* align left and give space below */
+    padding: 12px 16px; /* keep internal padding consistent with page */
+    box-sizing: border-box;
+    background: transparent; /* keep visual consistent with page */
+}
+
+.pagina-estoque > .top-quick-actions .card-summary {
+    flex: 0 0 auto;
+    min-width: 160px;
+}
+
+/* Ensure the existing sidebar rule doesn't restrict the top summary */
+.pagina-estoque > .top-quick-actions.quick-actions { flex: 1 1 100%; max-width: none; }
+
+@media (max-width: 900px) {
+    .pagina-estoque > .top-quick-actions { width: 100%; padding: 10px; }
+    .pagina-estoque > .top-quick-actions .card-summary { width: 100%; }
+}
+
+/* New inner layout for resumo cards + actions */
+.acoes-rapidas-interna {
+    /* Left column should match the main grid (.bloco-lista) width; right column equals the actions column.
+       Use 'auto' on the right so the cards and the header buttons align to the same breakpoint. */
+    display: grid;
+    grid-template-columns: 1fr auto; /* left flexible, right auto — matches .botoes-internos */
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+}
+
+.cards-resumo {
+    display: flex;
+    gap: 12px;
+    align-items: stretch; /* make cards match heights */
+}
+
+/* make resumo cards fill the left column fully */
+.acoes-rapidas-interna .cards-resumo { width: 100%; }
+
+/* ensure each summary card fills available space equally and visually matches Clientes */
+.acoes-rapidas-interna .cards-resumo .card-resumo {
+    flex: 1 1 0;
+    min-width: 0; /* allow shrinking below content width */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* center horizontally */
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 6px; /* match Clientes' inner spacing */
+    margin-bottom: 0;
+    text-align: center; /* center text inside the card */
+}
+
+/* Match title and value typography to Clientes' summary cards */
+.cards-resumo .card-resumo h3,
+.acoes-rapidas .card-resumo h3 {
+    font-size: 0.95rem;
+    margin: 0 0 6px 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.cards-resumo .card-resumo p,
+.acoes-rapidas .card-resumo p {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 700;
+    color: #ff7700;
+}
+
+.acoes-rapidas-acoes {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 @media (max-width: 900px) {
-    .product-list-block > .quick-actions {
-        justify-content: center; /* more forgiving on medium screens */
-    }
-    .product-list-block > .quick-actions button {
-        flex: 1 1 140px;
-    }
+    .acoes-rapidas-interna { display: block; }
+    .cards-resumo { display:flex; flex-direction: column; gap: 12px; }
+    .acoes-rapidas-acoes { justify-content: center; margin-top: 8px; }
+}
+
+/* Sticky header behavior similar to Clientes */
+.pagina-estoque {
+    background-color: #ffffff;
+    padding: 8px 24px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    width: 84vw;
+    margin: 12px auto;
+    text-align: left;
+    position: relative;
+    box-sizing: border-box;
+    /* Keep an internal scroll so sticky header behaves like Clientes */
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.estoque-cabecalho-fixo {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.pagina-estoque .area-tabela { margin-top: 12px; }
+
+/* CORREÇÃO 2: força os botões do header a não crescerem e não atropelarem o input */
+.pagina-estoque .acoes-cabecalho .acoes-internas > button {
+    flex: 0 0 auto !important;
 }

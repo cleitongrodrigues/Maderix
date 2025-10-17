@@ -17,7 +17,6 @@ export default function SearchBar({ value = '', onChange, placeholder = 'Buscar 
         placeholder={placeholder}
         value={internal}
         onChange={(e) => setInternal(e.target.value)}
-        style={{ padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', width: 320 }}
       />
       {internal && (
         <button className="btn-primary" onClick={() => setInternal('')}>Limpar</button>

@@ -69,40 +69,40 @@ function Vendas() {
 	const visible = filtered.slice(startIndex, startIndex + pageSize);
 
 	return (
-		<div className="page vendas-page">
-			<h1>Vendas</h1>
+			<div className="pagina vendas-page">
+				<h1>Vendas</h1>
 
-			<div className="vendas-toolbar">
-				<SearchBar value={filter} onChange={(v) => setFilter(v)} placeholder="Buscar por ID, cliente ou vendedor..." />
+				<div className="barra-filtros vendas-toolbar">
+					<SearchBar value={filter} onChange={(v) => setFilter(v)} placeholder="Buscar por ID, cliente ou vendedor..." />
 
-				<div className="filters-row">
-					<label>
-						Status
-						<select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}>
-							<option value="">Todos</option>
-							<option value="CONCLUÍDA">Concluída</option>
-							<option value="PENDENTE">Pendente</option>
-							<option value="CANCELADA">Cancelada</option>
-						</select>
-					</label>
+					<div className="linha-filtros filters-row">
+						<label>
+							Status
+							<select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}>
+								<option value="">Todos</option>
+								<option value="CONCLUÍDA">Concluída</option>
+								<option value="PENDENTE">Pendente</option>
+								<option value="CANCELADA">Cancelada</option>
+							</select>
+						</label>
 
-					<label>
-						De
-						<input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1); }} />
-					</label>
+						<label>
+							De
+							<input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1); }} />
+						</label>
 
-					<label>
-						Ate
-						<input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1); }} />
-					</label>
+						<label>
+							Ate
+							<input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1); }} />
+						</label>
+					</div>
 				</div>
-			</div>
 
 			{filtered.length === 0 && !filter ? null : null}
 			{filtered.length === 0 && filter ? (
 				<div>Nenhuma venda encontrada.</div>
 			) : (
-				<table className="vendas-table">
+				<table className="tabela-vendas">
 				<thead>
 					<tr>
 						<th>ID</th>

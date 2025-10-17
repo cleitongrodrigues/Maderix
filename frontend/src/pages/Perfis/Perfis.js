@@ -69,16 +69,16 @@ function Perfis() {
   const goToPage = (p) => { if (p < 1 || p > totalPages) return; setCurrentPage(p); };
 
   return (
-    <div className="page perfis-page">
-      <div className="page-header">
+    <div className="pagina perfis-page">
+      <div className="cabecalho-pagina">
         <h1>Perfis</h1>
-        <div className="page-actions">
+        <div className="acoes-pagina">
           <button onClick={openCreate}>Novo Perfil</button>
         </div>
       </div>
 
-      <div className="perfis-content">
-        <div className="summary-row">
+      <div className="conteudo-pagina perfis-content">
+        <div className="linha-resumo">
           <div className="card-summary">
             <h3>Total</h3>
             <p>{perfis.length}</p>
@@ -98,18 +98,18 @@ function Perfis() {
           </div>
         </div>
 
-        <div className="table-wrapper card">
+        <div className="area-tabela card">
           {loading ? (
             <div>Carregando...</div>
           ) : (
             <>
-              <table className="perfis-table">
+              <table className="tabela-perfis">
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Permissões</th>
-                    <th className="col-actions">Ações</th>
+                    <th className="col-acoes">Ações</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1,5 +1,5 @@
 /* Container principal igual ao produto */
-.home {
+.pagina-home {
   background-color: #ffffff;
   padding: 40px;
   border-radius: 12px;
@@ -12,7 +12,7 @@
   box-sizing: border-box;
 }
 
-.home h1 {
+.pagina-home h1 {
   color: #2f353a;
   font-size: 24px;
   font-weight: bold;
@@ -51,7 +51,7 @@
 }
 
 /* Cards superiores */
-.home-overview {
+.visao-geral {
   display: flex;
   gap: 16px;
   margin-bottom: 24px;
@@ -87,14 +87,14 @@
 }
 
 /* Blocos inferiores */
-.home-content {
+.conteudo-pagina {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-.recent-activity,
-.quick-actions {
+.atividades-recentes,
+.acoes-rapidas {
   flex: 1;
   background: #fff;
   border: 1px solid #e6e6e6;
@@ -103,8 +103,8 @@
   min-width: 300px;
 }
 
-.recent-activity h2,
-.quick-actions h2 {
+.atividades-recentes h2,
+.acoes-rapidas h2 {
   font-size: 1.2rem;
   margin-bottom: 8px;
   color: #333;

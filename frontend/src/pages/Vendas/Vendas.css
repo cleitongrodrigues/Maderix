@@ -49,12 +49,12 @@
 }
 
 /* Ensure select and date inputs use consistent font/color */
-.filters-row select, .filters-row input[type="date"], .vendas-toolbar input {
+.vendas-page .linha-filtros select, .vendas-page .linha-filtros input[type="date"], .vendas-page .barra-filtros input {
   color: var(--text-default);
   font-size: 14px;
 }
 
-.vendas-table {
+.vendas-page .tabela-vendas {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
@@ -63,18 +63,18 @@
   margin-top: 12px;
 }
 
-.vendas-table th,
-.vendas-table td {
+.vendas-page .tabela-vendas th,
+.vendas-page .tabela-vendas td {
   padding: 12px 10px;
   border-bottom: 1px solid #eee;
   text-align: left;
 }
 
-.vendas-table tbody tr:hover {
+.vendas-page .tabela-vendas tbody tr:hover {
   background: #f9f9f9;
 }
 
-.vendas-table .muted {
+.vendas-page .tabela-vendas .muted {
   opacity: 0.6;
 }
 
