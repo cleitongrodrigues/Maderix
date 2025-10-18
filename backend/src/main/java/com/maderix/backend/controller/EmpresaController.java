@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class EmpresaController {
     @Autowired
     private EmpresaService empresaService;
 
+    @PostMapping
     public ResponseEntity <Empresa> criarEmpresa(@RequestBody Empresa empresa){
         Empresa novaEmpresa = empresaService.salvarEmpresa(empresa);
 
