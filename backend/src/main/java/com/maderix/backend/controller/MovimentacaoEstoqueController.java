@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.maderix.backend.model.MovimentacaoEstoque;
 import com.maderix.backend.service.MovimentacaoEstoqueService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 @RestController
 @RequestMapping("api/movimentacaoEstoque")
 public class MovimentacaoEstoqueController {
@@ -22,7 +24,7 @@ public class MovimentacaoEstoqueController {
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @PostMapping
-    public ResponseEntity<MovimentacaoEstoque> registrarMovimentacao(MovimentacaoEstoque movimentacao){
+    public ResponseEntity<MovimentacaoEstoque> registrarMovimentacao(@RequestBody MovimentacaoEstoque movimentacao){
         MovimentacaoEstoque novaMovimentacao = movimentacaoEstoqueService.registrarMovimentacao(movimentacao);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novaMovimentacao);
