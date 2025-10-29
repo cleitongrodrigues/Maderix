@@ -33,7 +33,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 32px;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   border-bottom: 3px solid rgba(255, 255, 255, 0.3);
 }
@@ -98,14 +98,14 @@
 }
 
 .tab-button:hover {
-  color: #FF6B35;
-  background: rgba(255, 107, 53, 0.05);
+  color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.05);
 }
 
 .tab-button.active {
-  color: #FF6B35;
-  border-bottom-color: #FF6B35;
-  background: rgba(255, 107, 53, 0.1);
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.1);
 }
 
 /* Body */
@@ -125,7 +125,7 @@
 }
 
 .reports-modal-body::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: var(--primary-color);
   border-radius: 4px;
 }
 
@@ -143,7 +143,7 @@
   width: 50px;
   height: 50px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #FF6B35;
+  border-top: 4px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -159,30 +159,33 @@
 .report-card {
   background: white;
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px; /* Reduzido de 24px para 20px */
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px; /* Reduzido de 16px para 12px */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  min-width: 0; /* Permite que o card encolha se necessário */
+  overflow: hidden; /* Evita overflow do card */
 }
 
 .report-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: #FF6B35;
+  border-color: var(--primary-color);
 }
 
 .card-icon {
-  font-size: 48px;
+  font-size: 40px; /* Reduzido de 48px para 40px */
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: 64px; /* Reduzido de 80px para 64px */
+  height: 64px; /* Reduzido de 80px para 64px */
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(var(--primary-color-rgb), 0.2) 100%);
+  flex-shrink: 0; /* Impede que o ícone encolha */
 }
 
 .card-content {
@@ -190,6 +193,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0; /* Permite que o conteúdo encolha */
+  overflow: hidden; /* Evita overflow */
 }
 
 .card-label {
@@ -201,10 +206,28 @@
 }
 
 .card-value {
-  font-size: 32px;
+  font-size: 24px; /* Reduzido de 28px para 24px */
   font-weight: 700;
   color: #333;
-  line-height: 1;
+  line-height: 1.1;
+  white-space: nowrap; /* Impede quebra de linha */
+  overflow: hidden; /* Esconde overflow */
+  text-overflow: ellipsis; /* Adiciona ... se necessário */
+  letter-spacing: -0.5px; /* Condensa levemente os caracteres */
+  cursor: help; /* Indica que há tooltip disponível */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.card-value:hover {
+  color: var(--primary-color); /* Destaca ao passar o mouse */
+  transform: scale(1.02); /* Leve zoom ao hover */
+}
+
+/* Ajuste específico para cards com valores monetários grandes */
+.card-receita .card-value,
+.card-ano .card-value {
+  font-size: 22px; /* Ainda menor para valores monetários */
+  letter-spacing: -0.8px; /* Mais condensado */
 }
 
 .card-trend {
@@ -299,7 +322,7 @@
 .bar {
   width: 100%;
   max-width: 80px;
-  background: linear-gradient(180deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary-vertical);
   border-radius: 8px 8px 0 0;
   position: relative;
   transition: all 0.3s ease;
@@ -307,12 +330,12 @@
   align-items: flex-start;
   justify-content: center;
   padding-top: 8px;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .bar:hover {
   transform: scaleY(1.05);
-  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb), 0.4);
 }
 
 .bar-label {
@@ -444,12 +467,12 @@
 }
 
 .periodo-selector button:hover {
-  background: rgba(255, 107, 53, 0.1);
-  color: #FF6B35;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--primary-color);
 }
 
 .periodo-selector button.active {
-  background: #FF6B35;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -472,7 +495,7 @@
 
 .produto-item:hover {
   background: white;
-  border-color: #FF6B35;
+  border-color: var(--primary-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -480,7 +503,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -527,7 +550,7 @@
 
 .produto-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary-horizontal);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -562,7 +585,7 @@
 
 .vendedor-card:hover {
   background: white;
-  border-color: #FF6B35;
+  border-color: var(--primary-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -578,7 +601,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -596,6 +619,21 @@
   font-size: 16px;
   font-weight: 700;
   color: #333;
+}
+
+.vendedor-nome.clickable {
+  cursor: pointer;
+  color: #667eea;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: transparent;
+}
+
+.vendedor-nome.clickable:hover {
+  color: #764ba2;
+  text-decoration-color: #764ba2;
+  transform: translateX(2px);
 }
 
 .vendedor-posicao {
@@ -684,9 +722,9 @@
 
 .footer-actions button {
   padding: 10px 20px;
-  border: 2px solid #FF6B35;
+  border: 2px solid var(--primary-color);
   background: white;
-  color: #FF6B35;
+  color: var(--primary-color);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -695,10 +733,10 @@
 }
 
 .footer-actions button:hover {
-  background: #FF6B35;
+  background: var(--primary-color);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 /* Animations */
@@ -741,6 +779,22 @@
 }
 
 /* Responsive */
+/* Telas médias - ajusta cards para valores grandes */
+@media (max-width: 1200px) {
+  .card-value {
+    font-size: 22px; /* Reduz para valores grandes caberem */
+  }
+  
+  .card-receita .card-value,
+  .card-ano .card-value {
+    font-size: 20px; /* Ainda menor para valores monetários */
+  }
+  
+  .reports-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .reports-modal-container {
     width: 100%;
@@ -775,6 +829,26 @@
 
   .reports-cards-grid {
     grid-template-columns: 1fr;
+  }
+
+  .card-value {
+    font-size: 20px; /* Reduz o tamanho em telas menores */
+  }
+  
+  .card-receita .card-value,
+  .card-ano .card-value {
+    font-size: 18px; /* Valores monetários ainda menores em mobile */
+  }
+
+  .card-icon {
+    font-size: 32px; /* Reduz o ícone em telas menores */
+    width: 56px;
+    height: 56px;
+  }
+  
+  .report-card {
+    padding: 16px; /* Reduz padding em mobile */
+    gap: 10px;
   }
 
   .bar-chart {

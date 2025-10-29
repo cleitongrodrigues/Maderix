@@ -133,7 +133,7 @@
 }
 
 .account-modal-content::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: var(--primary-color);
   border-radius: 10px;
 }
 
@@ -177,7 +177,7 @@
 .summary-value.large {
   font-size: 24px;
   font-weight: 700;
-  color: #FF6B35;
+  color: var(--primary-color);
 }
 
 /* Cards de Valores */
@@ -263,8 +263,8 @@
 }
 
 .account-tab.active {
-  color: #FF6B35;
-  border-bottom-color: #FF6B35;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -718,7 +718,7 @@ textarea.form-input {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   padding: 12px 24px;
   border: none;
@@ -731,7 +731,7 @@ textarea.form-input {
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.4);
 }
 
 /* Responsivo */

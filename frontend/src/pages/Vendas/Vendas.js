@@ -133,6 +133,14 @@ function Vendas() {
 		}
 	};
 
+	// Calcular estatísticas
+	const totalVendas = filtered.length;
+	const vendasConcluidas = filtered.filter(v => v.status === "CONCLUÍDA").length;
+	const vendasPendentes = filtered.filter(v => v.status === "PENDENTE").length;
+	const totalFaturamento = filtered
+		.filter(v => v.status === "CONCLUÍDA")
+		.reduce((sum, v) => sum + v.total, 0);
+
 	return (
 			<div className="pagina vendas-page">
 				<div className="vendas-container">
@@ -173,6 +181,38 @@ function Vendas() {
 										<span className="btn-icon">+</span> Nova Venda
 									</button>
 								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* Summary Cards */}
+					<div className="summary-row card">
+						<div className="card-summary clickable">
+							<span className="card-icon">📊</span>
+							<div className="card-content">
+								<h3>Total de Vendas</h3>
+								<p>{totalVendas}</p>
+							</div>
+						</div>
+						<div className="card-summary clickable">
+							<span className="card-icon">✅</span>
+							<div className="card-content">
+								<h3>Concluídas</h3>
+								<p>{vendasConcluidas}</p>
+							</div>
+						</div>
+						<div className="card-summary clickable">
+							<span className="card-icon">⏳</span>
+							<div className="card-content">
+								<h3>Pendentes</h3>
+								<p>{vendasPendentes}</p>
+							</div>
+						</div>
+						<div className="card-summary clickable">
+							<span className="card-icon">💵</span>
+							<div className="card-content">
+								<h3>Faturamento</h3>
+								<p>{formatCurrency(totalFaturamento)}</p>
 							</div>
 						</div>
 					</div>

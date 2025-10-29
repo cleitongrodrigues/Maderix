@@ -342,9 +342,7 @@ const HelpModal = ({ isOpen, onClose }) => {
             <span>📧 <strong>suporte@maderix.com</strong></span>
             <span>📞 <strong>(11) 9999-9999</strong></span>
           </div>
-          <button className="btn-close" onClick={onClose}>
-            Fechar
-          </button>
+          <button className="btn-close" onClick={onClose}>Fechar</button>
         </div>
       </div>
     </div>

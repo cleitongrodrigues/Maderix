@@ -81,7 +81,7 @@
 
 .close-button:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
+  transform: scale(1.1); /* Aumenta o tamanho em vez de girar */
 }
 
 /* Tabs */
@@ -554,6 +554,7 @@
   background: white;
   border-top: 2px solid #e0e0e0;
   gap: 16px;
+  flex-direction: row; /* Garante direção horizontal */
 }
 
 .footer-info {
@@ -562,6 +563,7 @@
   font-size: 13px;
   color: #666;
   flex-wrap: wrap;
+  flex-direction: row; /* Garante direção horizontal */
 }
 
 .footer-info strong {
@@ -580,10 +582,13 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   flex-shrink: 0;
+  writing-mode: horizontal-tb !important;
+  text-orientation: upright !important;
+  direction: ltr !important;
 }
 
 .btn-close:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) !important;
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 

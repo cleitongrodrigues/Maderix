@@ -102,9 +102,27 @@ function Movimentacoes() {
         </div>
 
         <div className="summary-row card">
-          <div className="card-summary"><h3>Total</h3><p>{total}</p></div>
-          <div className="card-summary"><h3>Entradas</h3><p>{entradas}</p></div>
-          <div className="card-summary"><h3>Saídas</h3><p>{saidas}</p></div>
+          <div className="card-summary clickable">
+            <span className="card-icon">📦</span>
+            <div className="card-content">
+              <h3>Total</h3>
+              <p>{total}</p>
+            </div>
+          </div>
+          <div className="card-summary clickable">
+            <span className="card-icon">📥</span>
+            <div className="card-content">
+              <h3>Entradas</h3>
+              <p>{entradas}</p>
+            </div>
+          </div>
+          <div className="card-summary clickable">
+            <span className="card-icon">📤</span>
+            <div className="card-content">
+              <h3>Saídas</h3>
+              <p>{saidas}</p>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  z-index: 99999;
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -33,7 +33,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 32px;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   border-bottom: 3px solid rgba(255, 255, 255, 0.3);
 }
@@ -121,14 +121,14 @@
 }
 
 .tab-button:hover {
-  color: #FF6B35;
-  background: rgba(255, 107, 53, 0.05);
+  color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.05);
 }
 
 .tab-button.active {
-  color: #FF6B35;
-  border-bottom-color: #FF6B35;
-  background: rgba(255, 107, 53, 0.1);
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.1);
 }
 
 /* Body */
@@ -148,7 +148,7 @@
 }
 
 .settings-modal-body::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: var(--primary-color);
   border-radius: 4px;
 }
 
@@ -238,15 +238,15 @@
 }
 
 .theme-option:hover {
-  border-color: #FF6B35;
-  background: rgba(255, 107, 53, 0.05);
+  border-color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.05);
 }
 
 .theme-option.active {
-  border-color: #FF6B35;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.15) 100%);
-  color: #FF6B35;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(var(--primary-color-rgb), 0.15) 100%);
+  color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.2);
 }
 
 /* Color Picker */
@@ -271,9 +271,58 @@
 
 .color-value {
   font-size: 14px;
-  font-weight: 600;
   color: #333;
+  font-weight: 600;
   font-family: monospace;
+}
+
+/* ===== CORES PREDEFINIDAS ===== */
+.preset-colors {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.preset-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.preset-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 12px;
+}
+
+.preset-color {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.preset-color:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.preset-color.active {
+  border-color: #333;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
 }
 
 /* Select */
@@ -289,12 +338,12 @@
 }
 
 .settings-select:hover {
-  border-color: #FF6B35;
+  border-color: var(--primary-color);
 }
 
 .settings-select:focus {
-  border-color: #FF6B35;
-  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
 }
 
 /* Radio Group */
@@ -317,15 +366,15 @@
 }
 
 .radio-option:hover {
-  background: rgba(255, 107, 53, 0.05);
-  border-color: rgba(255, 107, 53, 0.2);
+  background: rgba(var(--primary-color-rgb), 0.05);
+  border-color: rgba(var(--primary-color-rgb), 0.2);
 }
 
 .radio-option input[type="radio"] {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #FF6B35;
+  accent-color: var(--primary-color);
 }
 
 .radio-option span {
@@ -428,7 +477,7 @@
 
 .warning-text {
   font-size: 14px;
-  color: #FF6B35;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -463,7 +512,7 @@
 
 .btn-save {
   padding: 10px 24px;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -471,12 +520,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .btn-save:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 6px 16px rgba(var(--primary-color-rgb), 0.4);
 }
 
 .btn-save:disabled {

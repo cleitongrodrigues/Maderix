@@ -81,6 +81,18 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
+  background: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.acoes-vendas .btn-primary:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .btn-icon {
@@ -131,14 +143,14 @@
 .filters-row select:focus,
 .filters-row input[type="date"]:focus {
   outline: none;
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
 }
 
 .filters-row select:focus-visible,
 .filters-row input[type="date"]:focus-visible {
   outline: none;
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
 }
 
@@ -303,6 +315,15 @@
   width: 95%;
 }
 
+.visualizar-venda-modal .modal-header {
+  background: var(--gradient-primary) !important;
+  border-radius: 12px 12px 0 0;
+}
+
+.visualizar-venda-modal .modal-header h2 {
+  color: #ffffff !important;
+}
+
 .modal-body-visualizar {
   padding: 24px;
 }
@@ -365,7 +386,7 @@
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 20px;
-  border-left: 4px solid #ff7700;
+  border-left: 4px solid var(--primary-color);
 }
 
 .observacoes-box strong {
@@ -450,6 +471,133 @@
 
 .cancelamento-info strong {
   color: #c62828;
+}
+
+/* Summary Cards - Comportamento interativo */
+.summary-row.card {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.summary-row.card .card-summary {
+  flex: 1 1 0;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.summary-row.card .card-summary.clickable {
+  cursor: pointer;
+}
+
+.summary-row.card .card-summary.clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+  background: #ffffff;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.summary-row.card .card-summary h3 {
+  font-size: 0.95rem;
+  margin: 0 0 6px 0;
+  color: #666;
+  font-weight: 600;
+}
+
+.summary-row.card .card-summary p {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Botões com hover temático */
+.btn-primary {
+  background: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e8e8e8;
+  border-color: #bbb;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal footer para modal de visualização */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e6e6e6;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.visualizar-venda-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e6e6e6;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
 }
 
 /* Paginação: estilos centralizados em components/Pagination/Pagination.css

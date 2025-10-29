@@ -99,7 +99,9 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
 
           <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
             <button type="button" className="btn-small" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-primary">Salvar</button>
+            <button type="submit" className="btn-primary">
+              {initialData ? '💾 Salvar Alterações' : '💾 Salvar'}
+            </button>
           </div>
         </form>
       </div>

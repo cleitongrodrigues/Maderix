@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './ReportsModal.css';
+import VendedorDetailModal from '../VendedorDetailModal';
 
 const ReportsModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [periodo, setPeriodo] = useState('mes'); // mes, trimestre, ano
   const [loading, setLoading] = useState(false);
+  const [vendedorSelecionado, setVendedorSelecionado] = useState(null);
+  const [vendedorModalOpen, setVendedorModalOpen] = useState(false);
 
   // Mock data - em produção, viria da API
   const mockData = {
@@ -72,7 +75,12 @@ const ReportsModal = ({ isOpen, onClose }) => {
           <div className="card-icon">📊</div>
           <div className="card-content">
             <span className="card-label">Vendas Hoje</span>
-            <span className="card-value">{mockData.vendasHoje}</span>
+            <span 
+              className="card-value"
+              title={`Vendas Hoje: ${mockData.vendasHoje} vendas realizadas`}
+            >
+              {mockData.vendasHoje}
+            </span>
             <span className="card-trend positive">+18% vs ontem</span>
           </div>
         </div>
@@ -81,7 +89,12 @@ const ReportsModal = ({ isOpen, onClose }) => {
           <div className="card-icon">💰</div>
           <div className="card-content">
             <span className="card-label">Receita do Mês</span>
-            <span className="card-value">{formatarMoeda(mockData.receitaMes)}</span>
+            <span 
+              className="card-value" 
+              title={`Receita do Mês: ${formatarMoeda(mockData.receitaMes)}`}
+            >
+              {formatarMoeda(mockData.receitaMes)}
+            </span>
             <span className="card-trend positive">+12% vs mês anterior</span>
           </div>
         </div>
@@ -90,7 +103,12 @@ const ReportsModal = ({ isOpen, onClose }) => {
           <div className="card-icon">🎯</div>
           <div className="card-content">
             <span className="card-label">Meta Mensal</span>
-            <span className="card-value">{calcularPercentualMeta()}%</span>
+            <span 
+              className="card-value"
+              title={`Meta Mensal: ${calcularPercentualMeta()}% (${formatarMoeda(mockData.receitaMes)} de ${formatarMoeda(mockData.metaMensal)})`}
+            >
+              {calcularPercentualMeta()}%
+            </span>
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: `${calcularPercentualMeta()}%` }}></div>
             </div>
@@ -101,7 +119,12 @@ const ReportsModal = ({ isOpen, onClose }) => {
           <div className="card-icon">📈</div>
           <div className="card-content">
             <span className="card-label">Receita Anual</span>
-            <span className="card-value">{formatarMoeda(mockData.receitaAno)}</span>
+            <span 
+              className="card-value" 
+              title={`Receita Anual: ${formatarMoeda(mockData.receitaAno)}`}
+            >
+              {formatarMoeda(mockData.receitaAno)}
+            </span>
             <span className="card-trend positive">+24% vs ano anterior</span>
           </div>
         </div>
@@ -244,7 +267,16 @@ const ReportsModal = ({ isOpen, onClose }) => {
                   {vendedor.nome.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div className="vendedor-info">
-                  <div className="vendedor-nome">{vendedor.nome}</div>
+                  <div 
+                    className="vendedor-nome clickable" 
+                    onClick={() => {
+                      setVendedorSelecionado(vendedor);
+                      setVendedorModalOpen(true);
+                    }}
+                    title="Clique para ver detalhes"
+                  >
+                    {vendedor.nome}
+                  </div>
                   <div className="vendedor-posicao">#{index + 1} em vendas</div>
                 </div>
                 {index === 0 && <div className="vendedor-badge">🏆 Top 1</div>}
@@ -329,6 +361,13 @@ const ReportsModal = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal de Detalhes do Vendedor */}
+      <VendedorDetailModal 
+        isOpen={vendedorModalOpen}
+        onClose={() => setVendedorModalOpen(false)}
+        vendedor={vendedorSelecionado}
+      />
     </div>
   );
 };

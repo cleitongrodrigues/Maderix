@@ -54,7 +54,7 @@
 
 .contas-cabecalho-fixo .acoes-pagina .search-input:focus {
   outline: none;
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
 }
 
@@ -72,6 +72,12 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.contas-cabecalho-fixo .acoes-pagina .btn-primary:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .contas-page .btn-icon {
@@ -115,12 +121,12 @@
 .linha-resumo.card .card-summary.clickable:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   background: #ffffff;
 }
 
 .linha-resumo.card .card-summary.clickable.ativo {
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   background: #fff8f0;
   box-shadow: 0 4px 8px rgba(255, 119, 0, 0.2);
 }
@@ -164,7 +170,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: linear-gradient(135deg, #ff7700 0%, #ff9933 100%);
+  background: var(--gradient-primary);
   color: white;
   border-radius: 20px;
   font-size: 13px;
@@ -448,12 +454,22 @@
   align-items: center;
   padding: 20px 24px;
   border-bottom: 1px solid #e6e6e6;
+  background: var(--gradient-primary) !important;
+  border-radius: 12px 12px 0 0;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: #ffffff !important;
+}
+
+.conta-form-modal .modal-header {
+  background: var(--gradient-primary) !important;
+}
+
+.conta-form-modal .modal-header h2 {
+  color: #ffffff !important;
 }
 
 .btn-close {
@@ -512,7 +528,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--accent-color, #ff7700);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
 }
 
@@ -566,7 +582,7 @@
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 20px;
-  border-left: 4px solid var(--accent-color, #ff7700);
+  border-left: 4px solid var(--primary-color);
   font-size: 14px;
   color: #555;
 }
@@ -624,12 +640,20 @@
 }
 
 .btn-primary {
-  background: var(--accent-color, #ff7700);
+  background: var(--primary-color);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #e66a00;
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.conta-form-modal .btn-primary:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .btn-primary:disabled {

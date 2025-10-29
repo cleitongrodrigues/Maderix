@@ -25,7 +25,7 @@
   height: 48px;
   border-radius: 50%;
   border: 5px solid rgba(0,0,0,0.08);
-  border-top-color: var(--primary-color, #ff7700);
+  border-top-color: var(--primary-color);
   animation: spin 1s linear infinite;
 }
 .loading-message { color: var(--text-default, #2f353a); font-weight: 600; }

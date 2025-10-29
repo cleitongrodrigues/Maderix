@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Botões - Maderix Theme System</title>
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --primary-color-light: #FF8C42;
+            --primary-color-dark: #E55A2B;
+            --primary-color-rgb: 255, 107, 53;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        /* Botões que DEVEM mudar de cor */
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(var(--primary-color-rgb), 0.4);
+        }
+
+        .btn-gradient {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(var(--primary-color-rgb), 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-light {
+            background: rgba(var(--primary-color-rgb), 0.1);
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-light:hover {
+            background: rgba(var(--primary-color-rgb), 0.2);
+        }
+
+        /* Botões que NÃO devem mudar (controles neutros) */
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .color-picker-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .color-picker input {
+            width: 80px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .preset-colors {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-color {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .preset-color:hover {
+            transform: scale(1.1);
+            border-color: #333;
+        }
+
+        .status {
+            padding: 15px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Teste de Sistema de Temas - Botões Maderix</h1>
+        
+        <div class="status">
+            <strong>✅ Status:</strong> Todos os botões abaixo devem mudar de cor quando você alterar a cor primária.
+        </div>
+
+        <div class="color-picker-section">
+            <h2>🎨 Alterar Cor Primária</h2>
+            <div class="color-picker">
+                <input type="color" id="colorInput" value="#FF6B35">
+                <span id="colorValue">#FF6B35</span>
+                <button class="btn-primary" onclick="resetColor()">Resetar</button>
+            </div>
+            
+            <h3>Cores Predefinidas:</h3>
+            <div class="preset-colors">
+                <button class="preset-color" style="background: #FF6B35" onclick="setColor('#FF6B35')" title="Laranja Maderix"></button>
+                <button class="preset-color" style="background: #2196F3" onclick="setColor('#2196F3')" title="Azul"></button>
+                <button class="preset-color" style="background: #4CAF50" onclick="setColor('#4CAF50')" title="Verde"></button>
+                <button class="preset-color" style="background: #9C27B0" onclick="setColor('#9C27B0')" title="Roxo"></button>
+                <button class="preset-color" style="background: #F44336" onclick="setColor('#F44336')" title="Vermelho"></button>
+                <button class="preset-color" style="background: #00BCD4" onclick="setColor('#00BCD4')" title="Turquesa"></button>
+                <button class="preset-color" style="background: #FF9800" onclick="setColor('#FF9800')" title="Laranja Vibrante"></button>
+                <button class="preset-color" style="background: #3F51B5" onclick="setColor('#3F51B5')" title="Índigo"></button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Botões Sólidos (devem mudar de cor)</h2>
+            <div class="button-row">
+                <button class="btn-primary">Botão Primário</button>
+                <button class="btn-primary">Salvar</button>
+                <button class="btn-primary">Confirmar</button>
+                <button class="btn-primary">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Botões com Gradiente (devem mudar de cor)</h2>
+            <div class="button-row">
+                <button class="btn-gradient">Gradiente Primário</button>
+                <button class="btn-gradient">Novo Registro</button>
+                <button class="btn-gradient">Exportar</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Botões Outline (devem mudar de cor)</h2>
+            <div class="button-row">
+                <button class="btn-outline">Outline Primário</button>
+                <button class="btn-outline">Visualizar</button>
+                <button class="btn-outline">Detalhes</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Botões Light (devem mudar de cor)</h2>
+            <div class="button-row">
+                <button class="btn-light">Light Primário</button>
+                <button class="btn-light">Editar</button>
+                <button class="btn-light">Filtrar</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Botões Neutros (NÃO devem mudar - apenas para contraste)</h2>
+            <div class="button-row">
+                <button class="btn-secondary">Cancelar</button>
+                <button class="btn-secondary">Voltar</button>
+                <button class="btn-secondary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colorInput = document.getElementById('colorInput');
+        const colorValue = document.getElementById('colorValue');
+        const root = document.documentElement;
+
+        // Função para converter HEX para RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // Função para ajustar brilho
+        function adjustBrightness(hex, percent) {
+            const num = parseInt(hex.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            
+            return '#' + (
+                0x1000000 +
+                (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+                (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+                (B < 255 ? (B < 1 ? 0 : B) : 255)
+            ).toString(16).slice(1).toUpperCase();
+        }
+
+        // Aplicar cor
+        function applyColor(color) {
+            const rgb = hexToRgb(color);
+            const light = adjustBrightness(color, 15);
+            const dark = adjustBrightness(color, -15);
+            
+            root.style.setProperty('--primary-color', color);
+            root.style.setProperty('--primary-color-light', light);
+            root.style.setProperty('--primary-color-dark', dark);
+            root.style.setProperty('--primary-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+            root.style.setProperty('--gradient-primary', 
+                `linear-gradient(135deg, ${color} 0%, ${light} 100%)`);
+            
+            colorValue.textContent = color;
+            colorInput.value = color;
+        }
+
+        // Set color
+        function setColor(color) {
+            applyColor(color);
+        }
+
+        // Reset color
+        function resetColor() {
+            applyColor('#FF6B35');
+        }
+
+        // Event listener
+        colorInput.addEventListener('input', (e) => {
+            applyColor(e.target.value);
+        });
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
@@ -7,6 +7,7 @@ import TopBar from "./components/TopBar/TopBar";
 import CompanySelector from "./components/CompanySelector";
 import AppRoutes from "./AppRoutes";
 import { MenuProvider, useMenu } from "./contexts/MenuContext";
+import { loadThemeFromStorage } from "./utils/themeManager";
 import "./App.css";
 
 function App() {
@@ -14,6 +15,11 @@ function App() {
   const { menuCollapsed, setMenuCollapsed } = useMenu();
   const [companySelectorOpen, setCompanySelectorOpen] = useState(false);
   const [empresaAtual, setEmpresaAtual] = useState({ nome: 'Maderix Móveis Ltda', estado: 'SP' });
+
+  // Carrega o tema personalizado ao iniciar
+  useEffect(() => {
+    loadThemeFromStorage();
+  }, []);
 
   const handleSelectCompany = (empresa) => {
     setEmpresaAtual(empresa);

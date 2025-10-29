@@ -83,7 +83,7 @@
 
 .btn-close:hover {
   background: #f8f9fa;
-  color: #ff7700;
+  color: var(--primary-color);
   transform: rotate(90deg);
 }
 
@@ -132,7 +132,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #ff7700;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.08);
 }
 
@@ -243,7 +243,7 @@
 }
 
 .btn-salvar {
-  background: linear-gradient(135deg, #ff7700 0%, #ff9500 100%);
+  background: var(--gradient-primary);
   color: white;
   box-shadow: 0 2px 8px rgba(255, 119, 0, 0.3);
 }

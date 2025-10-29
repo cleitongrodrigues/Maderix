@@ -138,7 +138,7 @@
 }
 
 .product-modal-content::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: var(--primary-color);
   border-radius: 10px;
 }
 
@@ -268,8 +268,8 @@
 }
 
 .product-tab.active {
-  color: #FF6B35;
-  border-bottom-color: #FF6B35;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -369,7 +369,7 @@
 .btn-view-all {
   background: none;
   border: none;
-  color: #FF6B35;
+  color: var(--primary-color);
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
@@ -512,9 +512,9 @@
 
 .btn-action {
   background: white;
-  color: #FF6B35;
+  color: var(--primary-color);
   padding: 12px 20px;
-  border: 2px solid #FF6B35;
+  border: 2px solid var(--primary-color);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -523,14 +523,14 @@
 }
 
 .btn-action:hover {
-  background: #FF6B35;
+  background: var(--primary-color);
   color: white;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  background: var(--gradient-primary);
   color: white;
   padding: 12px 24px;
   border: none;
@@ -543,7 +543,7 @@
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.4);
 }
 
 /* Responsivo */

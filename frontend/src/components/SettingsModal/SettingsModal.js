@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './SettingsModal.css';
+import { applyPrimaryColor, PRESET_COLORS } from '../../utils/themeManager';
 
 const SettingsModal = ({ isOpen, onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState('aparencia');
@@ -56,12 +58,20 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
   const handleChange = (field, value) => {
     setPreferences(prev => ({ ...prev, [field]: value }));
     setUnsavedChanges(true);
+    
+    // Preview da cor primária em tempo real
+    if (field === 'corPrimaria') {
+      applyPrimaryColor(value);
+    }
   };
 
   const handleSave = () => {
     localStorage.setItem('userPreferences', JSON.stringify(preferences));
     setOriginalPreferences(preferences);
     setUnsavedChanges(false);
+    
+    // Aplica a cor primária permanentemente
+    applyPrimaryColor(preferences.corPrimaria);
     
     if (onSave) {
       onSave(preferences);
@@ -152,6 +162,25 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
               className="color-picker"
             />
             <span className="color-value">{preferences.corPrimaria}</span>
+          </div>
+          
+          {/* Cores Predefinidas */}
+          <div className="preset-colors">
+            <label className="preset-label">Cores predefinidas:</label>
+            <div className="preset-colors-grid">
+              {PRESET_COLORS.map((preset, index) => (
+                <button
+                  key={index}
+                  className={`preset-color ${preferences.corPrimaria.toUpperCase() === preset.value.toUpperCase() ? 'active' : ''}`}
+                  style={{ backgroundColor: preset.value }}
+                  onClick={() => handleChange('corPrimaria', preset.value)}
+                  title={preset.name}
+                  aria-label={preset.name}
+                >
+                  {preferences.corPrimaria.toUpperCase() === preset.value.toUpperCase() && '✓'}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -476,7 +505,7 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     </div>
   );
 
-  return (
+  return ReactDOM.createPortal(
     <div className="settings-modal-overlay" onClick={handleCancel}>
       <div className="settings-modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="settings-modal-header">
@@ -546,7 +575,8 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -127,8 +127,8 @@
 
 .search-bar-top:focus-within {
   background: rgba(255, 255, 255, 0.2);
-  border-color: #ff7700;
-  box-shadow: 0 0 0 2px rgba(255, 119, 0, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
 }
 
 .search-icon-top {
@@ -307,7 +307,7 @@
 
 .notification-item.nao-lida {
   background: #eff6ff;
-  border-left-color: #ff7700;
+  border-left-color: var(--primary-color);
 }
 
 .notification-item.lida {

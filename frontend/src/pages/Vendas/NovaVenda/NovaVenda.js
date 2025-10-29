@@ -218,7 +218,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
               Cancelar
             </button>
             <button type="submit" className="btn-primary" disabled={!cliente || itens.length === 0}>
-              {vendaParaEditar ? 'Salvar Alterações' : 'Finalizar Venda'}
+              {vendaParaEditar ? '💾 Salvar Alterações' : '💾 Finalizar Venda'}
             </button>
           </div>
         </form>
