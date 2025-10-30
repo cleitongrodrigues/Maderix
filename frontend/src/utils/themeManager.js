@@ -125,9 +125,15 @@ export const loadThemeFromStorage = () => {
       if (parsed.corPrimaria) {
         applyPrimaryColor(parsed.corPrimaria);
       }
+    } else {
+      // Se não houver preferências salvas, aplica tema escuro como padrão
+      console.log('⚙️ Nenhuma preferência encontrada, aplicando tema escuro padrão');
+      applyTheme('escuro');
     }
   } catch (error) {
     console.error('Erro ao carregar tema:', error);
+    // Em caso de erro, também aplica tema escuro
+    applyTheme('escuro');
   }
 };
 

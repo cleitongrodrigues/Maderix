@@ -1,7 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './AccountDetailModal.css';
 
 function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
+  const valorPagoInputRef = useRef(null);
+  // Utilitário para formatar moeda
+  function formatarMoeda(valor) {
+    if (typeof valor === 'number') {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+    if (!valor) return 'R$ 0,00';
+    const num = parseFloat((valor + '').replace(',', '.'));
+    if (isNaN(num)) return 'R$ 0,00';
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Utilitário para formatar data
+  function formatarData(data) {
+    if (!data) return '-';
+    const d = new Date(data);
+    if (isNaN(d)) return '-';
+    return d.toLocaleDateString('pt-BR');
+  }
+  const paymentFormRef = useRef(null);
   const [activeTab, setActiveTab] = useState('detalhes'); // detalhes, parcelas, historico
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [pagamentoData, setPagamentoData] = useState({
@@ -10,6 +30,17 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
     formaPagamento: 'dinheiro',
     observacoes: ''
   });
+
+  useEffect(() => {
+    if (showPaymentForm) {
+      if (paymentFormRef.current) {
+        paymentFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (valorPagoInputRef.current) {
+        valorPagoInputRef.current.focus();
+      }
+    }
+  }, [showPaymentForm]);
 
   if (!conta) return null;
 
@@ -64,18 +95,6 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
     },
   ];
 
-  const formatarMoeda = (valor) => {
-    if (typeof valor === 'number') {
-      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-    return `R$ ${valor}`;
-  };
-
-  const formatarData = (data) => {
-    if (!data) return '-';
-    return new Date(data).toLocaleDateString('pt-BR');
-  };
-
   const isVencida = (data) => {
     if (!data) return false;
     return new Date(data) < new Date();
@@ -95,9 +114,12 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
 
   const handleSubmitPagamento = (e) => {
     e.preventDefault();
-    console.log('Registrando pagamento:', pagamentoData);
+    // Converte vírgula para ponto só ao submeter
+    const valorPagoConvertido = pagamentoData.valorPago.replace(/,/g, '.');
+    const dataParaEnviar = { ...pagamentoData, valorPago: valorPagoConvertido, contaId: conta.ID_Conta || conta.id };
+    console.log('Registrando pagamento:', dataParaEnviar);
     if (onRegisterPayment) {
-      onRegisterPayment({ ...pagamentoData, contaId: conta.ID_Conta || conta.id });
+      onRegisterPayment(dataParaEnviar);
     }
     alert('Pagamento registrado com sucesso!');
     setShowPaymentForm(false);
@@ -291,7 +313,7 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
 
           {/* Formulário de Pagamento (quando ativado) */}
           {showPaymentForm && (
-            <div className="payment-form-section">
+            <div className="payment-form-section" ref={paymentFormRef}>
               <div className="payment-form-header">
                 <h4>💵 Registrar Pagamento</h4>
                 <button 
@@ -305,18 +327,26 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
               <form onSubmit={handleSubmitPagamento} className="payment-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="valorPago">Valor Pago *</label>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                      <label htmlFor="valorPago">Valor Pago *</label>
+                      <span style={{ fontSize: 13, color: 'var(--text-secondary, #aaa)' }}>
+                        Saldo restante: <b>{formatarMoeda(valorRestante)}</b>
+                      </span>
+                    </div>
                     <input
-                      type="number"
+                      type="text"
                       id="valorPago"
                       className="form-input"
+                      ref={valorPagoInputRef}
                       value={pagamentoData.valorPago}
-                      onChange={(e) => setPagamentoData({ ...pagamentoData, valorPago: e.target.value })}
-                      step="0.01"
-                      min="0"
-                      max={valorRestante}
+                      onChange={(e) => {
+                        // Permite vírgula, mostra vírgula, só converte ao submeter
+                        setPagamentoData({ ...pagamentoData, valorPago: e.target.value });
+                      }}
+                      inputMode="decimal"
+                      pattern="[0-9,.]*"
                       required
-                      placeholder="0.00"
+                      placeholder="0,00"
                     />
                   </div>
                   <div className="form-group">

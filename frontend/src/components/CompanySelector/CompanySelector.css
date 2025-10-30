@@ -1,3 +1,87 @@
+/* ===== DARK MODE ===== */
+[data-theme="escuro"] .company-selector-container {
+  background: linear-gradient(135deg, #161b22 0%, #23272f 100%) !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .company-selector-header {
+  background: linear-gradient(135deg, #23272f 0%, #161b22 100%) !important;
+  color: #e6edf3 !important;
+  border-bottom: 3px solid #30363d !important;
+}
+[data-theme="escuro"] .header-title h2 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .close-button {
+  background: transparent !important;
+  border: 2px solid var(--primary-color, #388bfd) !important;
+  color: var(--primary-color, #388bfd) !important;
+  box-shadow: 0 2px 8px rgba(56,139,253,0.10);
+}
+[data-theme="escuro"] .close-button:hover {
+  background: var(--primary-color, #388bfd) !important;
+  color: #fff !important;
+  border-color: var(--primary-color, #388bfd) !important;
+  transform: scale(1.08) rotate(90deg);
+}
+[data-theme="escuro"] .company-search-section {
+  background: #23272f !important;
+  border-bottom: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .search-input-wrapper {
+  background: #161b22 !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .company-search-input {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .company-search-input::placeholder {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .company-list-container {
+  background: #161b22 !important;
+}
+[data-theme="escuro"] .company-card {
+  background: #23272f !important;
+  border: 2px solid #30363d !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .company-card.selected {
+  border-color: var(--primary-color, #388bfd) !important;
+  background: linear-gradient(135deg, #23272f 0%, #161b22 100%) !important;
+  box-shadow: 0 8px 24px rgba(56,139,253,0.15);
+}
+[data-theme="escuro"] .company-card.inactive {
+  background: #22262c !important;
+  border-color: #22262c !important;
+}
+[data-theme="escuro"] .company-card-header .company-logo {
+  background: var(--primary-color, #388bfd) !important;
+}
+[data-theme="escuro"] .company-name {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .company-cnpj,
+[data-theme="escuro"] .company-detail,
+[data-theme="escuro"] .footer-info {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .company-card-body {
+  border-top: 2px solid #30363d !important;
+  border-bottom: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .company-selector-footer {
+  background: #23272f !important;
+  border-top: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .btn-close-modal {
+  background: none !important;
+  color: #fff !important;
+  border: none !important;
+}
+[data-theme="escuro"] .btn-close-modal:hover {
+  background: none !important;
+  color: var(--primary-color, #a259ff) !important;
+}
 /* Overlay e Container */
 .company-selector-overlay {
   position: fixed;
@@ -59,20 +143,22 @@
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 24px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 22px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .close-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
+  color: var(--primary-color, #a259ff);
+  background: none;
+  transform: none;
 }
 
 /* Banner da Empresa Atual */

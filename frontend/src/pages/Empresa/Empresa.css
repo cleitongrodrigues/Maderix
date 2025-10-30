@@ -5,6 +5,7 @@
   text-align: left;
   position: relative;
   box-sizing: border-box;
+  background: var(--bg-body);
 }
 
 /* Cabeçalho fixo */
@@ -12,9 +13,9 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #ffffff;
+  background: transparent;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: none;
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
@@ -24,7 +25,7 @@
 .titulo-empresa h1 {
   margin: 6px 0 8px 0;
   font-size: 1.4rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
@@ -95,8 +96,8 @@
   align-items: stretch;
   padding: 8px;
   margin-bottom: 12px;
-  background: #fff;
-  border: 1px solid #e6e6e6;
+  background: var(--bg-body) !important;
+  border: none !important;
   border-radius: 8px;
   box-sizing: border-box;
 }
@@ -108,9 +109,17 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #fafafa;
+  background: var(--bg-secondary) !important;
   border-radius: 6px;
   border: 2px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.linha-resumo.card .card-summary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--primary-color);
+  background: var(--bg-elevated);
 }
 
 .card-icon {
@@ -121,25 +130,28 @@
 
 .card-content {
   flex: 1;
+  text-align: center;
 }
 
 .linha-resumo.card .card-summary h3 {
   font-size: 0.95rem;
   margin: 0 0 6px 0;
-  color: #666;
+  color: var(--text-primary);
   font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .linha-resumo.card .card-summary p {
   font-size: 1.5rem;
   margin: 0 0 4px 0;
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .linha-resumo.card .card-summary small {
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .card.area-tabela {
@@ -147,6 +159,8 @@
   margin: 0 0 16px 0;
   box-sizing: border-box;
   padding: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
 }
 
 .loading-message,
@@ -154,6 +168,7 @@
   text-align: center;
   padding: 20px;
   font-size: 16px;
+  color: var(--text-primary);
 }
 
 .error-message {
@@ -166,20 +181,23 @@
 .tabela-empresas {
   width: 100%;
   border-collapse: collapse;
+  background: var(--table-bg);
+  color: var(--text-primary);
 }
 
 .tabela-empresas th,
 .tabela-empresas td {
   padding: 12px 10px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--table-border);
   vertical-align: middle;
 }
 
 .tabela-empresas th {
-  background: #f8f9fa;
+  background: var(--table-header-bg);
   font-weight: 600;
   font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
 .tabela-empresas tbody tr {
@@ -188,11 +206,11 @@
 
 /* Zebra striping */
 .tabela-empresas tbody tr:nth-child(even) {
-  background: #fafafa;
+  background: var(--table-row-striped);
 }
 
 .tabela-empresas tbody tr:hover {
-  background: #f0f7ff !important;
+  background: var(--table-row-hover) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
@@ -258,7 +276,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--modal-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,13 +289,32 @@
   width: 95%;
 }
 
+.empresa-form-modal .modal-header {
+  background: var(--gradient-primary) !important;
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+}
+
+.empresa-form-modal .modal-header h2 {
+  color: #ffffff !important;
+}
+
+.empresa-form-modal .modal-footer {
+  background: var(--bg-secondary) !important;
+  border-top: none;
+}
+
 .modal-container {
-  background: white;
+  background: var(--modal-bg);
   border-radius: 12px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
+  border: 1px solid var(--modal-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .modal-header {
@@ -285,13 +322,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: none;
+  background: var(--gradient-primary) !important;
+  border-radius: 12px 12px 0 0;
+  margin: 0;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: #ffffff !important;
 }
 
 .btn-close {
@@ -299,26 +339,30 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #999;
+  color: #ffffff;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
   line-height: 1;
 }
 
 .btn-close:hover:not(:disabled) {
-  background: #f0f0f0;
-  color: #333;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .modal-body {
   padding: 24px;
+  background: var(--modal-bg);
+  color: var(--text-primary);
+  margin: 0;
   max-width: 100%;
   box-sizing: border-box;
+  font-size: 15px;
 }
 
 .form-group {
@@ -329,8 +373,8 @@
   display: block;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
-  font-size: 14px;
+  color: var(--text-primary);
+  font-size: 15px;
 }
 
 .form-group input,
@@ -338,12 +382,25 @@
 .form-group textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border) !important;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 15px;
   box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: inherit;
+  background: var(--input-bg) !important;
+  color: var(--input-text) !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--input-placeholder) !important;
+  opacity: 0.7;
+}
+
+.form-group select option {
+  background: var(--input-bg);
+  color: var(--input-text);
 }
 
 .form-group input:focus,
@@ -357,7 +414,7 @@
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
-  background: #f5f5f5;
+  background: var(--input-disabled-bg);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -371,19 +428,20 @@
 
 /* Info box para data de cadastro */
 .info-box {
-  background: #f8f9fa;
+  background: var(--bg-secondary) !important;
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 20px;
   border-left: 4px solid var(--primary-color);
-  font-size: 14px;
-  color: #555;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary) !important;
 }
 
 .info-box strong {
   display: block;
   margin-bottom: 4px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 /* Footer com botões */
@@ -392,8 +450,8 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e6e6e6;
-  background: #f8f9fa;
+  border-top: none;
+  background: var(--bg-secondary);
   border-radius: 0 0 12px 12px;
 }
 
@@ -405,7 +463,7 @@
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-  font-size: 14px;
+  font-size: 15px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -428,12 +486,13 @@
 }
 
 .btn-secondary {
-  background: #e0e0e0;
-  color: #333;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #d0d0d0;
+  background: var(--bg-elevated);
 }
 
 /* Seletor específico para o modal de empresa */

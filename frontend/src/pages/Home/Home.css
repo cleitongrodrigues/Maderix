@@ -1,6 +1,118 @@
 /* ============================================
    HOME PAGE - DASHBOARD PROFISSIONAL
    ============================================ */
+[data-theme="escuro"] .home-page {
+  background: var(--bg-body, #0d1117) !important;
+}
+[data-theme="escuro"] .home-cabecalho-fixo {
+  background: #161b22 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+[data-theme="escuro"] .home-page .page-header h1 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .home-subtitle {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .home-stats-grid .stat-card {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+  border: 2px solid #23272f !important;
+}
+[data-theme="escuro"] .stat-label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .stat-value {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .home-section {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+[data-theme="escuro"] .section-header {
+  border-bottom: 2px solid #23272f !important;
+}
+[data-theme="escuro"] .section-header h2 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .btn-ver-todos {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  color: #fff !important;
+}
+[data-theme="escuro"] .atividades-lista .atividade-item {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border-left: 4px solid var(--atividade-color, #388bfd) !important;
+}
+[data-theme="escuro"] .atividade-item:hover {
+  background: #222b3a !important;
+}
+[data-theme="escuro"] .atividade-descricao {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .atividade-valor {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .atividade-tempo {
+  color: #6e7681 !important;
+}
+[data-theme="escuro"] .produtos-criticos-lista .produto-critico-item {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border-radius: 8px;
+  padding: 12px;
+}
+[data-theme="escuro"] .produto-nome {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .produto-qtd {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .produto-barra-container {
+  background: #30363d !important;
+}
+[data-theme="escuro"] .produto-barra-progresso {
+  background: linear-gradient(90deg, var(--primary-color, #a259ff) 0%, var(--primary-color-light, #c3a1ff) 100%) !important;
+}
+[data-theme="escuro"] .acoes-rapidas-grid .acao-rapida-btn {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .acao-titulo {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .resumo-dia .resumo-item {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .resumo-item:hover {
+  background: #222b3a !important;
+}
+[data-theme="escuro"] .resumo-label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .resumo-valor {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] ::-webkit-scrollbar {
+  width: 10px;
+  background: #161b22;
+}
+[data-theme="escuro"] ::-webkit-scrollbar-thumb {
+  background: var(--primary-color, #388bfd);
+  border-radius: 8px;
+  border: 2px solid #161b22;
+}
+[data-theme="escuro"] ::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+[data-theme="escuro"] {
+  scrollbar-color: var(--primary-color, #388bfd) #161b22;
+  scrollbar-width: thin;
+}
 
 /* Container Principal - estilos gerais movidos para App.css */
 

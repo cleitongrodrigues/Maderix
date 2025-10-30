@@ -4,11 +4,13 @@
 
 .pagina-estoque {
   padding: 20px;
-  max-width: 1400px;
+        max-width: 800px;
   margin: 0 auto;
   text-align: left;
   position: relative;
   box-sizing: border-box;
+  background: var(--bg-body);
+  min-height: 100vh;
 }
 
 /* -------------------------------------- */
@@ -20,7 +22,7 @@
     padding: 0; 
     border: none;
     box-shadow: none;
-    background: white;
+    background: var(--table-bg);
     overflow-x: auto; 
 }
 
@@ -28,18 +30,19 @@
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    padding: 16px; 
+    padding: 16px;
+    background: var(--table-bg);
 }
 
 /* Estilo do Cabeçalho */
 .stock-table thead th {
-    background: #f8f9fa; 
-    color: #333;
+    background: var(--table-header-bg);
+    color: var(--text-primary);
     padding: 12px 16px;
     font-size: 1.0rem;
     font-weight: bold;
     text-align: left;
-    border-bottom: 2px solid #e6e6e6;
+    border-bottom: 2px solid var(--table-border);
 }
 
 /* Coluna Ações: largura fixa e centralizada */
@@ -47,19 +50,24 @@
 .stock-table td.actions-cell {
     width: 80px;
     text-align: center;
+    padding-right: 12px;
 }
 
 /* Estilo do Corpo da Tabela */
 .stock-table tbody td {
     padding: 10px 16px;
-    color: #555;
+    color: var(--text-primary);
     font-size: 0.95rem;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--table-border);
 }
 
 /* Efeito Hover na linha */
 .stock-table tbody tr:hover {
-    background-color: #f5f5f5;
+    background-color: var(--table-row-hover);
+}
+
+.stock-table tbody tr:nth-child(even) {
+    background-color: var(--table-row-striped);
 }
 
 /* -------------------------------------- */
@@ -79,7 +87,7 @@
 .btn-action-trigger {
     background: none;
     border: none;
-    color: #555;
+    color: var(--text-primary);
     font-size: 1.5em; 
     cursor: pointer;
     padding: 0 4px;
@@ -98,8 +106,8 @@
     top: calc(100% + 5px); 
     right: 0; 
     z-index: 100; 
-    background: white;
-    border: 1px solid #e6e6e6;
+    background: var(--modal-bg);
+    border: 1px solid var(--modal-border);
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     min-width: 120px;
@@ -114,14 +122,14 @@
     text-align: left;
     padding: 8px 12px;
     cursor: pointer;
-    color: #333;
+    color: var(--text-primary);
     font-size: 0.9em;
     width: 100%;
     transition: background-color 0.1s;
 }
 
 .action-dropdown-menu button:hover {
-    background-color: #f5f5f5;
+    background-color: var(--table-row-hover);
     color: var(--primary-color);
 }
 
@@ -139,7 +147,7 @@
     padding: 0; 
     border: none;
     box-shadow: none;
-    background: white;
+    background: var(--table-bg);
     overflow-x: auto; 
 }
 
@@ -147,17 +155,18 @@
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    padding: 16px; 
+    padding: 16px;
+    background: var(--table-bg);
 }
 
 .pagina-estoque .tabela-estoque thead th {
-    background: #f8f9fa; 
-    color: #333;
+    background: var(--table-header-bg);
+    color: var(--text-primary);
     padding: 12px 16px;
     font-size: 1.0rem;
     font-weight: bold;
     text-align: left;
-    border-bottom: 2px solid #e6e6e6;
+    border-bottom: 2px solid var(--table-border);
 }
 
 .pagina-estoque .tabela-estoque th.col-acoes,
@@ -168,25 +177,30 @@
 
 .pagina-estoque .tabela-estoque tbody td {
     padding: 10px 16px;
-    color: #555;
+    color: var(--text-primary);
     font-size: 0.95rem;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--table-border);
 }
 
 .pagina-estoque .tabela-estoque tbody tr:hover {
-    background-color: #f5f5f5;
+    background-color: var(--table-row-hover);
+}
+
+.pagina-estoque .tabela-estoque tbody tr:nth-child(even) {
+    background-color: var(--table-row-striped);
 }
 
 /* título dentro do cabeçalho fixo */
 .estoque-cabecalho-fixo .titulo-estoque {
     padding: 12px 0 6px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
+    border-bottom: none;
+    background: transparent;
 }
 
 .estoque-cabecalho-fixo .titulo-estoque h1 {
     margin: 6px 0 8px 0;
     font-size: 1.4rem;
-    color: #333;
+    color: var(--text-primary);
     font-weight: bold;
 }
 
@@ -194,14 +208,15 @@
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    padding-right: 10px;
     white-space: nowrap;
 }
 
 .pagina-estoque .btn-action-trigger {
     background: none;
     border: none;
-    color: #555;
+    color: var(--text-primary);
     font-size: 1.5em; 
     cursor: pointer;
     padding: 0 4px;
@@ -211,9 +226,9 @@
 
 .pagina-estoque .btn-action-trigger:hover { color: var(--primary-color); }
 
-.pagina-estoque .action-dropdown-menu { position: absolute; top: calc(100% + 5px); right: 0; z-index: 100; background: white; border: 1px solid #e6e6e6; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); min-width: 120px; display:flex; flex-direction:column; overflow:hidden; }
+.pagina-estoque .action-dropdown-menu { position: absolute; top: calc(100% + 5px); right: 0; z-index: 100; background: var(--modal-bg); border: 1px solid var(--modal-border); border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); min-width: 120px; display:flex; flex-direction:column; overflow:hidden; }
 
-.pagina-estoque .action-dropdown-menu button { background:none; border:none; text-align:left; padding:8px 12px; cursor:pointer; color:#333; font-size:0.9em; width:100%; }
+.pagina-estoque .action-dropdown-menu button { background:none; border:none; text-align:left; padding:8px 12px; cursor:pointer; color: var(--text-primary); font-size:0.9em; width:100%; }
 
 .pagina-estoque .botoes-acao { display:flex; gap:8px; align-items:center; }
 .pagina-estoque .botoes-acao .btn-action-trigger { width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; border:1px solid transparent; cursor:pointer; line-height:1; }
@@ -233,10 +248,10 @@
 .estoque-cabecalho-fixo {
     position: sticky;
     top: 0;
-    background: #fff;
+    background: transparent;
     z-index: 30;
+    border-bottom: none;
     padding: 8px 0 12px 0;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
 
 /* inner container to match the page/grid width and center content */
@@ -330,18 +345,37 @@ quick-actions, .acoes-rapidas {
     .acoes-cabecalho .acoes-internas > button { width: 100%; }
 }
 
-.acoes-rapidas .card-summary, .quick-actions .card-summary { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:10px; margin-bottom:10px; text-align:center; }
+.acoes-rapidas .card-summary, .quick-actions .card-summary { 
+    background: var(--bg-secondary) !important; 
+    border: 1px solid var(--input-border); 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.acoes-rapidas .card-summary:hover, .quick-actions .card-summary:hover {
+    background: var(--bg-elevated) !important;
+}
 
 /* estilos para as versões em português dos cards de resumo */
 .cards-resumo .card-resumo,
 .acoes-rapidas .card-resumo,
 .quick-actions .card-resumo {
-    background: #fff;
-    border: 1px solid #e6e6e6;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
     text-align: center;
+    transition: background 0.3s ease;
+}
+
+.cards-resumo .card-resumo:hover,
+.acoes-rapidas .card-resumo:hover,
+.quick-actions .card-resumo:hover {
+    background: var(--bg-elevated) !important;
 }
 
 
@@ -392,11 +426,18 @@ quick-actions, .acoes-rapidas {
 .search-input {
     padding: 10px 12px;
     border-radius: 6px;
-    border: 1px solid var(--border-color, #dcdcdc);
+    border: 1px solid var(--input-border);
     min-height: 48px;
     height: 48px; /* force exact height to match buttons */
     line-height: 1.2;
     box-sizing: border-box;
+    background: var(--input-bg);
+    color: var(--input-text);
+}
+
+.search-input::placeholder {
+    color: var(--input-placeholder);
+    opacity: 0.7;
 }
 
 /* make search input grow to fill available space inside .acoes-internas */
@@ -433,18 +474,23 @@ quick-actions, .acoes-rapidas {
 /* ESTILOS DE RESUMO LATERAL */
 /* -------------------------------------- */
 .quick-actions .card-summary {
-    background: #fff;
-    border: 1px solid #e6e6e6;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
     text-align: center;
+    transition: background 0.3s ease;
+}
+
+.quick-actions .card-summary:hover {
+    background: var(--bg-elevated) !important;
 }
 
 .quick-actions .card-summary h3 {
     font-size: 1rem;
     margin-bottom: 4px;
-    color: #555;
+    color: var(--text-primary);
 }
 
 /* h3/p para as versões em português */
@@ -452,7 +498,7 @@ quick-actions, .acoes-rapidas {
 .acoes-rapidas .card-resumo h3 {
     font-size: 1rem;
     margin-bottom: 4px;
-    color: #555;
+    color: var(--text-primary);
 }
 
 .quick-actions .card-summary p {
@@ -638,12 +684,17 @@ quick-actions, .acoes-rapidas {
     flex-direction: column;
     justify-content: center;
     align-items: center; /* center horizontally */
-    background: #fff;
-    border: 1px solid #e6e6e6;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     padding: 6px; /* match Clientes' inner spacing */
     margin-bottom: 0;
     text-align: center; /* center text inside the card */
+    transition: background 0.3s ease;
+}
+
+.acoes-rapidas-interna .cards-resumo .card-resumo:hover {
+    background: var(--bg-elevated) !important;
 }
 
 /* Match title and value typography to Clientes' summary cards */
@@ -651,7 +702,7 @@ quick-actions, .acoes-rapidas {
 .acoes-rapidas .card-resumo h3 {
     font-size: 0.95rem;
     margin: 0 0 6px 0;
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
 }
 
@@ -695,9 +746,9 @@ quick-actions, .acoes-rapidas {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: #ffffff;
+    background: transparent;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: none;
 }
 
 .pagina-estoque .area-tabela { margin-top: 12px; }
@@ -725,7 +776,7 @@ quick-actions, .acoes-rapidas {
     padding: 20px !important;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 2px solid #e6e6e6 !important;
+    border: 2px solid var(--input-border) !important;
 }
 
 .card-resumo.clickable:hover {
@@ -751,7 +802,7 @@ quick-actions, .acoes-rapidas {
 .card-content h3 {
     margin: 0 !important;
     font-size: 0.9rem !important;
-    color: #666 !important;
+    color: var(--text-primary) !important;
     font-weight: 500 !important;
 }
 
@@ -759,7 +810,7 @@ quick-actions, .acoes-rapidas {
     margin: 0 !important;
     font-size: 2rem !important;
     font-weight: bold !important;
-    color: #333 !important;
+    color: var(--text-primary) !important;
 }
 
 /* Card de alerta (produtos em falta) com destaque visual */
@@ -769,34 +820,34 @@ quick-actions, .acoes-rapidas {
 
 .card-resumo.alerta {
     border-color: #ffa726 !important;
-    background: #fff9f0 !important;
+    background: var(--bg-secondary) !important;
 }
 
 .card-resumo.alerta:hover {
     border-color: #ff9800 !important;
-    background: #fff3e0 !important;
+    background: var(--bg-elevated) !important;
 }
 
 /* Zebra striping na tabela */
 .pagina-estoque .tabela-estoque tbody tr:nth-child(even) {
-    background: #fafafa;
+    background: var(--table-row-striped);
 }
 
 /* Hover effect na tabela (mais destacado) */
 .pagina-estoque .tabela-estoque tbody tr:hover {
-    background: #f0f7ff !important;
+    background: var(--table-row-hover) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     cursor: pointer;
 }
 
 /* Alerta visual para baixo estoque */
 .pagina-estoque .tabela-estoque tbody tr.baixo-estoque {
-    background: #fff3e0;
+    background: var(--table-row-striped);
     border-left: 4px solid #ff9800;
 }
 
 .pagina-estoque .tabela-estoque tbody tr.baixo-estoque:hover {
-    background: #ffe0b2 !important;
+    background: var(--table-row-hover) !important;
 }
 
 /* Ícone de alerta na célula de quantidade */
@@ -809,14 +860,14 @@ quick-actions, .acoes-rapidas {
 /* Card ativo (quando filtro está aplicado) */
 .card-resumo.ativo {
     border-color: var(--primary-color) !important;
-    background: linear-gradient(135deg, #fff5eb 0%, #ffffff 100%) !important;
+    background: var(--bg-elevated) !important;
     box-shadow: 0 4px 12px rgba(255, 119, 0, 0.2);
     transform: scale(1.02);
 }
 
 .card-resumo.alerta.ativo {
     border-color: #ff9800 !important;
-    background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%) !important;
+    background: var(--bg-elevated) !important;
     box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
 }
 
@@ -946,4 +997,9 @@ quick-actions, .acoes-rapidas {
 .empty-state small {
     color: #6c757d;
     font-size: 0.95rem;
+}
+
+/* Garante que o modal sempre fique acima do TopBar e de qualquer outro elemento do sistema */
+.product-modal-overlay {
+  z-index: 11000 !important;
 }

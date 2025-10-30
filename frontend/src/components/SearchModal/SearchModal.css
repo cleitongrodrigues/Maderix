@@ -1,3 +1,97 @@
+/* ===== DARK MODE - SEARCH MODAL ===== */
+[data-theme="escuro"] .search-modal-overlay {
+  background: rgba(10, 12, 20, 0.85) !important;
+  backdrop-filter: blur(4px) !important;
+}
+[data-theme="escuro"] .search-modal-container {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+  border-radius: 20px !important;
+}
+[data-theme="escuro"] .search-input-section {
+  background: #23272f !important;
+  border-bottom: 1px solid #30363d !important;
+}
+[data-theme="escuro"] .search-input {
+  background: transparent !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .search-input::placeholder {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .search-input-icon {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .search-kbd {
+  background: #23272f !important;
+  border: 1px solid #30363d !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .search-categories {
+  background: #23272f !important;
+  border-bottom: 1px solid #30363d !important;
+}
+[data-theme="escuro"] .category-btn {
+  background: #161b22 !important;
+  border: 1px solid #30363d !important;
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .category-btn.active {
+  background: var(--primary-color, #a259ff) !important;
+  color: #fff !important;
+  border-color: var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .search-results {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .search-result-item {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .search-result-item:hover {
+  background: #1a1d29 !important;
+}
+[data-theme="escuro"] .search-result-item.selected {
+  background: rgba(162, 89, 255, 0.10) !important;
+  border: 1px solid var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .result-icon {
+  background: #161b22 !important;
+}
+[data-theme="escuro"] .result-title {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .result-meta {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .result-badge,
+[data-theme="escuro"] .badge-pagina,
+[data-theme="escuro"] .badge-cliente {
+  background: #23272f !important;
+  color: var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .result-price {
+  color: #27AE60 !important;
+}
+[data-theme="escuro"] .result-info {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .result-status {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .search-modal-footer {
+  background: #23272f !important;
+  border-top: 1px solid #30363d !important;
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .footer-hint kbd {
+  background: #161b22 !important;
+  border: 1px solid #30363d !important;
+  color: #e6edf3 !important;
+}
 /* ==================== OVERLAY E CONTAINER ==================== */
 .search-modal-overlay {
   position: fixed;
@@ -17,10 +111,10 @@
 
 .search-modal-container {
   background: white;
-  border-radius: 12px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 640px;
-  max-height: 80vh;
+  max-width: 820px;
+  max-height: 92vh;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideDown 0.25s ease-out;
   display: flex;

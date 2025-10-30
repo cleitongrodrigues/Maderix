@@ -1,3 +1,11 @@
+/* Força overlay escuro para modal de visualização */
+.visualizar-venda-modal {
+  background: var(--card-bg, #23272e) !important;
+}
+.modal-overlay {
+  background: rgba(0,0,0,0.7) !important;
+  z-index: 1000;
+}
 .vendas-page {
   padding: 20px;
   max-width: 1400px;
@@ -5,12 +13,15 @@
   text-align: left;
   position: relative;
   box-sizing: border-box;
+  background: var(--bg-body);
+  color: var(--danger-color, #a60000) !important;
+  font-weight: 600;
 }
 
 .vendas-page h1 { 
   margin: 6px 0 8px 0;
   font-size: 1.4rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
@@ -19,7 +30,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #ffffff;
+  background: var(--card-bg);
   padding: 8px 0;
   border-bottom: 1px solid rgba(0,0,0,0.06);
   margin-bottom: 0 !important;
@@ -28,7 +39,7 @@
 .titulo-vendas h1 {
   margin: 6px 0 8px 0;
   font-size: 1.4rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
@@ -163,21 +174,23 @@
 .vendas-page .tabela-vendas {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--table-bg);
   border-radius: 8px;
   overflow: hidden;
   margin-top: 12px;
 }
 
+
 .vendas-page .tabela-vendas th,
 .vendas-page .tabela-vendas td {
   padding: 12px 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--table-border, #eee);
   text-align: left;
+  color: var(--text-primary);
 }
 
 .vendas-page .tabela-vendas th {
-  background: #f8f9fa;
+  background: var(--table-header-bg);
   font-weight: 600;
 }
 
@@ -186,23 +199,15 @@
 }
 
 .vendas-page .tabela-vendas tbody tr:nth-child(even) {
-  background: #fafafa;
+  background: var(--table-row-striped);
 }
 
 .vendas-page .tabela-vendas tbody tr:hover {
-  background: #f0f7ff !important;
+  background: var(--table-row-hover) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
 
-.vendas-page .tabela-vendas .muted {
-  opacity: 0.65;
-  background: #f5f5f5 !important;
-}
-
-.vendas-page .tabela-vendas .muted:hover {
-  background: #eeeeee !important;
-}
 
 .status {
   padding: 6px 8px;
@@ -230,8 +235,9 @@
 }
 
 .status-cancelada {
-  background: #ffecec;
-  color: #a60000;
+  background: var(--danger-bg, #ffecec);
+  color: var(--danger-color, #a60000);
+  opacity: 1 !important;
 }
 
 .status-estornada {
@@ -313,6 +319,9 @@
 .visualizar-venda-modal {
   max-width: 800px;
   width: 95%;
+  background: var(--card-bg, #23272e);
+  border-radius: 12px;
+  border: 1px solid var(--table-border, #333);
 }
 
 .visualizar-venda-modal .modal-header {
@@ -382,7 +391,9 @@
 }
 
 .observacoes-box {
-  background: #f8f9fa;
+  background: var(--observacao-bg, #23272e);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 1.5px solid var(--table-border, #333);
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -392,12 +403,12 @@
 .observacoes-box strong {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: var(--text-primary, #f5f5f5);
 }
 
 .observacoes-box p {
   margin: 0;
-  color: #555;
+  color: var(--text-secondary, #aaa);
   line-height: 1.5;
 }
 
@@ -407,37 +418,37 @@
 
 .itens-venda-section h3 {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-primary, #f5f5f5);
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--table-border, #333);
 }
 
 .tabela-itens-modal {
   width: 100%;
   border-collapse: collapse;
   margin-top: 12px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
+  background: var(--table-bg, #23272e);
+  border: 1px solid var(--table-border, #333);
   border-radius: 6px;
   overflow: hidden;
 }
 
 .tabela-itens-modal th {
-  background: #f8f9fa;
+  background: var(--table-header-bg, #23272e);
   padding: 12px;
   text-align: left;
   font-weight: 600;
   font-size: 13px;
-  color: #555;
-  border-bottom: 2px solid #e0e0e0;
+  color: var(--text-secondary, #aaa);
+  border-bottom: 2px solid var(--table-border, #333);
 }
 
 .tabela-itens-modal td {
   padding: 12px;
   border-bottom: 1px solid #f0f0f0;
   font-size: 14px;
-  color: #333;
+  color: var(--text-primary, #f5f5f5);
 }
 
 .tabela-itens-modal tbody tr:last-child td {
@@ -445,20 +456,20 @@
 }
 
 .tabela-itens-modal tbody tr:hover {
-  background: #fafafa;
+  background: var(--table-row-hover, #333);
 }
 
 .empty-items {
   text-align: center;
   padding: 24px;
-  color: #999;
+  color: var(--text-secondary, #aaa);
   font-style: italic;
 }
 
 /* Info de cancelamento no modal */
 .cancelamento-info {
-  background: #ffebee;
-  border-left: 4px solid #c62828;
+  background: var(--danger-bg, #2d1a1a);
+  border-left: 4px solid var(--danger-color, #c62828);
   padding: 12px 16px;
   margin: 16px 0;
   border-radius: 4px;
@@ -466,11 +477,11 @@
 
 .cancelamento-info p {
   margin: 8px 0;
-  color: #b71c1c;
+  color: var(--danger-color, #c62828);
 }
 
 .cancelamento-info strong {
-  color: #c62828;
+  color: var(--danger-color, #c62828);
 }
 
 /* Summary Cards - Comportamento interativo */
@@ -554,8 +565,8 @@
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  opacity: 1;
+  background: inherit !important;
 }
 
 .btn-secondary {
@@ -585,8 +596,8 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e6e6e6;
-  background: #f8f9fa;
+  border-top: none;
+  background: var(--bg-secondary);
   border-radius: 0 0 12px 12px;
 }
 
@@ -595,8 +606,8 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e6e6e6;
-  background: #f8f9fa;
+  border-top: none;
+  background: var(--bg-secondary);
   border-radius: 0 0 12px 12px;
 }
 

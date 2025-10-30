@@ -49,61 +49,87 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
   }
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content movimentacoes-form modal-content-small">
-        <div className="modal-header">
-          <h3>{initialData ? 'Editar Movimentação' : 'Nova Movimentação'}</h3>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Fechar">×</button>
+    <div className="product-modal-overlay" onClick={onClose}>
+      <div className="product-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Header do Modal */}
+        <div className="product-modal-header">
+          <h2>{initialData ? '✏️ Editar Movimentação' : '➕ Nova Movimentação'}</h2>
+          <button className="product-modal-close" onClick={onClose}>×</button>
         </div>
 
-        <form className="empresa-form" onSubmit={handleSubmit}>
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Tipo</label>
-              <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                <option value="">-- selecione --</option>
-                <option value="Entrada">Entrada</option>
-                <option value="Saída">Saída</option>
-                <option value="Ajuste">Ajuste</option>
-              </select>
+        {/* Conteúdo do Modal com Scroll */}
+        <div className="product-modal-content">
+          <form className="movimentacao-form" onSubmit={handleSubmit}>
+            <div className="input-row">
+              <div style={{ flex: 1 }}>
+                <label>📦 Tipo *</label>
+                <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                  <option value="">Selecione o tipo...</option>
+                  <option value="Entrada">📥 Entrada</option>
+                  <option value="Saída">📤 Saída</option>
+                  <option value="Ajuste">⚙️ Ajuste</option>
+                </select>
+              </div>
+              <div style={{ flex: 2 }}>
+                <label>🏷️ Produto *</label>
+                <input 
+                  value={produto} 
+                  onChange={(e) => setProduto(e.target.value)}
+                  placeholder="Digite o nome do produto..."
+                />
+              </div>
+              <div style={{ width: 140 }}>
+                <label>🔢 Quantidade *</label>
+                <input 
+                  type="number" 
+                  value={quantidade} 
+                  onChange={(e) => setQuantidade(e.target.value)}
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
             </div>
-            <div style={{ flex: 2 }}>
-              <label>Produto</label>
-              <input value={produto} onChange={(e) => setProduto(e.target.value)} />
-            </div>
-            <div style={{ width: 120 }}>
-              <label>Quantidade</label>
-              <input type="number" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} />
-            </div>
-          </div>
 
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Data</label>
-              <input type="datetime-local" value={data} onChange={(e) => setData(e.target.value)} />
+            <div className="input-row">
+              <div style={{ flex: 1 }}>
+                <label>📅 Data e Hora</label>
+                <input type="datetime-local" value={data} onChange={(e) => setData(e.target.value)} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label>👤 Usuário *</label>
+                <input 
+                  value={usuario} 
+                  onChange={(e) => setUsuario(e.target.value)}
+                  placeholder="Nome do usuário..."
+                />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <label>Usuário</label>
-              <input value={usuario} onChange={(e) => setUsuario(e.target.value)} />
+
+            <div className="input-row">
+              <div style={{ flex: 1 }}>
+                <label>📝 Observação</label>
+                <textarea 
+                  value={observacao} 
+                  onChange={(e) => setObservacao(e.target.value)} 
+                  rows={3}
+                  placeholder="Adicione observações sobre esta movimentação..."
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="input-row">
-            <div style={{ flex: 1 }}>
-              <label>Observação</label>
-              <textarea value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={3} />
-            </div>
-          </div>
+            {error && <div className="error-message">{error}</div>}
+          </form>
+        </div>
 
-          {error && <div className="error">{error}</div>}
-
-          <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-            <button type="button" className="btn-small" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-primary">
-              {initialData ? '💾 Salvar Alterações' : '💾 Salvar'}
-            </button>
-          </div>
-        </form>
+        {/* Footer com Ações */}
+        <div className="product-modal-footer">
+          <button type="button" className="btn-secondary" onClick={onClose}>
+            Cancelar
+          </button>
+          <button type="submit" className="btn-primary" onClick={handleSubmit}>
+            {initialData ? 'Salvar Alterações' : 'Salvar'}
+          </button>
+        </div>
       </div>
     </div>
   );

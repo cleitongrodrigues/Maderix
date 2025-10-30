@@ -70,9 +70,9 @@ function Estoque() {
   };
 
   // Função para editar a partir do modal de detalhes
-  const handleEditFromDetails = (produto) => {
+  const handleEditFromDetails = (id) => {
     setProdutoDetalhes(null);
-    handleEdit(produto.id);
+    handleEdit(id);
   };
 
   // Função para ver movimentações (placeholder)
@@ -305,7 +305,7 @@ function Estoque() {
                       <span className="seta-ordem">{ordenacao.direcao === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </th>
-                  <th onClick={() => handleOrdenar('preco')} className="th-ordenavel">
+                  <th onClick={() => handleOrdenar('preco')} className="th-ordenavel" style={{width: '110px', minWidth: '90px', maxWidth: '130px'}}>
                     Preço 
                     {ordenacao.campo === 'preco' && (
                       <span className="seta-ordem">{ordenacao.direcao === 'asc' ? '↑' : '↓'}</span>
@@ -348,7 +348,7 @@ function Estoque() {
                         {produto.quantidade < 5 && <span className="icone-alerta">⚠️</span>}
                         {produto.quantidade}
                       </td>
-                      <td>{produto.preco}</td>
+                      <td style={{width: '110px', minWidth: '90px', maxWidth: '130px'}}>{produto.preco}</td>
                       <td className="celula-acoes">
                         <ActionButtons 
                           showView={true}

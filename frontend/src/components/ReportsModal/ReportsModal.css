@@ -1,3 +1,252 @@
+/* ===== DARK MODE ===== */
+[data-theme="escuro"] .reports-modal-container {
+  background: linear-gradient(135deg, #161b22 0%, #23272f 100%) !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .reports-modal-header {
+  background: linear-gradient(135deg, #23272f 0%, #161b22 100%) !important;
+  color: #e6edf3 !important;
+  border-bottom: 3px solid #30363d !important;
+}
+[data-theme="escuro"] .header-title h2 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .close-button {
+  background: none !important;
+  border: none !important;
+  color: #fff !important;
+}
+[data-theme="escuro"] .close-button:hover {
+  color: var(--primary-color, #a259ff) !important;
+  background: none !important;
+}
+[data-theme="escuro"] .reports-modal-tabs {
+  background: #23272f !important;
+  border-bottom: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .tab-button {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .tab-button.active {
+  color: var(--primary-color, #388bfd) !important;
+  border-bottom-color: var(--primary-color, #388bfd) !important;
+  background: rgba(56,139,253,0.10) !important;
+}
+[data-theme="escuro"] .reports-modal-body {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .reports-modal-body::-webkit-scrollbar-track {
+  background: #23272f !important;
+}
+[data-theme="escuro"] .reports-modal-body::-webkit-scrollbar-thumb {
+  background: var(--primary-color, #388bfd) !important;
+}
+[data-theme="escuro"] .report-card {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .report-card:hover {
+  border-color: var(--primary-color, #388bfd) !important;
+}
+[data-theme="escuro"] .card-label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .card-value {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .card-value:hover {
+  color: var(--primary-color, #388bfd) !important;
+}
+
+[data-theme="escuro"] .reports-modal-footer {
+  background: #23272f !important;
+  border-top: 2px solid #30363d !important;
+}
+
+[data-theme="escuro"] .footer-info {
+  color: #8b949e !important;
+}
+
+[data-theme="escuro"] .footer-actions button,
+[data-theme="escuro"] .btn-export,
+[data-theme="escuro"] .btn-print {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid var(--primary-color, #a259ff) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="escuro"] .footer-actions button:hover,
+[data-theme="escuro"] .btn-export:hover,
+[data-theme="escuro"] .btn-print:hover {
+  background: var(--primary-color, #a259ff) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(162,89,255,0.3) !important;
+}
+[data-theme="escuro"] .report-section {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .report-section h3 {
+  color: var(--primary-color, #388bfd) !important;
+  border-bottom: 2px solid #30363d !important;
+}
+
+[data-theme="escuro"] .reports-top-produtos {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+  box-shadow: 0 4px 12px rgba(56,139,253,0.10) !important;
+}
+[data-theme="escuro"] .section-header h3 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .produto-item {
+  background: #20232a !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .produto-item:hover {
+  background: #23272f !important;
+  border-color: var(--primary-color, #a259ff) !important;
+  box-shadow: 0 4px 12px rgba(162,89,255,0.10) !important;
+}
+[data-theme="escuro"] .produto-nome {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .produto-qtd {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .produto-receita {
+  color: #28e07b !important;
+}
+[data-theme="escuro"] .produto-bar {
+  background: #30363d !important;
+}
+[data-theme="escuro"] .produto-bar-fill {
+  background: linear-gradient(90deg, #388bfd 0%, #a259ff 100%) !important;
+}
+
+[data-theme="escuro"] .reports-vendedores {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+  box-shadow: 0 4px 12px rgba(56,139,253,0.10) !important;
+}
+[data-theme="escuro"] .reports-vendedores h3 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .vendedor-card {
+  background: #20232a !important;
+  border: 2px solid #30363d !important;
+}
+[data-theme="escuro"] .vendedor-card:hover {
+  background: #23272f !important;
+  border-color: var(--primary-color, #a259ff) !important;
+  box-shadow: 0 4px 12px rgba(162,89,255,0.10) !important;
+}
+[data-theme="escuro"] .vendedor-nome {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .vendedor-nome.clickable {
+  color: var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .vendedor-nome.clickable:hover {
+  color: #fff !important;
+  text-decoration-color: var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .vendedor-posicao {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .vendedor-badge {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+  color: #23272f !important;
+}
+[data-theme="escuro"] .metric-label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .metric-value {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .metric-bar {
+  background: #30363d !important;
+}
+[data-theme="escuro"] .metric-bar-fill.vendas {
+  background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%) !important;
+}
+[data-theme="escuro"] .metric-bar-fill.receita {
+  background: linear-gradient(90deg, #2196F3 0%, #a259ff 100%) !important;
+}
+
+[data-theme="escuro"] .periodo-selector {
+  background: #23272f !important;
+  border: 1.5px solid #30363d !important;
+  box-sizing: border-box;
+}
+[data-theme="escuro"] .periodo-selector button {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .periodo-selector button:hover {
+  background: rgba(162,89,255,0.10) !important;
+  color: var(--primary-color, #a259ff) !important;
+}
+[data-theme="escuro"] .periodo-selector button.active {
+  background: var(--primary-color, #a259ff) !important;
+  color: #fff !important;
+}
+
+[data-theme="escuro"] .status-card {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+  border: 2px solid #30363d !important;
+  box-shadow: 0 4px 12px rgba(56,139,253,0.10) !important;
+}
+[data-theme="escuro"] .status-title {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .status-body {
+  /* mantém padrão, mas pode ajustar se necessário */
+}
+[data-theme="escuro"] .status-item {
+  background: #20232a !important;
+  border-radius: 8px;
+}
+[data-theme="escuro"] .status-label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .status-value {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .status-value.good {
+  color: #28e07b !important;
+}
+[data-theme="escuro"] .status-value.warning {
+  color: #ffd859 !important;
+}
+[data-theme="escuro"] .status-value.critical {
+  color: #ff5c5c !important;
+}
+[data-theme="escuro"] .bar-info {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .bar {
+  background: linear-gradient(180deg, var(--primary-color, #a259ff) 0%, var(--primary-color-light, #c3a1ff) 100%) !important;
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb),0.15) !important;
+}
+[data-theme="escuro"] .bar-label {
+  color: #fff !important;
+}
+[data-theme="escuro"] .bar-month {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .progress-bar {
+  background: #30363d !important;
+}
+[data-theme="escuro"] .progress-fill {
+  background: linear-gradient(90deg, #388bfd 0%, #a259ff 100%) !important;
+}
 /* Overlay e Container Principal */
 .reports-modal-overlay {
   position: fixed;

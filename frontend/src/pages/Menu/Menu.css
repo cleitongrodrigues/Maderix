@@ -1,3 +1,73 @@
+[data-theme="escuro"] .profile-modal {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.7) !important;
+}
+[data-theme="escuro"] .profile-modal-header {
+  border-bottom: 1px solid #30363d !important;
+}
+[data-theme="escuro"] .profile-modal-header h2 {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .profile-modal-close {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .profile-modal-close:hover {
+  background: #30363d !important;
+  color: #ff5555 !important;
+}
+[data-theme="escuro"] .profile-modal-content {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .profile-avatar-large {
+  background: var(--primary-color, #388bfd) !important;
+  box-shadow: 0 4px 12px rgba(56,139,253,0.3);
+}
+[data-theme="escuro"] .profile-info-section {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .profile-info-item label {
+  color: #8b949e !important;
+}
+[data-theme="escuro"] .profile-info-item span {
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .profile-badge {
+  background: var(--primary-color, #388bfd) !important;
+  color: #fff !important;
+}
+[data-theme="escuro"] .btn-profile-action {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .btn-profile-action:hover {
+  background: #30363d !important;
+}
+[data-theme="escuro"] .btn-edit {
+  background: #23272f !important;
+  color: #e6edf3 !important;
+}
+[data-theme="escuro"] .btn-edit:hover {
+  background: #30363d !important;
+}
+[data-theme="escuro"] ::-webkit-scrollbar {
+  width: 10px;
+  background: #161b22;
+}
+[data-theme="escuro"] ::-webkit-scrollbar-thumb {
+  background: var(--primary-color, #388bfd);
+  border-radius: 8px;
+  border: 2px solid #161b22;
+}
+[data-theme="escuro"] ::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+[data-theme="escuro"] {
+  scrollbar-color: var(--primary-color, #388bfd) #161b22;
+  scrollbar-width: thin;
+}
 /* ============================================
    MENU LATERAL MODERNO E PROFISSIONAL
    ============================================ */
@@ -377,6 +447,13 @@
   font-weight: 600;
 }
 
+[data-theme="escuro"] .menu-item.active {
+  background: var(--primary-color, #388bfd) !important;
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(56,139,253,0.10);
+}
+
 .menu-item.active::before {
   opacity: 1;
 }
@@ -525,6 +602,13 @@
   background: rgba(245, 158, 11, 0.1);
   color: #fbbf24;
   font-weight: 600;
+}
+
+[data-theme="escuro"] .submenu-item.active {
+  background: var(--primary-color, #388bfd) !important;
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(56,139,253,0.10);
 }
 
 .submenu-icon {

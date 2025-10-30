@@ -97,8 +97,19 @@ function ContasReceber() {
     // Aqui você integraria com a API para salvar o pagamento
     // Por enquanto, apenas fecha o modal e atualiza a conta se for pagamento total
     if (USE_MOCK) {
-      // Lógica para atualizar conta após pagamento
-      // Se o pagamento cobrir o valor total, marcar como pago
+      setContas(prev => {
+        const updated = prev.map(c => {
+          if ((c.ID_Conta ?? c.id) === paymentData.contaId) {
+            // Marca como pago
+            return { ...c, Pago: true };
+          }
+          return c;
+        });
+        localStorage.setItem('mock_contas_receber', JSON.stringify(updated));
+        return updated;
+      });
+      setContaDetalhes(prev => prev ? { ...prev, Pago: true } : prev); // Atualiza status no modal
+      handleCloseDetails(); // Fecha o modal após registrar
     }
   };
 
@@ -303,7 +314,7 @@ function ContasReceber() {
                               onDelete={() => handleDelete(c.ID_Conta ?? c.id)} 
                             />
                           </div>
-                          <div className="grupo-toggle">
+                          <div className="grupo-botao-receber">
                             <button
                               className={`btn-receber ${c.Pago ? 'btn-paga' : 'btn-receber-ativo'}`}
                               onClick={() => togglePago(c)}

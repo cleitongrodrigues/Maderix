@@ -232,7 +232,7 @@ function ProductDetailModal({ produto, onClose, onEdit, onViewMovements }) {
             <button className="btn-action" onClick={onViewMovements}>
               📊 Ver Movimentações
             </button>
-            <button className="btn-primary" onClick={() => onEdit(produto)}>
+            <button className="btn-primary" onClick={() => onEdit(produto.id)}>
               ✏️ Editar Produto
             </button>
           </div>
