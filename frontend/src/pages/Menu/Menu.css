@@ -4,17 +4,17 @@
 
 .menu {
   width: 280px;
-  height: calc(100vh - 84px); /* Altura total menos a TopBar */
-  background: linear-gradient(180deg, #1a1d29 0%, #2d3142 100%);
-  color: white;
+  height: calc(100vh - 84px);
+  background: var(--menu-bg);
+  color: var(--menu-text);
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 84px; /* Começa abaixo da TopBar */
+  top: 84px;
   left: 0;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
-  transition: width 0.3s ease, transform 0.3s ease;
-  z-index: 100; /* Abaixo da TopBar que tem z-index: 1001 */
+  transition: width 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -64,16 +64,16 @@
 }
 
 .menu::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--scrollbar-track);
 }
 
 .menu::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 .menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--menu-hover-bg);
 }
 
 /* ============================================
@@ -85,7 +85,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--menu-border);
   background: rgba(0, 0, 0, 0.2);
 }
 

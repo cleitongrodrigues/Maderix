@@ -12,19 +12,17 @@
 .clientes-cabecalho-fixo {
   position: sticky;
   top: 0;
-  z-index: 50; /* keep above table but below app-level overlays */
-  background: #ffffff;
+  z-index: 50;
+  background: var(--card-bg);
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--card-border);
   margin-bottom: 12px;
-  /* layout: título e ações na mesma linha, cards em linha separada */
   display: flex;
-  flex-wrap: wrap; /* Permite quebra para próxima linha */
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px; /* Espaçamento entre elementos */
-  
-  /* Reseta a altura mínima imposta pelo App.css */
+  gap: 12px;
   min-height: auto !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Define a ordem e largura dos elementos */
@@ -44,11 +42,13 @@
 }
 
 /* Título da página CLIENTES: tamanho e peso explícitos para consistência */
+/* Título da página CLIENTES: tamanho e peso explícitos para consistência */
 .titulo-clientes h1 {
   margin: 6px 0 8px 0;
   font-size: 1.4rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 
@@ -166,10 +166,11 @@
   align-items: stretch;
   padding: 8px;
   margin: 0;
-  background: #fff;
-  border: 1px solid #e6e6e6;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .summary-row.card .card-summary {
@@ -179,9 +180,9 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #fafafa;
+  background: var(--bg-secondary);
   border-radius: 6px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.3s ease;
   border: 2px solid transparent;
 }
 
@@ -191,9 +192,9 @@
 
 .summary-row.card .card-summary.clickable:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--card-shadow-hover);
   border-color: var(--primary-color);
-  background: #ffffff;
+  background: var(--bg-elevated);
 }
 
 .summary-row.card .card-summary.clickable:active {
@@ -212,8 +213,8 @@
 }
 
 /* make summary text slightly smaller to fit */
-.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; color: #666; }
-.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; color: #333; }
+.summary-row.card .card-summary h3 { font-size: 0.95rem; margin: 0 0 6px 0; color: var(--text-secondary); transition: color 0.3s ease; }
+.summary-row.card .card-summary p { font-size: 1.25rem; margin:0; font-weight:700; color: var(--text-primary); transition: color 0.3s ease; }
 
 /* Clean up quick-actions overrides (they caused button size issues elsewhere). Keep generic small button styles only. */
 .quick-actions button { padding: 8px 10px; font-size: 0.95rem; border-radius: 6px; align-self: flex-start; width: auto; }
@@ -243,27 +244,29 @@
   padding: 0;
   border: none;
   box-shadow: none;
-  background: white;
+  background: var(--table-bg);
   overflow-x: auto;
+  transition: background-color 0.3s ease;
 }
 
 /* Denser table to match visual compactness requested */
 .tabela-clientes { width: 100%; border-collapse: collapse; }
-.tabela-clientes th, .tabela-clientes td { padding: 10px 12px; text-align: left; border: 1px solid #eee; }
-.tabela-clientes th { background: #f8f9fa; font-weight: 600; font-size: 0.95rem; }
+.tabela-clientes th, .tabela-clientes td { padding: 10px 12px; text-align: left; border: 1px solid var(--table-border); transition: border-color 0.3s ease; }
+.tabela-clientes th { background: var(--table-header-bg); font-weight: 600; font-size: 0.95rem; color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
 .tabela-clientes tbody tr { 
   height: 36px; 
   transition: background-color 0.2s ease;
+  color: var(--text-default);
 }
 
 /* Zebra striping - linhas alternadas */
 .tabela-clientes tbody tr:nth-child(even) {
-  background: #fafafa;
+  background: var(--table-row-striped);
 }
 
 /* Hover effect */
 .tabela-clientes tbody tr:hover { 
-  background: #f0f7ff !important;
+  background: var(--table-row-hover) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
@@ -296,7 +299,15 @@
   Removidos estilos locais duplicados para evitar conflitos. */
 
 /* Summary card adjustments */
-.card-summary { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:10px; margin-bottom:10px; text-align:center; }
+.card-summary { 
+  background: var(--card-bg); 
+  border: 1px solid var(--card-border); 
+  border-radius: 8px; 
+  padding: 10px; 
+  margin-bottom: 10px; 
+  text-align: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
 
 /* Place summaries side-by-side inside the quick-actions column */
 .quick-actions {

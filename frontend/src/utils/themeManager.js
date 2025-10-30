@@ -40,6 +40,32 @@ export const adjustBrightness = (hex, percent) => {
 };
 
 /**
+ * Aplica o tema (claro/escuro/auto)
+ * @param {string} theme - 'claro', 'escuro' ou 'auto'
+ */
+export const applyTheme = (theme) => {
+  console.log('🌓 Aplicando tema:', theme);
+  
+  let finalTheme = theme;
+  
+  // Se for 'auto', detecta a preferência do sistema
+  if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    finalTheme = prefersDark ? 'escuro' : 'claro';
+    console.log('🔄 Modo auto detectado:', finalTheme);
+  }
+  
+  // Aplica o atributo data-theme no elemento raiz
+  if (finalTheme === 'escuro') {
+    document.documentElement.setAttribute('data-theme', 'escuro');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  
+  console.log('✅ Tema aplicado:', finalTheme);
+};
+
+/**
  * Aplica uma cor primária ao sistema
  * @param {string} primaryColor - Cor primária em hexadecimal
  */
@@ -89,6 +115,13 @@ export const loadThemeFromStorage = () => {
     const preferences = localStorage.getItem('userPreferences');
     if (preferences) {
       const parsed = JSON.parse(preferences);
+      
+      // Aplica o tema (claro/escuro/auto)
+      if (parsed.tema) {
+        applyTheme(parsed.tema);
+      }
+      
+      // Aplica a cor primária
       if (parsed.corPrimaria) {
         applyPrimaryColor(parsed.corPrimaria);
       }
@@ -114,6 +147,39 @@ export const savePrimaryColor = (color) => {
 };
 
 /**
+ * Salva o tema escolhido no localStorage
+ * @param {string} theme - 'claro', 'escuro' ou 'auto'
+ */
+export const saveTheme = (theme) => {
+  try {
+    const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+    preferences.tema = theme;
+    localStorage.setItem('userPreferences', JSON.stringify(preferences));
+    applyTheme(theme);
+  } catch (error) {
+    console.error('Erro ao salvar tema:', error);
+  }
+};
+
+/**
+ * Observer para mudanças na preferência de cor do sistema (modo auto)
+ */
+export const watchSystemTheme = () => {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  mediaQuery.addEventListener('change', (e) => {
+    const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+    
+    // Só reage se o usuário estiver usando o modo 'auto'
+    if (preferences.tema === 'auto') {
+      const newTheme = e.matches ? 'escuro' : 'claro';
+      console.log('🔄 Sistema mudou para:', newTheme);
+      applyTheme('auto');
+    }
+  });
+};
+
+/**
  * Cores predefinidas para seleção rápida
  */
 export const PRESET_COLORS = [
@@ -130,8 +196,11 @@ export const PRESET_COLORS = [
 export default {
   hexToRgb,
   adjustBrightness,
+  applyTheme,
   applyPrimaryColor,
   loadThemeFromStorage,
   savePrimaryColor,
+  saveTheme,
+  watchSystemTheme,
   PRESET_COLORS
 };

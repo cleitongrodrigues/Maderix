@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './SettingsModal.css';
-import { applyPrimaryColor, PRESET_COLORS } from '../../utils/themeManager';
+import { applyPrimaryColor, applyTheme, PRESET_COLORS } from '../../utils/themeManager';
 
 const SettingsModal = ({ isOpen, onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState('aparencia');
@@ -63,6 +63,11 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     if (field === 'corPrimaria') {
       applyPrimaryColor(value);
     }
+    
+    // Preview do tema em tempo real
+    if (field === 'tema') {
+      applyTheme(value);
+    }
   };
 
   const handleSave = () => {
@@ -72,6 +77,9 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     
     // Aplica a cor primária permanentemente
     applyPrimaryColor(preferences.corPrimaria);
+    
+    // Aplica o tema permanentemente
+    applyTheme(preferences.tema);
     
     if (onSave) {
       onSave(preferences);
@@ -114,6 +122,9 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     if (unsavedChanges && originalPreferences) {
       if (window.confirm('Existem alterações não salvas. Deseja descartá-las?')) {
         setPreferences(originalPreferences);
+        // Restaura tema e cor originais
+        applyTheme(originalPreferences.tema);
+        applyPrimaryColor(originalPreferences.corPrimaria);
         setUnsavedChanges(false);
         onClose();
       }

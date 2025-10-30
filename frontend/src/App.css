@@ -1,39 +1,84 @@
-/* Theme variables for easy global maintenance */
+/* ===== TEMA CLARO (Padrão) ===== */
 :root {
-  --menu-width: 280px; /* Atualizado para o novo menu */
-  --menu-bg: #2f353a;
+  --menu-width: 280px;
   --content-padding: 24px;
-  --page-width: 100%; /* flexible by default, pages will use max-width to limit growth */
-  --page-max-width: 1400px; /* cap page width on very large screens */
+  --page-width: 100%;
+  --page-max-width: 1400px;
   --page-padding: 40px;
   --page-radius: 12px;
   --page-shadow: 0 6px 20px rgba(0,0,0,0.35);
   
   /* ===== CORES PRIMÁRIAS (Personalizáveis via Settings) ===== */
-  --primary-color: #FF6B35; /* Cor principal - personalizável */
-  --primary-color-light: #FF8C42; /* Variação clara */
-  --primary-color-dark: #E55A2B; /* Variação escura */
-  --primary-color-rgb: 255, 107, 53; /* RGB para uso com opacity */
-  --accent-color: #FF8C42; /* Acento (compatibilidade) */
+  --primary-color: #FF6B35;
+  --primary-color-light: #FF8C42;
+  --primary-color-dark: #E55A2B;
+  --primary-color-rgb: 255, 107, 53;
+  --accent-color: #FF8C42;
   
-  /* ===== CORES DO SISTEMA ===== */
+  /* ===== CORES DE FUNDO - MODO CLARO ===== */
+  --bg-body: #f5f6fa;
   --bg-color: #ffffff;
-  --card-bg: #fff;
+  --bg-secondary: #f8f9fa;
+  --bg-elevated: #ffffff;
+  
+  /* ===== CARDS E CONTAINERS ===== */
+  --card-bg: #ffffff;
   --card-border: #e6e6e6;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  /* ===== TEXTOS - MODO CLARO ===== */
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
   --text-default: #2f353a;
-  --muted-text: #666666;
-  --secondary-color: #6c757d;
+  --text-inverse: #ffffff;
+  
+  /* ===== MENU - MODO CLARO ===== */
+  --menu-bg: #2f353a;
+  --menu-text: #ffffff;
+  --menu-text-muted: rgba(255, 255, 255, 0.7);
+  --menu-hover-bg: rgba(255, 255, 255, 0.1);
+  --menu-active-bg: rgba(255, 107, 53, 0.2);
+  --menu-border: rgba(255, 255, 255, 0.1);
+  
+  /* ===== INPUTS E FORMULÁRIOS ===== */
+  --input-bg: #ffffff;
+  --input-border: #ddd;
+  --input-border-focus: var(--primary-color);
+  --input-text: #333333;
+  --input-placeholder: #999999;
+  --input-disabled-bg: #f5f5f5;
+  
+  /* ===== TABELAS ===== */
+  --table-bg: #ffffff;
+  --table-header-bg: #f8f9fa;
+  --table-border: #e6e6e6;
+  --table-row-hover: #f5f5f5;
+  --table-row-striped: #fafafa;
+  
+  /* ===== MODAIS ===== */
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-header-bg: var(--gradient-primary);
+  --modal-border: #e6e6e6;
+  
+  /* ===== ESTADOS ===== */
   --success-color: #28a745;
+  --success-bg: #d4edda;
   --danger-color: #dc3545;
+  --danger-bg: #f8d7da;
   --warning-color: #ffc107;
+  --warning-bg: #fff3cd;
   --info-color: #17a2b8;
+  --info-bg: #d1ecf1;
   
   /* ===== GRADIENTES PRIMÁRIOS ===== */
   --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
   --gradient-primary-vertical: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
   --gradient-primary-horizontal: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
 
-  /* Button design system (use these variables across the app) */
+  /* ===== BOTÕES ===== */
   --btn-bg: var(--primary-color);
   --btn-hover: var(--primary-color-dark);
   --btn-text: #ffffff;
@@ -45,6 +90,83 @@
   --btn-flex-basis: 160px;
   --btn-shadow: 0 4px 10px rgba(0,0,0,0.12);
   --btn-shadow-hover: 0 6px 14px rgba(0,0,0,0.12);
+  
+  /* ===== OUTROS ===== */
+  --border-radius: 8px;
+  --transition-speed: 0.2s;
+  --skeleton-base: #e0e0e0;
+  --skeleton-shine: #f5f5f5;
+  --divider-color: #e6e6e6;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+}
+
+/* ===== TEMA ESCURO ===== */
+[data-theme="escuro"] {
+  /* ===== CORES DE FUNDO - MODO ESCURO ===== */
+  --bg-body: #0d1117;
+  --bg-color: #161b22;
+  --bg-secondary: #1c2128;
+  --bg-elevated: #21262d;
+  
+  /* ===== CARDS E CONTAINERS ===== */
+  --card-bg: #161b22;
+  --card-border: #30363d;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.6);
+  
+  /* ===== TEXTOS - MODO ESCURO ===== */
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --text-default: #c9d1d9;
+  --text-inverse: #0d1117;
+  
+  /* ===== MENU - MODO ESCURO ===== */
+  --menu-bg: #0d1117;
+  --menu-text: #e6edf3;
+  --menu-text-muted: rgba(230, 237, 243, 0.6);
+  --menu-hover-bg: rgba(255, 255, 255, 0.06);
+  --menu-active-bg: rgba(255, 107, 53, 0.15);
+  --menu-border: rgba(255, 255, 255, 0.06);
+  
+  /* ===== INPUTS E FORMULÁRIOS ===== */
+  --input-bg: #0d1117;
+  --input-border: #30363d;
+  --input-border-focus: var(--primary-color);
+  --input-text: #e6edf3;
+  --input-placeholder: #6e7681;
+  --input-disabled-bg: #1c2128;
+  
+  /* ===== TABELAS ===== */
+  --table-bg: #161b22;
+  --table-header-bg: #0d1117;
+  --table-border: #30363d;
+  --table-row-hover: #1c2128;
+  --table-row-striped: #0d1117;
+  
+  /* ===== MODAIS ===== */
+  --modal-bg: #161b22;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-header-bg: var(--gradient-primary);
+  --modal-border: #30363d;
+  
+  /* ===== ESTADOS (ajustados para modo escuro) ===== */
+  --success-color: #3fb950;
+  --success-bg: #1a3a2a;
+  --danger-color: #f85149;
+  --danger-bg: #3a1f1f;
+  --warning-color: #d29922;
+  --warning-bg: #3a3020;
+  --info-color: #58a6ff;
+  --info-bg: #1f2f3f;
+  
+  /* ===== OUTROS ===== */
+  --divider-color: #30363d;
+  --scrollbar-track: #161b22;
+  --scrollbar-thumb: #30363d;
+  --skeleton-base: #30363d;
+  --skeleton-shine: #21262d;
 }
 
 /* Layout básico com menu lateral fixo */
@@ -63,16 +185,18 @@
 }
 
 .content {
-  flex: 1; /* Faz o conteúdo ocupar o restante do espaço */
-  margin-left: 280px; /* Compensa a largura do menu fixo */
-  margin-top: 84px; /* Compensa a altura da TopBar */
+  flex: 1;
+  margin-left: 280px;
+  margin-top: 84px;
   padding: var(--content-padding);
   box-sizing: border-box;
   display: flex;
-  flex-direction: column; /* Garante que o conteúdo seja organizado em coluna */
-  justify-content: flex-start; /* Alinha o conteúdo ao topo */
-  overflow-y: auto; /* Adiciona rolagem caso o conteúdo seja maior que a tela */
-  transition: margin-left 0.3s ease; /* Animação suave quando o menu recolhe */
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease, background-color 0.3s ease;
+  background: var(--bg-body);
+  color: var(--text-default);
 }
 
 /* Ajusta o conteúdo quando o menu estiver recolhido */
@@ -116,12 +240,13 @@
 .usuarios-page > .usuarios-container,
 .perfis-page > .perfis-container,
 .unidades-page > .unidades-container {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   padding: 20px;
   margin: 20px;
-  min-height: calc(100vh - 136px); /* 48px content padding + 40px margin + 48px extra */
+  min-height: calc(100vh - 136px);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Shared page layout moved from shared/Page.css */

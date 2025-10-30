@@ -7,7 +7,7 @@ import TopBar from "./components/TopBar/TopBar";
 import CompanySelector from "./components/CompanySelector";
 import AppRoutes from "./AppRoutes";
 import { MenuProvider, useMenu } from "./contexts/MenuContext";
-import { loadThemeFromStorage } from "./utils/themeManager";
+import { loadThemeFromStorage, watchSystemTheme } from "./utils/themeManager";
 import "./App.css";
 
 function App() {
@@ -16,9 +16,10 @@ function App() {
   const [companySelectorOpen, setCompanySelectorOpen] = useState(false);
   const [empresaAtual, setEmpresaAtual] = useState({ nome: 'Maderix Móveis Ltda', estado: 'SP' });
 
-  // Carrega o tema personalizado ao iniciar
+  // Carrega o tema personalizado ao iniciar e monitora mudanças do sistema
   useEffect(() => {
     loadThemeFromStorage();
+    watchSystemTheme();
   }, []);
 
   const handleSelectCompany = (empresa) => {
