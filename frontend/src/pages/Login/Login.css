@@ -26,7 +26,7 @@
 .login-container h1 {
   margin-bottom: 25px;
   color: #2f353a;
-  font-size: 26px;
+  font-size: calc(26px * var(--font-scale));
   font-weight: bold;
   position: relative;
 }
@@ -41,35 +41,48 @@
   border-radius: 2px;
 }
 
+/* Inline error under the form */
+.login-error {
+  margin-top: 12px;
+  color: #d32f2f;
+  font-size: calc(14px * var(--font-scale));
+}
+
 .login-container input {
   width: 100%;
-  padding: 14px;
+  height: 48px;
+  padding: 0 14px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: calc(16px * var(--font-scale));
+  line-height: 1;
+  box-sizing: border-box;
   background-color: #f7f7f7;
 }
 
 .login-container input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 6px rgba(255, 119, 0, 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
   background-color: #fff;
+  outline: none;
 }
 
 .login-container button {
   width: 100%;
-  padding: 14px;
+  height: 48px;
+  padding: 0 14px;
   margin-top: 18px;
   background-color: var(--primary-color);
   color: #ffffff;
-  font-size: 16px;
+  font-size: calc(16px * var(--font-scale));
   font-weight: bold;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.25);
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .login-container button:hover {
@@ -86,7 +99,7 @@
 
 .login-container .extra-links {
   margin-top: 15px;
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale));
 }
 
 .login-container .extra-links a {
@@ -106,4 +119,122 @@
   opacity: 0.6;
   cursor: not-allowed;
   filter: saturate(0.9);
+}
+
+/* ============================
+   Forgot Password Modal
+   ============================ */
+.forgot-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay, rgba(0,0,0,0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.forgot-modal {
+  background: var(--modal-bg, #fff);
+  border: 1px solid var(--modal-border, #e5e7eb);
+  color: var(--text-default, #2f353a);
+  border-radius: 12px;
+  width: 92%;
+  max-width: 420px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.forgot-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--modal-border, #e5e7eb);
+}
+
+.forgot-modal-header h2 {
+  margin: 0;
+  font-size: calc(18px * var(--font-scale));
+}
+
+.forgot-close {
+  background: transparent;
+  border: none;
+  font-size: calc(20px * var(--font-scale));
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.forgot-close:hover {
+  background: rgba(0,0,0,0.05);
+  color: #1f2937;
+}
+
+.forgot-modal-content {
+  padding: 16px 18px 20px;
+}
+
+.forgot-hint {
+  margin: 0 0 12px 0;
+  font-size: calc(14px * var(--font-scale));
+  color: #6b7280;
+}
+
+.forgot-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: calc(16px * var(--font-scale));
+  background: #f7f7f7;
+  box-sizing: border-box;
+}
+
+.forgot-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
+  background: #fff;
+}
+
+.forgot-submit {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  margin-top: 12px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: calc(16px * var(--font-scale));
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  transition: all 0.2s ease;
+}
+
+.forgot-submit:hover {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+}
+
+.forgot-submit:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.forgot-message {
+  margin-top: 12px;
+  font-size: calc(14px * var(--font-scale));
+  color: var(--text-default, #2f353a);
 }

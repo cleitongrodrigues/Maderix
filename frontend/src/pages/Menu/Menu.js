@@ -47,6 +47,15 @@ function Menu({ onToggleCollapse }) {
     }
   }, [menuCollapsed, onToggleCollapse]);
 
+  // Fecha todos os submenus automaticamente ao recolher o menu
+  useEffect(() => {
+    if (menuCollapsed) {
+      setEstoqueOpen(false);
+      setFinanceiroOpen(false);
+      setConfigOpen(false);
+    }
+  }, [menuCollapsed, setEstoqueOpen, setFinanceiroOpen, setConfigOpen]);
+
   // Refs para os itens do menu
   const estoqueRef = useRef(null);
   const financeiroRef = useRef(null);
@@ -170,6 +179,14 @@ function Menu({ onToggleCollapse }) {
     fileInputRef.current?.click();
   };
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('token');
+    } catch {}
+    closeAllSubmenus();
+    // Navegação é feita pelo NavLink (to="/")
+  };
+
   return (
     <div className={`menu ${menuCollapsed ? 'menu-collapsed' : ''}`}>
       {/* Perfil do Usuário */}
@@ -239,7 +256,7 @@ function Menu({ onToggleCollapse }) {
           <div className="menu-item-wrapper">
             <div
               ref={estoqueRef}
-              className={`menu-item menu-item-toggle ${estoqueOpen ? 'open' : ''} ${menuCollapsed && isEstoqueRoute ? 'active' : ''}`}
+              className={`menu-item menu-item-toggle ${estoqueOpen ? 'open' : ''} ${((menuCollapsed && isEstoqueRoute) || (!menuCollapsed && !estoqueOpen && isEstoqueRoute)) ? 'active' : ''}`}
               onClick={() => toggleSubmenu(setEstoqueOpen)}
               onMouseEnter={() => handleMouseEnter(estoqueRef, setEstoqueOpen)}
               onMouseLeave={() => menuCollapsed && setEstoqueOpen(false)}
@@ -312,7 +329,7 @@ function Menu({ onToggleCollapse }) {
           <div className="menu-item-wrapper">
             <div
               ref={financeiroRef}
-              className={`menu-item menu-item-toggle ${financeiroOpen ? 'open' : ''} ${menuCollapsed && isFinanceiroRoute ? 'active' : ''}`}
+              className={`menu-item menu-item-toggle ${financeiroOpen ? 'open' : ''} ${((menuCollapsed && isFinanceiroRoute) || (!menuCollapsed && !financeiroOpen && isFinanceiroRoute)) ? 'active' : ''}`}
               onClick={() => toggleSubmenu(setFinanceiroOpen)}
               onMouseEnter={() => handleMouseEnter(financeiroRef, setFinanceiroOpen)}
               onMouseLeave={() => menuCollapsed && setFinanceiroOpen(false)}
@@ -383,7 +400,7 @@ function Menu({ onToggleCollapse }) {
           <div className="menu-item-wrapper">
             <div
               ref={configRef}
-              className={`menu-item menu-item-toggle ${configOpen ? 'open' : ''} ${menuCollapsed && isConfigRoute ? 'active' : ''}`}
+              className={`menu-item menu-item-toggle ${configOpen ? 'open' : ''} ${((menuCollapsed && isConfigRoute) || (!menuCollapsed && !configOpen && isConfigRoute)) ? 'active' : ''}`}
               onClick={() => toggleSubmenu(setConfigOpen)}
               onMouseEnter={() => handleMouseEnter(configRef, setConfigOpen)}
               onMouseLeave={() => menuCollapsed && setConfigOpen(false)}
@@ -467,7 +484,7 @@ function Menu({ onToggleCollapse }) {
           to="/" 
           className="menu-item menu-item-logout"
           title="Sair"
-          onClick={closeAllSubmenus}
+          onClick={handleLogout}
         >
           <span className="menu-icon">🚪</span>
           {!menuCollapsed && <span className="menu-text">Sair</span>}

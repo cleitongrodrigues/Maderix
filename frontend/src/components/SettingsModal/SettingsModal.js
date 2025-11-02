@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './SettingsModal.css';
-import { applyPrimaryColor, applyTheme, PRESET_COLORS } from '../../utils/themeManager';
+import { applyPrimaryColor, applyTheme, applyFontScale, PRESET_COLORS } from '../../utils/themeManager';
 
 const SettingsModal = ({ isOpen, onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState('aparencia');
@@ -68,6 +68,11 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     if (field === 'tema') {
       applyTheme(value);
     }
+
+    // Preview do tamanho da fonte em tempo real
+    if (field === 'tamanhoFonte') {
+      applyFontScale(value);
+    }
   };
 
   const handleSave = () => {
@@ -80,6 +85,8 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
     
     // Aplica o tema permanentemente
     applyTheme(preferences.tema);
+  // Aplica tamanho de fonte permanentemente
+  applyFontScale(preferences.tamanhoFonte || 'medio');
     
     if (onSave) {
       onSave(preferences);
@@ -115,6 +122,10 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
       };
       setPreferences(defaults);
       setUnsavedChanges(true);
+      // Preview imediato das alterações padrão
+      applyTheme(defaults.tema);
+      applyPrimaryColor(defaults.corPrimaria);
+      applyFontScale(defaults.tamanhoFonte);
     }
   };
 
@@ -125,6 +136,10 @@ const SettingsModal = ({ isOpen, onClose, onSave }) => {
         // Restaura tema e cor originais
         applyTheme(originalPreferences.tema);
         applyPrimaryColor(originalPreferences.corPrimaria);
+        // Restaura escala de fonte original
+        if (originalPreferences.tamanhoFonte) {
+          applyFontScale(originalPreferences.tamanhoFonte);
+        }
         setUnsavedChanges(false);
         onClose();
       }

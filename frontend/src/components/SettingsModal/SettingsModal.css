@@ -136,6 +136,8 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease-out;
   overflow: hidden;
+  /* Base herdada para escalar tipografia do modal */
+  font-size: calc(16px * var(--font-scale, 1));
 }
 
 /* Header */
@@ -177,12 +179,12 @@
 
 .header-title h2 {
   margin: 0;
-  font-size: 28px;
+  font-size: calc(28px * var(--font-scale, 1));
   font-weight: 700;
 }
 
 .unsaved-indicator {
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale, 1));
   color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
   animation: pulse 2s ease-in-out infinite;
@@ -223,7 +225,7 @@
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
-  font-size: 15px;
+  font-size: calc(15px * var(--font-scale, 1));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -284,7 +286,7 @@
 
 .settings-section h3 {
   margin: 0 0 20px 0;
-  font-size: 18px;
+  font-size: calc(18px * var(--font-scale, 1));
   color: #333;
   display: flex;
   align-items: center;
@@ -316,7 +318,7 @@
 }
 
 .setting-item label {
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
   font-weight: 600;
   color: #333;
 }
@@ -329,7 +331,7 @@
 }
 
 .setting-description {
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale, 1));
   color: #666;
   font-weight: 400;
 }
@@ -346,7 +348,7 @@
   border: 2px solid #e0e0e0;
   background: white;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -389,7 +391,7 @@
 }
 
 .color-value {
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
   color: #333;
   font-weight: 600;
   font-family: monospace;
@@ -403,7 +405,7 @@
 }
 
 .preset-label {
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale, 1));
   color: #666;
   font-weight: 600;
   display: block;
@@ -424,7 +426,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale, 1));
   color: white;
   display: flex;
   align-items: center;
@@ -450,7 +452,7 @@
   padding: 12px 16px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
   background: white;
   color: #23272f;
   cursor: pointer;

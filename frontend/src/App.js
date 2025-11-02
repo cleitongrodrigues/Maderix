@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
+import ResetPassword from "./pages/Login/ResetPassword";
+import NotFound from "./pages/NotFound/NotFound";
 import Menu from "./pages/Menu/Menu";
 import TopBar from "./components/TopBar/TopBar";
 import CompanySelector from "./components/CompanySelector";
@@ -13,6 +15,7 @@ import "./App.css";
 function App() {
   const location = useLocation();
   const { menuCollapsed, setMenuCollapsed } = useMenu();
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
   const [companySelectorOpen, setCompanySelectorOpen] = useState(false);
   const [empresaAtual, setEmpresaAtual] = useState({ nome: 'Maderix Móveis Ltda', estado: 'SP' });
 
@@ -28,16 +31,24 @@ function App() {
   };
 
   // Verifica se está na rota de login
-  const isLoginPage = location.pathname === "/";
+  const isLoginPage = location.pathname === "/" || location.pathname.startsWith("/reset-senha");
 
   return isLoginPage ? (
     // Renderiza apenas o login sem o layout geral
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/reset-senha" element={<ResetPassword />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   ) : (
-    // Renderiza o layout geral com o menu e conteúdo
-    <>
+    // Rotas protegidas: exige autenticação
+    !isAuthenticated ? (
+      <Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    ) : (
+      // Renderiza o layout geral com o menu e conteúdo
+      <>
       <div className={`app-layout ${menuCollapsed ? 'menu-collapsed' : ''}`}>
         <TopBar 
           menuCollapsed={menuCollapsed} 
@@ -59,7 +70,8 @@ function App() {
         onClose={() => setCompanySelectorOpen(false)}
         onSelectCompany={handleSelectCompany}
       />
-    </>
+      </>
+    )
   );
 }
 

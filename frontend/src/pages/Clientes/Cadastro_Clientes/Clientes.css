@@ -68,7 +68,7 @@
   flex: 1 1 auto; /* allow input to grow/shrink */
   min-width: 360px; /* ensure placeholder fits on desktop */
   box-sizing: border-box;
-  font-size: 15px;
+  font-size: inherit; /* herda o tamanho global (App.css) */
   padding: 10px 14px; /* adjusted so placeholder fits */
   border: 1px solid var(--border-color, #dcdcdc);
   border-radius: 6px;
@@ -105,7 +105,7 @@
 /* Aumenta o botão 'Novo Cliente' que está no header fixo sem alterar globalmente */
 .clientes-cabecalho-fixo .acoes-pagina .btn-primary {
   padding: 10px 16px;
-  font-size: 15px;
+  font-size: var(--btn-font-size);
   min-height: 48px; /* match increased input height */
   border-radius: 8px;
   margin-right: 8px; /* pequeno espaçamento à direita do botão */
@@ -327,7 +327,7 @@
 }
 
 /* Search input local style */
-.search-input { box-sizing: border-box; font-size: 14px; }
+.search-input { box-sizing: border-box; font-size: inherit; }
 
 /* Ensure mouse-enter / hover on the header container doesn't change the pointer
    and that the input keeps the text I-beam and a visible caret. This guards

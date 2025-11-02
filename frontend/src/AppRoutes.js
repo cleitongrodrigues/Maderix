@@ -13,6 +13,7 @@ import Empresa from "./pages/Empresa/Empresa";
 import Usuarios from "./pages/Usuarios/Usuarios";
 import Perfis from "./pages/Perfis/Perfis";
 import Unidades from "./pages/Unidades/Unidades";
+import NotFound from "./pages/NotFound/NotFound";
 
 export default function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ export default function AppRoutes() {
       <Route path="/usuarios" element={<Usuarios />} />
       <Route path="/perfis" element={<Perfis />} />
       <Route path="/unidades" element={<Unidades />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

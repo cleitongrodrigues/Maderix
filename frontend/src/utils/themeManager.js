@@ -108,6 +108,21 @@ export const applyPrimaryColor = (primaryColor) => {
 };
 
 /**
+ * Aplica escala de fonte global (pequeno/medio/grande)
+ * @param {"pequeno"|"medio"|"grande"} tamanho
+ */
+export const applyFontScale = (tamanho) => {
+  // Médio é o padrão atual do sistema
+  const map = {
+    pequeno: 0.92,
+    medio: 1.0,
+    grande: 1.10,
+  };
+  const scale = map[tamanho] ?? 1.0;
+  document.documentElement.style.setProperty('--font-scale', String(scale));
+};
+
+/**
  * Carrega as preferências de tema do localStorage
  */
 export const loadThemeFromStorage = () => {
@@ -125,15 +140,24 @@ export const loadThemeFromStorage = () => {
       if (parsed.corPrimaria) {
         applyPrimaryColor(parsed.corPrimaria);
       }
+
+      // Aplica escala de fonte
+      if (parsed.tamanhoFonte) {
+        applyFontScale(parsed.tamanhoFonte);
+      } else {
+        applyFontScale('medio');
+      }
     } else {
       // Se não houver preferências salvas, aplica tema escuro como padrão
       console.log('⚙️ Nenhuma preferência encontrada, aplicando tema escuro padrão');
       applyTheme('escuro');
+      applyFontScale('medio');
     }
   } catch (error) {
     console.error('Erro ao carregar tema:', error);
     // Em caso de erro, também aplica tema escuro
     applyTheme('escuro');
+    applyFontScale('medio');
   }
 };
 
@@ -204,6 +228,7 @@ export default {
   adjustBrightness,
   applyTheme,
   applyPrimaryColor,
+  applyFontScale,
   loadThemeFromStorage,
   savePrimaryColor,
   saveTheme,
