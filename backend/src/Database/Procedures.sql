@@ -1,279 +1,351 @@
-----------------------------------------------------------------------------------
--- PROCEDURE: Registrar venda
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_RegistrarVenda
-    @EmpresaID INT,
-    @ClienteID INT,
-    @ValorTotal DECIMAL(12,2),
-    @DataVenda DATE,
-    @UsuarioID INT,
-    @VendaID INT OUTPUT
+-- ============================================================================
+-- PROCEDURES PARA O SISTEMA MADERIX
+-- ============================================================================
+-- Versão: 1.0
+-- Data: 03/11/2025
+-- Compatível com: Creates.sql
+-- ============================================================================
+
+USE Maderix;
+GO
+
+-- ============================================================================
+-- PROCEDURE: Registrar Nova Venda
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Registrar_Venda
+    @ID_Empresa INT,
+    @ID_Cliente INT,
+    @ID_Usuario INT,
+    @Valor_Total DECIMAL(10,2),
+    @Status_Venda VARCHAR(50) = 'ABERTA',
+    @ID_Venda INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Inserir a venda
-    INSERT INTO VENDAS (EmpresaID, ClienteID, ValorTotal, DataVenda)
-    VALUES (@EmpresaID, @ClienteID, @ValorTotal, @DataVenda);
-
-    SET @VendaID = SCOPE_IDENTITY();
-
-    -- Criar contas a receber
-    INSERT INTO CONTAS_RECEBER (EmpresaID, ClienteID, VendaID, PlanoContaID, Valor, DataVencimento, Status)
-    VALUES (@EmpresaID, @ClienteID, @VendaID, 1, @ValorTotal, DATEADD(DAY,30,@DataVenda), 'Aberto');
-
-    -- Registrar log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresNovos, DataOperacao)
-    VALUES (@EmpresaID, @UsuarioID, 'VENDAS', 'INSERT', CAST(@VendaID AS VARCHAR(100)), CONCAT('ClienteID=', @ClienteID,'; ValorTotal=', @ValorTotal), GETDATE());
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        -- Inserir a venda
+        INSERT INTO VENDAS (ID_Cliente, ID_Empresa, ID_Usuario, Valor_Total, Status_Venda, DT_Venda)
+        VALUES (@ID_Cliente, @ID_Empresa, @ID_Usuario, @Valor_Total, @Status_Venda, GETDATE());
+        
+        SET @ID_Venda = SCOPE_IDENTITY();
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Registrar movimentação de estoque (entrada ou saída)
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_RegistrarMovimentacaoEstoque
-    @MaterialID INT,
-    @Quantidade DECIMAL(12,2),
-    @TipoMovimentacao VARCHAR(20), -- 'Entrada' ou 'Saida'
-    @DataMovimentacao DATE,
-    @EmpresaID INT,
-    @UsuarioID INT
+-- ============================================================================
+-- PROCEDURE: Adicionar Item à Venda
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Adicionar_Item_Venda
+    @ID_Venda INT,
+    @ID_Material INT,
+    @SKU VARCHAR(60) = NULL,
+    @Quantidade INT,
+    @Preco_Unitario DECIMAL(10,2),
+    @ID_Item_Venda INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Inserir movimentação
-    INSERT INTO MOVIMENTACAO_ESTOQUE (MaterialID, Quantidade, TipoMovimentacao, DataMovimentacao)
-    VALUES (@MaterialID, @Quantidade, @TipoMovimentacao, @DataMovimentacao);
-
-    -- Atualizar estoque
-    UPDATE M
-    SET M.QuantidadeEstoque = CASE 
-        WHEN @TipoMovimentacao LIKE 'Entrada%' THEN M.QuantidadeEstoque + @Quantidade
-        WHEN @TipoMovimentacao LIKE 'Saida%' THEN M.QuantidadeEstoque - @Quantidade
-        ELSE M.QuantidadeEstoque
-    END
-    FROM MATERIAIS M
-    WHERE M.MaterialID = @MaterialID;
-
-    -- Registrar contas a pagar para entradas
-    IF @TipoMovimentacao LIKE 'Entrada%'
-    BEGIN
-        DECLARE @FornecedorID INT;
-        SELECT @FornecedorID = FornecedorID FROM FORNECEDORES WHERE EmpresaID = @EmpresaID;
-
-        INSERT INTO CONTAS_PAGAR (EmpresaID, FornecedorID, PlanoContaID, Valor, DataVencimento, Status)
-        SELECT @EmpresaID, @FornecedorID, 2, @Quantidade * PrecoCusto, DATEADD(DAY,30,@DataMovimentacao), 'Aberto'
-        FROM MATERIAIS WHERE MaterialID = @MaterialID;
-    END
-
-    -- Registrar log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresNovos, DataOperacao)
-    VALUES (@EmpresaID, @UsuarioID, 'MOVIMENTACAO_ESTOQUE', 'INSERT', CAST(SCOPE_IDENTITY() AS VARCHAR(100)), CONCAT('MaterialID=', @MaterialID, '; Tipo=', @TipoMovimentacao, '; Qtd=', @Quantidade), GETDATE());
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        DECLARE @Valor_Total_Item DECIMAL(10,2);
+        SET @Valor_Total_Item = @Quantidade * @Preco_Unitario;
+        
+        -- Inserir item
+        INSERT INTO ITENS_VENDA (ID_Venda, ID_Material, SKU, Quantidade, Preco_Unitario, Valor_Total_Item)
+        VALUES (@ID_Venda, @ID_Material, @SKU, @Quantidade, @Preco_Unitario, @Valor_Total_Item);
+        
+        SET @ID_Item_Venda = SCOPE_IDENTITY();
+        
+        -- Atualizar valor total da venda
+        UPDATE VENDAS
+        SET Valor_Total = (SELECT SUM(Valor_Total_Item) FROM ITENS_VENDA WHERE ID_Venda = @ID_Venda)
+        WHERE ID_Venda = @ID_Venda;
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Registrar entrada de materiais
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_RegistrarEntradaMateriais
-    @EmpresaID INT,
-    @UsuarioID INT,
-    @DataEntrada DATE,
-    @Itens TABLE (MaterialID INT, Quantidade DECIMAL(12,2)),
-    @EntradaID INT OUTPUT
+-- ============================================================================
+-- PROCEDURE: Registrar Movimentação de Estoque
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Registrar_Movimentacao_Estoque
+    @ID_Material INT,
+    @ID_Usuario INT = NULL,
+    @ID_Venda INT = NULL,
+    @Tipo_Movimento VARCHAR(50), -- 'ENTRADA', 'SAIDA', 'AJUSTE'
+    @Quantidade INT,
+    @Valor_Unitario DECIMAL(10,2),
+    @Observacao VARCHAR(255) = NULL,
+    @ID_Movimentacao INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Inserir cabeçalho da entrada
-    INSERT INTO ENTRADA_MATERIAIS (EmpresaID, DataEntrada)
-    VALUES (@EmpresaID, @DataEntrada);
-
-    SET @EntradaID = SCOPE_IDENTITY();
-
-    -- Inserir itens
-    INSERT INTO ENTRADA_MATERIAIS_ITENS (EntradaID, MaterialID, Quantidade)
-    SELECT @EntradaID, MaterialID, Quantidade FROM @Itens;
-
-    -- Atualizar estoque
-    UPDATE M
-    SET M.QuantidadeEstoque = M.QuantidadeEstoque + I.Quantidade
-    FROM MATERIAIS M
-    INNER JOIN @Itens I ON I.MaterialID = M.MaterialID;
-
-    -- Registrar log
-    DECLARE @ItemMaterialID INT, @ItemQtd DECIMAL(12,2);
-    DECLARE curItens CURSOR FOR SELECT MaterialID, Quantidade FROM @Itens;
-    OPEN curItens;
-    FETCH NEXT FROM curItens INTO @ItemMaterialID, @ItemQtd;
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-        INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresNovos, DataOperacao)
-        VALUES (@EmpresaID, @UsuarioID, 'ENTRADA_MATERIAIS', 'INSERT', CAST(@EntradaID AS VARCHAR(100)), CONCAT('MaterialID=', @ItemMaterialID, '; Quantidade=', @ItemQtd), GETDATE());
-
-        FETCH NEXT FROM curItens INTO @ItemMaterialID, @ItemQtd;
-    END
-    CLOSE curItens;
-    DEALLOCATE curItens;
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        -- Validar tipo de movimento
+        IF @Tipo_Movimento NOT IN ('ENTRADA', 'SAIDA', 'AJUSTE')
+        BEGIN
+            RAISERROR('Tipo de movimento inválido. Use: ENTRADA, SAIDA ou AJUSTE', 16, 1);
+            RETURN -1;
+        END
+        
+        -- Inserir movimentação
+        INSERT INTO MOVIMENTACAO_ESTOQUE (ID_Material, ID_Usuario, ID_Venda, Tipo_Movimento, Quantidade, Valor_Unitario, Observacao, DT_Movimentacao)
+        VALUES (@ID_Material, @ID_Usuario, @ID_Venda, @Tipo_Movimento, @Quantidade, @Valor_Unitario, @Observacao, GETDATE());
+        
+        SET @ID_Movimentacao = SCOPE_IDENTITY();
+        
+        -- Atualizar estoque atual
+        IF @Tipo_Movimento = 'ENTRADA' OR @Tipo_Movimento = 'AJUSTE'
+        BEGIN
+            UPDATE MATERIAIS
+            SET Estoque_Atual = Estoque_Atual + @Quantidade
+            WHERE ID_Material = @ID_Material;
+        END
+        ELSE IF @Tipo_Movimento = 'SAIDA'
+        BEGIN
+            -- Verificar se há estoque suficiente
+            DECLARE @Estoque_Atual INT;
+            SELECT @Estoque_Atual = Estoque_Atual FROM MATERIAIS WHERE ID_Material = @ID_Material;
+            
+            IF @Estoque_Atual < @Quantidade
+            BEGIN
+                RAISERROR('Estoque insuficiente para realizar a saída', 16, 1);
+                ROLLBACK TRANSACTION;
+                RETURN -1;
+            END
+            
+            UPDATE MATERIAIS
+            SET Estoque_Atual = Estoque_Atual - @Quantidade
+            WHERE ID_Material = @ID_Material;
+        END
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Receber pagamento (conta a receber ou parcela)
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_ReceberPagamento
-    @ContaReceberID INT,
-    @ValorPago DECIMAL(12,2),
-    @DataPagamento DATE,
-    @UsuarioID INT
+-- ============================================================================
+-- PROCEDURE: Finalizar Venda (mudar status para CONCLUÍDA)
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Finalizar_Venda
+    @ID_Venda INT,
+    @ID_Usuario INT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Atualiza a conta
-    UPDATE CONTAS_RECEBER
-    SET ValorPago = @ValorPago,
-        DataPagamento = @DataPagamento,
-        Status = 'Pago'
-    WHERE ContaReceberID = @ContaReceberID;
-
-    -- Lança no caixa
-    INSERT INTO CAIXA_BANCOS (EmpresaID, PlanoContaID, TipoMovimento, Valor, Historico, Origem, ReferenciaID)
-    SELECT EmpresaID, PlanoContaID, 'E', @ValorPago, 'Recebimento de Cliente', 'ContaReceber', @ContaReceberID
-    FROM CONTAS_RECEBER
-    WHERE ContaReceberID = @ContaReceberID;
-
-    -- Log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresNovos, DataOperacao)
-    SELECT EmpresaID, @UsuarioID, 'CONTAS_RECEBER', 'PAGAMENTO', CAST(ContaReceberID AS VARCHAR(100)), CONCAT('ValorPago=', @ValorPago, '; DataPagamento=', @DataPagamento), GETDATE()
-    FROM CONTAS_RECEBER WHERE ContaReceberID = @ContaReceberID;
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        -- Atualizar status da venda
+        UPDATE VENDAS
+        SET Status_Venda = 'CONCLUÍDA'
+        WHERE ID_Venda = @ID_Venda;
+        
+        -- Registrar saída de estoque para cada item
+        DECLARE @ID_Material INT, @Quantidade INT, @Preco_Unitario DECIMAL(10,2);
+        
+        DECLARE cur_Itens CURSOR FOR
+        SELECT ID_Material, Quantidade, Preco_Unitario
+        FROM ITENS_VENDA
+        WHERE ID_Venda = @ID_Venda;
+        
+        OPEN cur_Itens;
+        FETCH NEXT FROM cur_Itens INTO @ID_Material, @Quantidade, @Preco_Unitario;
+        
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            DECLARE @ID_Mov INT;
+            EXEC sp_Registrar_Movimentacao_Estoque 
+                @ID_Material = @ID_Material,
+                @ID_Usuario = @ID_Usuario,
+                @ID_Venda = @ID_Venda,
+                @Tipo_Movimento = 'SAIDA',
+                @Quantidade = @Quantidade,
+                @Valor_Unitario = @Preco_Unitario,
+                @Observacao = 'Saída por venda',
+                @ID_Movimentacao = @ID_Mov OUTPUT;
+            
+            FETCH NEXT FROM cur_Itens INTO @ID_Material, @Quantidade, @Preco_Unitario;
+        END
+        
+        CLOSE cur_Itens;
+        DEALLOCATE cur_Itens;
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        IF CURSOR_STATUS('global','cur_Itens') >= 0
+        BEGIN
+            CLOSE cur_Itens;
+            DEALLOCATE cur_Itens;
+        END
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Pagar conta (contas a pagar)
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_PagarConta
-    @ContaPagarID INT,
-    @ValorPago DECIMAL(12,2),
-    @DataPagamento DATE,
-    @UsuarioID INT
+-- ============================================================================
+-- PROCEDURE: Cancelar Venda
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Cancelar_Venda
+    @ID_Venda INT,
+    @ID_Usuario INT,
+    @Motivo VARCHAR(255)
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Atualiza a conta
-    UPDATE CONTAS_PAGAR
-    SET ValorPago = @ValorPago,
-        DataPagamento = @DataPagamento,
-        Status = 'Pago'
-    WHERE ContaPagarID = @ContaPagarID;
-
-    -- Lança no caixa (saída)
-    INSERT INTO CAIXA_BANCOS (EmpresaID, PlanoContaID, TipoMovimento, Valor, Historico, Origem, ReferenciaID)
-    SELECT EmpresaID, PlanoContaID, 'S', @ValorPago, 'Pagamento a Fornecedor', 'ContaPagar', @ContaPagarID
-    FROM CONTAS_PAGAR
-    WHERE ContaPagarID = @ContaPagarID;
-
-    -- Log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresNovos, DataOperacao)
-    SELECT EmpresaID, @UsuarioID, 'CONTAS_PAGAR', 'PAGAMENTO', CAST(ContaPagarID AS VARCHAR(100)), CONCAT('ValorPago=', @ValorPago, '; DataPagamento=', @DataPagamento), GETDATE()
-    FROM CONTAS_PAGAR WHERE ContaPagarID = @ContaPagarID;
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        -- Verificar se já existe cancelamento
+        IF EXISTS (SELECT 1 FROM CANCELAMENTOS_VENDA WHERE ID_Venda = @ID_Venda)
+        BEGIN
+            RAISERROR('Esta venda já foi cancelada anteriormente', 16, 1);
+            RETURN -1;
+        END
+        
+        -- Atualizar status da venda
+        UPDATE VENDAS
+        SET Status_Venda = 'CANCELADA'
+        WHERE ID_Venda = @ID_Venda;
+        
+        -- Registrar o cancelamento
+        INSERT INTO CANCELAMENTOS_VENDA (ID_Venda, ID_Usuario, Data_Evento, Motivo)
+        VALUES (@ID_Venda, @ID_Usuario, GETDATE(), @Motivo);
+        
+        -- Marcar contas a receber como canceladas
+        UPDATE CONTAS_RECEBER
+        SET Cancelado = 1
+        WHERE ID_Venda = @ID_Venda;
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Relatório de fluxo de caixa
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_RelatorioFluxoCaixa
-    @DataInicio DATE,
-    @DataFim DATE
+-- ============================================================================
+-- PROCEDURE: Registrar Pagamento de Venda
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Registrar_Pagamento_Venda
+    @ID_Venda INT,
+    @ID_Conta INT = NULL,
+    @Tipo_Pagamento VARCHAR(20), -- 'PIX', 'Cartão', 'Dinheiro', 'Boleto'
+    @Valor DECIMAL(10,2),
+    @ID_Usuario INT,
+    @Observacao VARCHAR(255) = NULL,
+    @ID_Pagamento INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Relatório detalhado de entradas e saídas
-    SELECT 
-        c.EmpresaID,
-        e.NomeFantasia AS Empresa,
-        c.TipoMovimento,
-        SUM(c.Valor) AS Total,
-        COUNT(*) AS QtdeMovimentos
-    FROM CAIXA_BANCOS c
-    INNER JOIN EMPRESA e ON e.EmpresaID = c.EmpresaID
-    WHERE c.DataMovimento BETWEEN @DataInicio AND DATEADD(DAY, 1, @DataFim)
-    GROUP BY c.EmpresaID, e.NomeFantasia, c.TipoMovimento
-    ORDER BY e.NomeFantasia, c.TipoMovimento;
-
-    -- Saldo consolidado
-    SELECT 
-        c.EmpresaID,
-        e.NomeFantasia AS Empresa,
-        SUM(CASE WHEN c.TipoMovimento = 'E' THEN c.Valor ELSE 0 END) -
-        SUM(CASE WHEN c.TipoMovimento = 'S' THEN c.Valor ELSE 0 END) AS Saldo
-    FROM CAIXA_BANCOS c
-    INNER JOIN EMPRESA e ON e.EmpresaID = c.EmpresaID
-    WHERE c.DataMovimento BETWEEN @DataInicio AND DATEADD(DAY, 1, @DataFim)
-    GROUP BY c.EmpresaID, e.NomeFantasia
-    ORDER BY e.NomeFantasia;
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        -- Registrar pagamento
+        INSERT INTO PAGAMENTOS_VENDA (ID_Venda, ID_Conta, Data_Pagamento, Tipo_Pagamento, Valor, ID_Usuario, Observacao)
+        VALUES (@ID_Venda, @ID_Conta, GETDATE(), @Tipo_Pagamento, @Valor, @ID_Usuario, @Observacao);
+        
+        SET @ID_Pagamento = SCOPE_IDENTITY();
+        
+        -- Se houver ID_Conta, marcar como paga
+        IF @ID_Conta IS NOT NULL
+        BEGIN
+            UPDATE CONTAS_RECEBER
+            SET Pago = 1,
+                Data_Pagamento = GETDATE()
+            WHERE ID_Conta = @ID_Conta;
+        END
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Estornar pagamento de parcela
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_EstornarParcela
-    @ParcelaReceberID INT,
-    @UsuarioID INT
+-- ============================================================================
+-- PROCEDURE: Gerar Conta a Receber de uma Venda
+-- ============================================================================
+CREATE OR ALTER PROCEDURE sp_Gerar_Conta_Receber
+    @ID_Venda INT,
+    @ID_Empresa INT,
+    @Numero VARCHAR(50) = NULL,
+    @Cliente VARCHAR(150) = NULL,
+    @Descricao VARCHAR(255) = NULL,
+    @Dias_Vencimento INT = 30,
+    @ID_Conta INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    DECLARE @ValorPago DECIMAL(12,2), @DataPagamento DATE, @EmpresaID INT;
-
-    SELECT @ValorPago = ValorPago, @DataPagamento = DataPagamento, @EmpresaID = EmpresaID
-    FROM PARCELAS_RECEBER WHERE ParcelaReceberID = @ParcelaReceberID;
-
-    -- Estorna a parcela
-    UPDATE PARCELAS_RECEBER
-    SET ValorPago = NULL, DataPagamento = NULL, Status = 'Aberto'
-    WHERE ParcelaReceberID = @ParcelaReceberID;
-
-    -- Remove lançamento no caixa
-    DELETE FROM CAIXA_BANCOS WHERE Origem = 'ParcelaReceber' AND ReferenciaID = @ParcelaReceberID;
-
-    -- Log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresAnteriores, ValoresNovos, DataOperacao)
-    VALUES (@EmpresaID, @UsuarioID, 'PARCELAS_RECEBER', 'ESTORNO', CAST(@ParcelaReceberID AS VARCHAR(100)), CONCAT('ValorPago=', @ValorPago, '; DataPagamento=', @DataPagamento), 'NULL', GETDATE());
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        DECLARE @Valor DECIMAL(10,2), @Data_Vencimento DATETIME;
+        
+        -- Buscar valor total da venda
+        SELECT @Valor = Valor_Total FROM VENDAS WHERE ID_Venda = @ID_Venda;
+        
+        -- Calcular vencimento
+        SET @Data_Vencimento = DATEADD(DAY, @Dias_Vencimento, GETDATE());
+        
+        -- Inserir conta a receber
+        INSERT INTO CONTAS_RECEBER (ID_Venda, ID_Empresa, Numero, Cliente, Descricao, Valor, Data_Vencimento, Pago, DT_Cad_Conta, Cancelado)
+        VALUES (@ID_Venda, @ID_Empresa, @Numero, @Cliente, @Descricao, @Valor, @Data_Vencimento, 0, GETDATE(), 0);
+        
+        SET @ID_Conta = SCOPE_IDENTITY();
+        
+        COMMIT TRANSACTION;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
-----------------------------------------------------------------------------------
--- PROCEDURE: Estornar pagamento de conta a pagar
-----------------------------------------------------------------------------------
-CREATE PROCEDURE st_EstornarContaPagar
-    @ContaPagarID INT,
-    @UsuarioID INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @ValorPago DECIMAL(12,2), @DataPagamento DATE, @EmpresaID INT;
-
-    SELECT @ValorPago = ValorPago, @DataPagamento = DataPagamento, @EmpresaID = EmpresaID
-    FROM CONTAS_PAGAR WHERE ContaPagarID = @ContaPagarID;
-
-    -- Estorna a conta
-    UPDATE CONTAS_PAGAR
-    SET ValorPago = NULL, DataPagamento = NULL, Status = 'Aberto'
-    WHERE ContaPagarID = @ContaPagarID;
-
-    -- Remove lançamento no caixa
-    DELETE FROM CAIXA_BANCOS WHERE Origem = 'ContaPagar' AND ReferenciaID = @ContaPagarID;
-
-    -- Log
-    INSERT INTO LOG_SISTEMA (EmpresaID, UsuarioID, TabelaAfetada, Operacao, ChaveRegistro, ValoresAnteriores, ValoresNovos, DataOperacao)
-    VALUES (@EmpresaID, @UsuarioID, 'CONTAS_PAGAR', 'ESTORNO', CAST(@ContaPagarID AS VARCHAR(100)), CONCAT('ValorPago=', @ValorPago, '; DataPagamento=', @DataPagamento), 'NULL', GETDATE());
-END;
+PRINT '============================================================================';
+PRINT 'PROCEDURES CRIADAS COM SUCESSO!';
+PRINT '============================================================================';
+PRINT 'Total de Procedures: 8';
+PRINT '- sp_Registrar_Venda';
+PRINT '- sp_Adicionar_Item_Venda';
+PRINT '- sp_Registrar_Movimentacao_Estoque';
+PRINT '- sp_Finalizar_Venda';
+PRINT '- sp_Cancelar_Venda';
+PRINT '- sp_Registrar_Pagamento_Venda';
+PRINT '- sp_Gerar_Conta_Receber';
+PRINT '============================================================================';
 GO
