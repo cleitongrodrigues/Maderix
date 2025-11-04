@@ -149,13 +149,13 @@ CREATE TABLE dbo.PAGAMENTOS_VENDA (ID_Pagamento    Integer         IDENTITY(1,1)
 GO
 
  
-CREATE TABLE dbo.CANCELAMENTOS_VENDA (ID_Cancelamento Integer      IDENTITY(1,1) PRIMARY KEY
-                                      ,ID_Venda        Integer      NOT NULL
-                                      ,ID_Usuario      Integer      NOT NULL
-                                      ,Data_Evento     DATETIME     NOT NULL DEFAULT GETDATE()
-                                      ,Motivo          VARCHAR(255) COLLATE Latin1_General_CI_AS NULL
-                                      ,CONSTRAINT FK_Cancelamento_Venda   FOREIGN KEY (ID_Venda)   REFERENCES VENDAS(ID_Venda)
-                                      ,CONSTRAINT FK_Cancelamento_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS(ID_Usuario));
+CREATE TABLE dbo.CANCELAMENTO_VENDA (ID_Cancelamento Integer      IDENTITY(1,1) PRIMARY KEY
+                                    ,ID_Venda        Integer      NOT NULL
+                                    ,ID_Usuario      Integer      NOT NULL
+                                    ,Data_Evento     DATETIME     NOT NULL DEFAULT GETDATE()
+                                    ,Motivo          VARCHAR(255) COLLATE Latin1_General_CI_AS NULL
+                                    ,CONSTRAINT FK_Cancelamento_Venda   FOREIGN KEY (ID_Venda)   REFERENCES VENDAS(ID_Venda)
+                                    ,CONSTRAINT FK_Cancelamento_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS(ID_Usuario));
 GO
 
 -- Uma venda só deve ter um registro de cancelamento

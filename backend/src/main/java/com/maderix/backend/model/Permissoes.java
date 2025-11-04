@@ -16,7 +16,7 @@ public class Permissoes {
     @Column(name = "ID_Permissoes")
     private Integer ID_Permissoes;
 
-    @Column(name = "CODIGO", length = 10 ,nullable = false, unique = true)
+    @Column(name = "CODIGO", length = 100 ,nullable = false, unique = true)
     private String CODIGO;
 
     @Column(name = "NOME", length = 150, nullable = false)

@@ -21,7 +21,7 @@ public class PagamentosVenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_PAGAMENTO")
+    @Column(name = "ID_Pagamento")
     private Integer ID_Pagamento;
 
     @ManyToOne
