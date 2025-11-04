@@ -136,16 +136,16 @@ CREATE TABLE dbo.CONTAS_RECEBER (ID_Conta        Integer       IDENTITY PRIMARY 
 GO
 	
 CREATE TABLE dbo.PAGAMENTOS_VENDA (ID_Pagamento    Integer         IDENTITY(1,1) PRIMARY KEY
-                                   ,ID_Venda        Integer         NOT NULL
-								   ,ID_Conta        Integer         NULL
-                                   ,Data_Pagamento  DATETIME        NOT NULL DEFAULT GETDATE()
-                                   ,Tipo_Pagamento  VARCHAR(20)     COLLATE Latin1_General_CI_AS NOT NULL
-                                   ,Valor           DECIMAL(10,2)   NOT NULL
-                                   ,ID_Usuario      Integer         NOT NULL
-                                   ,Observacao      VARCHAR(255)    COLLATE Latin1_General_CI_AS NULL
-                                   ,CONSTRAINT FK_Pagamento_Venda   FOREIGN KEY (ID_Venda)   REFERENCES VENDAS(ID_Venda)
-								   ,CONSTRAINT FK_Pagamento_Conta   FOREIGN KEY (ID_Conta)   REFERENCES CONTAS_RECEBER(ID_Conta)
-                                   ,CONSTRAINT FK_Pagamento_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS(ID_Usuario));
+                                  ,ID_Venda        Integer         NOT NULL
+								  ,ID_Conta        Integer         NULL
+                                  ,Data_Pagamento  DATETIME        NOT NULL DEFAULT GETDATE()
+                                  ,Tipo_Pagamento  VARCHAR(20)     COLLATE Latin1_General_CI_AS NOT NULL
+                                  ,Valor           DECIMAL(10,2)   NOT NULL
+                                  ,ID_Usuario      Integer         NOT NULL
+                                  ,Observacao      VARCHAR(255)    COLLATE Latin1_General_CI_AS NULL
+                                  ,CONSTRAINT FK_Pagamento_Venda   FOREIGN KEY (ID_Venda)   REFERENCES VENDAS(ID_Venda)
+								  ,CONSTRAINT FK_Pagamento_Conta   FOREIGN KEY (ID_Conta)   REFERENCES CONTAS_RECEBER(ID_Conta)
+                                  ,CONSTRAINT FK_Pagamento_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS(ID_Usuario));
 GO
 
  
