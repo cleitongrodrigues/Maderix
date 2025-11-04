@@ -16,11 +16,17 @@ public class ContasReceber {
 
     @ManyToOne
     @JoinColumn(name = "ID_Venda", nullable = false)
-    private Vendas ID_Venda;
+    private Vendas venda;
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
-    private Empresa ID_Empresa;
+    private Empresa empresa;
+
+    @Column(name = "Numero", length = 50, nullable = true)
+    private String Numero;
+
+    @Column(name = "Cliente", length = 150, nullable = true)
+    private String Cliente;
 
     @Column(name = "Descricao", length = 255, nullable = true)
     private String Descricao;
@@ -32,8 +38,7 @@ public class ContasReceber {
     private LocalDateTime Data_Vencimento;
 
     @Column(name = "Pago")
-    @org.hibernate.annotations.ColumnDefault("0")
-    private boolean Pago;
+    private boolean Pago = false;
 
     @Column(name = "Data_Pagamento", nullable = true)
     private LocalDateTime Data_Pagamento;
@@ -41,6 +46,9 @@ public class ContasReceber {
     @Column(name = "DT_Cad_Conta", nullable = false)
     @CreationTimestamp
     private LocalDateTime DT_Cad_Conta;
+
+    @Column(name = "Cancelado", nullable = false)
+    private Boolean Cancelado = false;
 
     public ContasReceber(){}
 
@@ -52,22 +60,21 @@ public class ContasReceber {
         this.ID_Conta = ID_Conta;
     }
 
-    public Vendas getID_Venda() {
-        return ID_Venda;
+    public Vendas getVenda() {
+        return this.venda;
     }
 
-    public void setID_Venda(Vendas ID_Venda) {
-        this.ID_Venda = ID_Venda;
+    public void setVenda(Vendas venda) {
+        this.venda = venda;
     }
 
-    public Empresa getID_Empresa() {
-        return ID_Empresa;
+    public Empresa getEmpresa() {
+        return this.empresa;
     }
 
-    public void setID_Empresa(Empresa ID_Empresa) {
-        this.ID_Empresa = ID_Empresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
-
     public String getDescricao() {
         return Descricao;
     }
@@ -115,4 +122,38 @@ public class ContasReceber {
     public void setDT_Cad_Conta(LocalDateTime DT_Cad_Conta) {
         this.DT_Cad_Conta = DT_Cad_Conta;
     }
+
+    public String getNumero() {
+        return this.Numero;
+    }
+
+    public void setNumero(String Numero) {
+        this.Numero = Numero;
+    }
+
+    public String getCliente() {
+        return this.Cliente;
+    }
+
+    public void setCliente(String Cliente) {
+        this.Cliente = Cliente;
+    }
+
+    public boolean getPago() {
+        return this.Pago;
+    }
+
+
+    public Boolean isCancelado() {
+        return this.Cancelado;
+    }
+
+    public Boolean getCancelado() {
+        return this.Cancelado;
+    }
+
+    public void setCancelado(Boolean Cancelado) {
+        this.Cancelado = Cancelado;
+    }
+    
 }

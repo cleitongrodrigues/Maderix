@@ -16,11 +16,11 @@ public class Usuarios{
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
-    private Empresa ID_Empresa;
+    private Empresa empresa;
 
     @ManyToOne
     @JoinColumn(name = "ID_Perfil", nullable = false)
-    private PerfisUsuario  ID_Perfil;
+    private PerfisUsuario  perfil;
 
     @Column(name = "NM_Usuario", length = 150, nullable = false)
     private String NM_Usuario;
@@ -28,8 +28,20 @@ public class Usuarios{
     @Column(name = "Email", length = 100, nullable = false, unique = true)
     private String Email;
 
+    @Column(name = "NM_Login", length = 50 ,nullable = false, unique = true)
+    private String NM_Login;
+
+    @Column(name = "SENHA_HASH", length = 200, nullable = false)
+    private String SENHA_HASH;
+
     @Column(name = "Tel_Usuario", length = 20)
     private String Tel_Usuario;
+
+    @Column(name = "Ativo", nullable = false)
+    private Boolean Ativo = true;
+
+    @Column(name = "ULTIMO_LOGIN", nullable = true)
+    private LocalDateTime ULTIMO_LOGIN;
 
     @Column(name = "Senha", length = 255, nullable = false)
     private String Senha;
@@ -48,20 +60,20 @@ public class Usuarios{
         this.ID_Usuario = ID_Usuario;
     }
 
-    public Empresa getID_Empresa() {
-        return ID_Empresa;
+    public Empresa getEmpresa() {
+        return this.empresa;
     }
 
-    public void setID_Empresa(Empresa ID_Empresa) {
-        this.ID_Empresa = ID_Empresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public PerfisUsuario getID_Perfil() {
-        return ID_Perfil;
+    public PerfisUsuario getPerfil() {
+        return this.perfil;
     }
 
-    public void setID_Perfil(PerfisUsuario ID_Perfil) {
-        this.ID_Perfil = ID_Perfil;
+    public void setPerfil(PerfisUsuario perfil) {
+        this.perfil = perfil;
     }
 
     public String getNM_Usuario() {
@@ -102,5 +114,41 @@ public class Usuarios{
 
     public void setDT_Cad_Usuario(LocalDateTime DT_Cad_Usuario) {
         this.DT_Cad_Usuario = DT_Cad_Usuario;
+    }
+
+    public String getNM_Login() {
+        return this.NM_Login;
+    }
+
+    public void setNM_Login(String NM_Login) {
+        this.NM_Login = NM_Login;
+    }
+
+    public String getSENHA_HASH() {
+        return this.SENHA_HASH;
+    }
+
+    public void setSENHA_HASH(String SENHA_HASH) {
+        this.SENHA_HASH = SENHA_HASH;
+    }
+
+    public Boolean isAtivo() {
+        return this.Ativo;
+    }
+
+    public Boolean getAtivo() {
+        return this.Ativo;
+    }
+
+    public void setAtivo(Boolean Ativo) {
+        this.Ativo = Ativo;
+    }
+
+    public LocalDateTime getULTIMO_LOGIN() {
+        return this.ULTIMO_LOGIN;
+    }
+
+    public void setULTIMO_LOGIN(LocalDateTime ULTIMO_LOGIN) {
+        this.ULTIMO_LOGIN = ULTIMO_LOGIN;
     }
 }

@@ -16,29 +16,42 @@ public class Materiais {
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
-    private Empresa ID_Empresa;
+    private Empresa empresa;
 
     @ManyToOne
     @JoinColumn(name = "ID_Unidade", nullable = false)
-    private UnidadesMedida ID_Unidade;
+    private UnidadesMedida unidadeMedida;
 
     @Column(name = "NM_Material", length = 150, nullable = false)
     private String NM_Material;
+
+    @Column(name = "Codigo", length = 60, nullable = false, unique = true)
+    private String Codigo;
+
+    @Column(name = "PRECO_VENDA", precision = 10, scale = 2, nullable = false)
+    private BigDecimal PRECO_VENDA = BigDecimal.ZERO;
 
     @Column(name = "Descricao", length = 255)
     private String Descricao;
 
     @Column(name = "Preco_Custo", nullable = false, precision = 10, scale = 2)
-    @org.hibernate.annotations.ColumnDefault("0.00")
-    private BigDecimal Preco_Custo; 
+    private BigDecimal Preco_Custo = BigDecimal.ZERO; 
 
     @Column(name = "Estoque_Atual", nullable = false)
-    @org.hibernate.annotations.ColumnDefault("0")
-    private Integer Estoque_Atual;
+    private Integer Estoque_Atual = 0;
+
+    @Column(name = "Fornecedor", length = 150, nullable = true)
+    private String Fornecedor;
+
+    @Column(name = "Categoria", length = 100, nullable = true)
+    private String Categoria;
 
     @Column(name = "DT_Cad_Material", nullable = false)
     @CreationTimestamp
     private LocalDateTime DT_Cad_Material;
+
+    @Column(name = "Ativo", nullable = false)
+    private Boolean Ativo = true;
 
     public Integer getID_Material() {
         return ID_Material;
@@ -48,20 +61,20 @@ public class Materiais {
         this.ID_Material = ID_Material;
     }
 
-    public Empresa getID_Empresa() {
-        return ID_Empresa;
+    public Empresa getEmpresa() {
+        return this.empresa;
     }
 
-    public void setID_Empresa(Empresa ID_Empresa) {
-        this.ID_Empresa = ID_Empresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public UnidadesMedida getID_Unidade() {
-        return ID_Unidade;
+    public UnidadesMedida getUnidadeMedida() {
+        return this.unidadeMedida;
     }
 
-    public void setID_Unidade(UnidadesMedida ID_Unidade) {
-        this.ID_Unidade = ID_Unidade;
+    public void setUnidadeMedida(UnidadesMedida unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
     }
 
     public String getNM_Material() {
@@ -102,5 +115,49 @@ public class Materiais {
 
     public void setDT_Cad_Material(LocalDateTime DT_Cad_Material) {
         this.DT_Cad_Material = DT_Cad_Material;
+    }
+
+    public String getCodigo() {
+        return this.Codigo;
+    }
+
+    public void setCodigo(String Codigo) {
+        this.Codigo = Codigo;
+    }
+
+    public BigDecimal getPRECO_VENDA() {
+        return this.PRECO_VENDA;
+    }
+
+    public void setPRECO_VENDA(BigDecimal PRECO_VENDA) {
+        this.PRECO_VENDA = PRECO_VENDA;
+    }
+
+    public String getFornecedor() {
+        return this.Fornecedor;
+    }
+
+    public void setFornecedor(String Fornecedor) {
+        this.Fornecedor = Fornecedor;
+    }
+
+    public String getCategoria() {
+        return this.Categoria;
+    }
+
+    public void setCategoria(String Categoria) {
+        this.Categoria = Categoria;
+    }
+
+    public Boolean isAtivo() {
+        return this.Ativo;
+    }
+
+    public Boolean getAtivo() {
+        return this.Ativo;
+    }
+
+    public void setAtivo(Boolean Ativo) {
+        this.Ativo = Ativo;
     }
 }

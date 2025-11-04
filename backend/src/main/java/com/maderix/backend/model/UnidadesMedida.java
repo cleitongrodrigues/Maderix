@@ -20,4 +20,45 @@ public class UnidadesMedida {
 
     @Column(name = "Descricao", length = 50, nullable = false)
     private String Descricao;
+
+    @Column(name = "Ativo", nullable = false)
+    private Boolean Ativo = true;
+
+
+    public Integer getID_Unidade() {
+        return this.ID_Unidade;
+    }
+
+    public void setID_Unidade(Integer ID_Unidade) {
+        this.ID_Unidade = ID_Unidade;
+    }
+
+    public String getSigla() {
+        return this.Sigla;
+    }
+
+    public void setSigla(String Sigla) {
+        this.Sigla = Sigla;
+    }
+
+    public String getDescricao() {
+        return this.Descricao;
+    }
+
+    public void setDescricao(String Descricao) {
+        this.Descricao = Descricao;
+    }
+
+    public Boolean isAtivo() {
+        return this.Ativo;
+    }
+
+    public Boolean getAtivo() {
+        return this.Ativo;
+    }
+
+    public void setAtivo(Boolean Ativo) {
+        this.Ativo = Ativo;
+    }
+
 }

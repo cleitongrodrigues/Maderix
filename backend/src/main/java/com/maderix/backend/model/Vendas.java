@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.maderix.backend.service.EmpresaService;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,15 +18,15 @@ public class Vendas {
 
     @ManyToOne
     @JoinColumn(name = "ID_Cliente", nullable = false)
-    private Clientes ID_Cliente;
+    private Clientes cliente;
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
-    private Empresa ID_Empresa;
+    private Empresa empresa;
 
     @ManyToOne
     @JoinColumn(name = "ID_Usuario")
-    private Usuarios ID_Usuario;
+    private Usuarios usuario;
 
     @Column(name = "Valor_Total", nullable = false, precision = 10, scale = 2)
     private BigDecimal Valor_Total;
@@ -40,7 +39,7 @@ public class Vendas {
     @CreationTimestamp
     private LocalDateTime DT_Venda;
 
-    @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ItensVenda> itensVendas;
 
     public Vendas(){}
@@ -53,28 +52,28 @@ public class Vendas {
         this.ID_Venda = ID_Venda;
     }
 
-    public Clientes getID_Cliente() {
-        return ID_Cliente;
+    public Clientes getCliente() {
+        return this.cliente;
     }
 
-    public void setID_Cliente(Clientes ID_Cliente) {
-        this.ID_Cliente = ID_Cliente;
+    public void setCliente(Clientes cliente) {
+        this.cliente = cliente;
     }
 
-    public Empresa getID_Empresa() {
-        return ID_Empresa;
+    public Empresa getEmpresa() {
+        return this.empresa;
     }
 
-    public void setID_Empresa(Empresa ID_Empresa) {
-        this.ID_Empresa = ID_Empresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public Usuarios getID_Usuario() {
-        return ID_Usuario;
+    public Usuarios getUsuario() {
+        return this.usuario;
     }
 
-    public void setID_Usuario(Usuarios ID_Usuario) {
-        this.ID_Usuario = ID_Usuario;
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
     }
 
     public BigDecimal getValor_Total() {
