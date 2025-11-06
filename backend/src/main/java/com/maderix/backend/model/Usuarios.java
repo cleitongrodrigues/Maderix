@@ -1,13 +1,18 @@
 package com.maderix.backend.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "USUARIOS")
-public class Usuarios{
+public class Usuarios implements UserDetails{
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -151,4 +156,46 @@ public class Usuarios{
     public void setULTIMO_LOGIN(LocalDateTime ULTIMO_LOGIN) {
         this.ULTIMO_LOGIN = ULTIMO_LOGIN;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Retorna as autoridades/permissões do usuário
+        // Neste exemplo, estamos usando o perfil para definir a autoridade básica
+        // Se você tiver a entidade Permissoes mapeada, use ela.
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.getNM_Perfil().toUpperCase()));
+    }
+
+    @Override
+    public String getPassword() {
+        // Retorna o hash da senha
+        return SENHA_HASH;
+    }
+
+    @Override
+    public String getUsername() {
+        // Retorna o identificador único (o login neste caso)
+        return NM_Login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Contas nunca expiram
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Contas nunca são bloqueadas
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Credenciais nunca expiram
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // Retorna o status de ativo (seu campo Ativo)
+        return Ativo; 
+    }
 }
+
