@@ -19,7 +19,7 @@ public class AutenticacaoService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Usuarios autenticarUsuarios (String nmLogin, String senhaPura){
+    public Usuarios autenticar(String nmLogin, String senhaPura){
 
         //Buscar usuario pelo nome de login
         Usuarios usuario = usuariosRepository.findByNM_Login(nmLogin)
@@ -40,7 +40,6 @@ public class AutenticacaoService {
 
         return usuario;
     }
-
 
     public Usuarios salvarUsuarios(Usuarios novoUsuario, String senhaPura){
         //Criptografa a senha antes de salvar 
