@@ -1,6 +1,8 @@
 package com.maderix.backend.service;
 
 import com.maderix.backend.enums.TipoMovimento;
+import com.maderix.backend.exception.BusinessRuleException;
+import com.maderix.backend.exception.ResourceNotFoundException;
 import com.maderix.backend.model.Materiais;
 import com.maderix.backend.model.MovimentacaoEstoque;
 import com.maderix.backend.repository.MateriaisRepository;
@@ -25,13 +27,13 @@ public class MovimentacaoEstoqueService {
     public MovimentacaoEstoque registrarMovimentacao(MovimentacaoEstoque movimentacao) {
 
         Materiais material = materiaisRepository.findById(movimentacao.getID_Material().getID_Material())
-                .orElseThrow(() -> new RuntimeException("Material não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Material não encontrado."));
 
         if (movimentacao.getTipo_Movimento().equals(TipoMovimento.ENTRADA) || movimentacao.getTipo_Movimento().equals(TipoMovimento.AJUSTE)) {
             material.setEstoque_Atual(material.getEstoque_Atual() + movimentacao.getQuantidade());
         } else if (movimentacao.getTipo_Movimento().equals(TipoMovimento.SAIDA)) {
             if (material.getEstoque_Atual() < movimentacao.getQuantidade()) {
-                throw new RuntimeException("Estoque insuficiente para a movimentação.");
+                throw new BusinessRuleException("Estoque insuficiente para a movimentação.");
             }
             material.setEstoque_Atual(material.getEstoque_Atual() - movimentacao.getQuantidade());
         }
