@@ -22,7 +22,7 @@ public class AutenticacaoService {
     public Usuarios autenticar(String nmLogin, String senhaPura){
 
         //Buscar usuario pelo nome de login
-        Usuarios usuario = usuariosRepository.findByNM_Login(nmLogin)
+        Usuarios usuario = usuariosRepository.findByNmLogin(nmLogin)
                                              .orElseThrow(() -> new CredenciaisInvalidasException("Login ou senha inválidos."));
 
         //Verifica se o usuario está ativo                                             

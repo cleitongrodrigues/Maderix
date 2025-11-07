@@ -18,9 +18,9 @@ public class UsuarioResponseDTO {
 
     public UsuarioResponseDTO(Usuarios usuario){
         this.idUsuario    = usuario.getID_Usuario();
-        this.nmUsuario    = usuario.getNM_Usuario();
+        this.nmUsuario    = usuario.getnmUsuario();
         this.email        = usuario.getEmail();
-        this.nmLogin      = usuario.getNM_Login();
+        this.nmLogin      = usuario.getnmLogin();
         this.ativo        = usuario.isAtivo();
         this.dtCadUsuario = usuario.getDT_Cad_Usuario();
         this.ultimoLogin  = usuario.getULTIMO_LOGIN();

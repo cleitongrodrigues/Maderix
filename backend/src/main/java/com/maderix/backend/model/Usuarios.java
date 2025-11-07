@@ -28,13 +28,13 @@ public class Usuarios implements UserDetails{
     private PerfisUsuario  perfil;
 
     @Column(name = "NM_Usuario", length = 150, nullable = false)
-    private String NM_Usuario;
+    private String nmUsuario;
 
     @Column(name = "Email", length = 100, nullable = false, unique = true)
     private String Email;
 
     @Column(name = "NM_Login", length = 50 ,nullable = false, unique = true)
-    private String NM_Login;
+    private String nmLogin;
 
     @Column(name = "SENHA_HASH", length = 200, nullable = false)
     private String SENHA_HASH;
@@ -81,12 +81,12 @@ public class Usuarios implements UserDetails{
         this.perfil = perfil;
     }
 
-    public String getNM_Usuario() {
-        return NM_Usuario;
+    public String getnmUsuario() {
+        return nmUsuario;
     }
 
-    public void setNM_Usuario(String NM_Usuario) {
-        this.NM_Usuario = NM_Usuario;
+    public void setnmUsuario(String nmUsuario) {
+        this.nmUsuario = nmUsuario;
     }
 
     public String getEmail() {
@@ -121,12 +121,12 @@ public class Usuarios implements UserDetails{
         this.DT_Cad_Usuario = DT_Cad_Usuario;
     }
 
-    public String getNM_Login() {
-        return this.NM_Login;
+    public String getnmLogin() {
+        return this.nmLogin;
     }
 
-    public void setNM_Login(String NM_Login) {
-        this.NM_Login = NM_Login;
+    public void setnmLogin(String nmLogin) {
+        this.nmLogin = nmLogin;
     }
 
     public String getSENHA_HASH() {
@@ -174,7 +174,7 @@ public class Usuarios implements UserDetails{
     @Override
     public String getUsername() {
         // Retorna o identificador único (o login neste caso)
-        return NM_Login;
+        return nmLogin;
     }
 
     @Override

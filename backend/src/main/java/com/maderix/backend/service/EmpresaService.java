@@ -1,5 +1,6 @@
 package com.maderix.backend.service;
 
+import com.maderix.backend.exception.ResourceNotFoundException;
 import com.maderix.backend.model.Empresa;
 import com.maderix.backend.repository.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,16 @@ public class EmpresaService {
     }
 
     public void deletarEmpresa(Integer id){
+        if(!empresaRepository.existsById(id)){
+            throw new ResourceNotFoundException("Empresa com ID " + id + " não encontrada para deleção.");
+        }
+
         empresaRepository.deleteById(id);
     }
 
     public Empresa atualizarEmpresa(Integer id, Empresa detalheEmpresa){
         Empresa empresaExistente = empresaRepository.findById(id)
-                                               .orElseThrow(() -> new RuntimeException("Empresa com o id: " + id + " não encontrado"));
+                                               .orElseThrow(() -> new ResourceNotFoundException("Empresa com o id: " + id + " não encontrado"));
 
         empresaExistente.setCNPJ(detalheEmpresa.getCNPJ());
         empresaExistente.setNM_Fantasia(detalheEmpresa.getNM_Fantasia());

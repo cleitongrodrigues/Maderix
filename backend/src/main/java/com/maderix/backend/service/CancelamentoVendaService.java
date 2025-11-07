@@ -38,7 +38,7 @@ public class CancelamentoVendaService {
     @Autowired private MovimentacaoEstoqueService movimentacaoEstoqueService; // Para registrar o estorno
 
     @Transactional
-    public CancelamentosVenda cancelarVenda(CancelamentoVendaRequestDTO dto){
+    public CancelamentosVenda cancelarVenda(CancelamentoVendaRequestDTO dto, Usuarios usuarioLogado){
         //Busca e valida as entidades necessárias 
         Vendas venda = vendasRepository.findById(dto.getIdVenda())
                                        .orElseThrow(() -> new ResourceNotFoundException("Venda com ID " + dto.getIdVenda() + " não encontrada."));

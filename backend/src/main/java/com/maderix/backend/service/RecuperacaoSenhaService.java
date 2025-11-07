@@ -40,9 +40,9 @@ public class RecuperacaoSenhaService {
         TokensRecuperacao novoToken = new TokensRecuperacao();
         novoToken.setUsuario(usuario);
         novoToken.setToken(token);
-        novoToken.setEmail_Destinatario(email);
-        novoToken.setData_Expiracao(LocalDateTime.now().plusMinutes(15)); //Seta o tempo de 15 minutos para tempo de expiração do token 
-        novoToken.setIP_Solicitacao(ipSolicitacao);
+        novoToken.setEmailDestinatario(email);
+        novoToken.setDataExpiracao(LocalDateTime.now().plusMinutes(15)); //Seta o tempo de 15 minutos para tempo de expiração do token 
+        novoToken.setIpSolicitacao(ipSolicitacao);
 
         return tokensRecuperacaoRepository.save(novoToken);
     }
@@ -50,11 +50,11 @@ public class RecuperacaoSenhaService {
     @Transactional //Ação que envolve multiplas alterações no DB
     public void resetarSenha(String token, String senhaPura, String ipUtilizacao){
 
-        TokensRecuperacao tokenRecuperacao = tokensRecuperacaoRepository.findByToken(token)
+        TokensRecuperacao tokenRecuperacao = tokensRecuperacaoRepository.findByToken(token) 
                                                                         .orElseThrow(() -> new TokenInvalidoException("Token de recuperação inválido ou não existe"));
         
         //Valida Token de recuperação                                                                        
-        if (tokenRecuperacao.getUtilizado() || tokenRecuperacao.getData_Expiracao().isBefore(LocalDateTime.now())){
+        if (tokenRecuperacao.getUtilizado() || tokenRecuperacao.getDataExpiracao().isBefore(LocalDateTime.now())){
             throw new TokenInvalidoException("Token de recuperação expirado ou ja foi utilizado");
         }                                                                        
 
@@ -66,8 +66,8 @@ public class RecuperacaoSenhaService {
         usuariosRepository.save(usuario);
 
         tokenRecuperacao.setUtilizado(true);
-        tokenRecuperacao.setData_Utilizacao(LocalDateTime.now());
-        tokenRecuperacao.setIP_Utilizacao(ipUtilizacao);
+        tokenRecuperacao.setDataUtilizacao(LocalDateTime.now());
+        tokenRecuperacao.setIpUtilizacao(ipUtilizacao);
         tokensRecuperacaoRepository.save(tokenRecuperacao);
     }
 }

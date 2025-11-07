@@ -1,5 +1,6 @@
 package com.maderix.backend.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -48,5 +49,17 @@ public class PerfisUsuario {
 
     public void setNM_Perfil(String NM_Perfil) {
         this.NM_Perfil = NM_Perfil;
+    }
+    
+    public Set<Permissoes> getPermissoes() {
+    // Se for nulo, inicialize para evitar NullPointerException ao chamar .addAll() ou .removeIf()
+    if (this.permissoes == null) {
+        this.permissoes = new HashSet<>();
+    }
+    return this.permissoes;
+}
+
+    public void setPermissoes(Set<Permissoes> permissoes) {
+        this.permissoes = permissoes;
     }
 }

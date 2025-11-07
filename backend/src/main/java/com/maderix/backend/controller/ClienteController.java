@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maderix.backend.model.Clientes;
 import com.maderix.backend.service.ClientesService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("api/clientes")
@@ -27,7 +29,7 @@ public class ClienteController {
     private ClientesService clientesService;
 
     @PostMapping
-    public ResponseEntity <Clientes> criarCliente(@RequestBody Clientes cliente){
+    public ResponseEntity <Clientes> criarCliente(@Valid     @RequestBody Clientes cliente){
         Clientes novoCliente = clientesService.salvarCliente(cliente);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
@@ -48,13 +50,13 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Clientes> atualizaClientes(@PathVariable Integer id, @RequestBody Clientes detalheCliente){
+    public ResponseEntity<Clientes> atualizaClientes(@PathVariable Integer id, @Valid @RequestBody Clientes detalheCliente){
         Clientes clienteAtualizado = clientesService.atualizaClientes(id, detalheCliente);
 
         return ResponseEntity.ok(clienteAtualizado);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarCliente(@PathVariable Integer id){
         clientesService.deletarCliente(id);
 

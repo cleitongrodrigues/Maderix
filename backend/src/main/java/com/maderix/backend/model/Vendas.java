@@ -31,15 +31,15 @@ public class Vendas {
     private BigDecimal Valor_Total;
 
     @Column(name = "Status_Venda", length = (50),nullable = false)
-    @org.hibernate.annotations.ColumnDefault("ABERTA")
+    @org.hibernate.annotations.ColumnDefault("'ABERTA'")
     private String Status_Venda;
 
     @Column(name = "DT_Venda", updatable = false)
     @CreationTimestamp
     private LocalDateTime DT_Venda;
 
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ItensVenda> itensVendas;
+    @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY) 
+    private List<ItensVenda> itensVendas;   
 
     public Vendas(){}
 

@@ -1,5 +1,6 @@
 package com.maderix.backend.service;
 
+import com.maderix.backend.exception.ResourceNotFoundException;
 import com.maderix.backend.model.Clientes;
 import com.maderix.backend.repository.ClientesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ClientesService {
 
     public Clientes atualizaClientes(Integer id, Clientes detalhCliente){
         Clientes clienteExistente = clientesRepository.findById(id)
-                                                      .orElseThrow(() -> new RuntimeException("Cliente com o id: " + id + " não encontrado"));
+                                                      .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não encontrado"));
 
         clienteExistente.setNM_Cliente(detalhCliente.getNM_Cliente());
         clienteExistente.setEmail(detalhCliente.getEmail());

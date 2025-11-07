@@ -17,13 +17,13 @@ public class Permissoes {
     private Integer ID_Permissoes;
 
     @Column(name = "CODIGO", length = 100 ,nullable = false, unique = true)
-    private String CODIGO;
+    private String codigo;
 
     @Column(name = "NOME", length = 150, nullable = false)
-    private String NOME;
+    private String nome;
 
     @Column(name = "DESCRICAO", length = 255, nullable = true)
-    private String DESCRICAO;
+    private String descricao;
 
 
     public Permissoes() {
@@ -37,28 +37,28 @@ public class Permissoes {
         this.ID_Permissoes = ID_Permissoes;
     }
 
-    public String getCODIGO() {
-        return this.CODIGO;
+    public String getCodigo() {
+        return this.codigo;
     }
 
-    public void setCODIGO(String CODIGO) {
-        this.CODIGO = CODIGO;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getNOME() {
-        return this.NOME;
+    public String getNome() {
+        return this.nome;
     }
 
-    public void setNOME(String NOME) {
-        this.NOME = NOME;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getDESCRICAO() {
-        return this.DESCRICAO;
+    public String getDescricao() {
+        return this.descricao;
     }
 
-    public void setDESCRICAO(String DESCRICAO) {
-        this.DESCRICAO = DESCRICAO;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
 

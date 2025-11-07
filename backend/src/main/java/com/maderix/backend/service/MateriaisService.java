@@ -1,11 +1,13 @@
 package com.maderix.backend.service;
 
 
+import com.maderix.backend.exception.ResourceNotFoundException;
 import com.maderix.backend.model.Materiais;
 import com.maderix.backend.repository.MateriaisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,14 +34,14 @@ public class MateriaisService {
 
     public Materiais atualizarMaterial(Integer id, Materiais materialDetalhes) {
         Materiais materialExistente = materiaisRepository.findById(id)
-            .orElseThrow(() -> new  RuntimeException("Material com ID" + id + "não encontrado."));
+            .orElseThrow(() -> new  ResourceNotFoundException("Material com ID" + id + "não encontrado."));
 
         materialExistente.setNM_Material(materialDetalhes.getNM_Material());
         materialExistente.setDescricao(materialDetalhes.getDescricao());
         materialExistente.setEstoque_Atual(materialDetalhes.getEstoque_Atual());
         materialExistente.setPreco_Custo(materialDetalhes.getPreco_Custo());
-        materialExistente.setID_Empresa(materialDetalhes.getID_Empresa());
-        materialExistente.setID_Unidade(materialDetalhes.getID_Unidade());
+        materialExistente.setEmpresa(materialDetalhes.getEmpresa());
+        materialExistente.setUnidadeMedida(materialDetalhes.getUnidadeMedida());
 
         return materiaisRepository.save(materialExistente);
     }

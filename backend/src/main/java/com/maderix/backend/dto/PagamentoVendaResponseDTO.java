@@ -19,7 +19,7 @@ public class PagamentoVendaResponseDTO {
     public PagamentoVendaResponseDTO(PagamentosVenda pagamento) {
         this.idPagamento = pagamento.getID_Pagamento();
         this.idVenda = pagamento.getVendas().getID_Venda();
-        this.nomeUsuario = pagamento.getUsuario().getNM_Usuario(); // Navega para o nome
+        this.nomeUsuario = pagamento.getUsuario().getnmLogin(); // Navega para o nome
         this.idConta = pagamento.getConta() != null ? pagamento.getConta().getID_Conta() : null;
         this.valor = pagamento.getValor();
         this.tipoPagamento = pagamento.getTipo_Pagamento();

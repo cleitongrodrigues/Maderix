@@ -37,7 +37,7 @@ public class SecurityFilter extends OncePerRequestFilter{
             String login = tokenService.validaToken(token);
 
             if(!login.isEmpty()){
-                UserDetails user = usuariosRepository.findByNM_Login(login)
+                UserDetails user = usuariosRepository.findByNmLogin(login)
                                                      .orElse(null);
 
             if(user != null){

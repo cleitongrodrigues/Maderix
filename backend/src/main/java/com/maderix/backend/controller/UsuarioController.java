@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.maderix.backend.model.Usuarios;
 import com.maderix.backend.service.UsuariosService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("api/usuario")
@@ -23,7 +25,7 @@ public class UsuarioController {
     private UsuariosService usuariosService;
 
     @PostMapping
-    public ResponseEntity<Usuarios> criarUsuario(@RequestBody Usuarios usuario){
+    public ResponseEntity<Usuarios> criarUsuario(@Valid @RequestBody Usuarios usuario){
         Usuarios novoUsuario = usuariosService.salvarUsuario(usuario);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
@@ -37,7 +39,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<Usuarios> buscarUsuarioPorEmail(@PathVariable String email){
+    public ResponseEntity<Usuarios> buscarUsuarioPorEmail(@Valid @PathVariable String email){
         return usuariosService.buscarUsuarioPorEmail(email)
                               .map(ResponseEntity::ok)
                               .orElse(ResponseEntity.notFound().build());

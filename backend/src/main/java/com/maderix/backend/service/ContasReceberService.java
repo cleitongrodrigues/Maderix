@@ -19,8 +19,8 @@ public class ContasReceberService {
     @Transactional
     public ContasReceber gerarConta(Vendas venda) {
         ContasReceber conta = new ContasReceber();
-        conta.setID_Venda(venda);
-        conta.setID_Empresa(venda.getID_Empresa());
+        conta.setVenda(venda);
+        conta.setEmpresa(venda.getEmpresa());
         conta.setValor(venda.getValor_Total());
         conta.setDescricao("Conta a receber gerada automaticamente pela venda " + venda.getID_Venda());
         conta.setData_Vencimento(LocalDateTime.now().plusDays(30));

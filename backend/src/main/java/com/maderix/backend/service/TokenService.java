@@ -26,7 +26,7 @@ public class TokenService {
 
             String token = JWT.create()
                               .withIssuer("maderix-api")
-                              .withSubject(usuario.getNM_Login())
+                              .withSubject(usuario.getnmLogin())
                               .withExpiresAt(genExpirationDate())
                               .sign(algorithm);
             return token;

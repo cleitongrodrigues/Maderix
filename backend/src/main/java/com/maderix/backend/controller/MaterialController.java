@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.maderix.backend.model.Materiais;
 import com.maderix.backend.service.MateriaisService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -26,7 +29,7 @@ public class MaterialController {
     private MateriaisService materialService;
 
     @PostMapping
-    public ResponseEntity<Materiais> criarMaterial(@RequestBody Materiais material){
+    public ResponseEntity<Materiais> criarMaterial(@Valid @RequestBody Materiais material){
         Materiais novoMaterial = materialService.salvarMaterial(material);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoMaterial);
@@ -40,21 +43,21 @@ public class MaterialController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Materiais> buscarMaterialPorId(Integer id){
+    public ResponseEntity<Materiais> buscarMaterialPorId(@PathVariable Integer id){
         return materialService.buscarMaterialPorId(id)
                               .map(ResponseEntity::ok)
                               .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Materiais> atualizarMaterial(@PathVariable Integer id, @RequestBody Materiais materialDetalhes) {
+    public ResponseEntity<Materiais> atualizarMaterial(@PathVariable Integer id, @Valid @RequestBody Materiais materialDetalhes) {
         Materiais materialAtualizado = materialService.atualizarMaterial(id, materialDetalhes);
         
         return ResponseEntity.ok(materialAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarMaterial(Integer id){
+    public ResponseEntity<Void> deletarMaterial(@PathVariable Integer id){
         materialService.deletarMaterial(id);
 
         return ResponseEntity.noContent().build();

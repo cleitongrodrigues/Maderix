@@ -3,15 +3,17 @@ package com.maderix.backend.controller;
 import com.maderix.backend.model.Empresa;
 import com.maderix.backend.service.EmpresaService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +27,7 @@ public class EmpresaController {
     private EmpresaService empresaService;
 
     @PostMapping
-    public ResponseEntity <Empresa> criarEmpresa(@RequestBody Empresa empresa){
+    public ResponseEntity <Empresa> criarEmpresa(@Valid @RequestBody Empresa empresa){
         Empresa novaEmpresa = empresaService.salvarEmpresa(empresa);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novaEmpresa);
@@ -45,9 +47,15 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> atualizarEmpresa(@PathVariable Integer id, Empresa detalheEmpresa){
-        Empresa emprezaAtualizada = empresaService.atualizarEmpresa(id, detalheEmpresa);
+    public ResponseEntity<Empresa> atualizarEmpresa(@Valid @PathVariable Integer id, @RequestBody Empresa detalheEmpresa){
+        Empresa empresaAtualizada = empresaService.atualizarEmpresa(id, detalheEmpresa);
 
-        return ResponseEntity.ok(emprezaAtualizada);
+        return ResponseEntity.ok(empresaAtualizada);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarEmpresa(@PathVariable Integer id){
+        empresaService.deletarEmpresa(id);
+        return ResponseEntity.noContent().build();
     }
 }

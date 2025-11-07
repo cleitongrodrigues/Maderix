@@ -10,5 +10,5 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Integer> {
     @Query("SELECT u FROM Usuarios u WHERE u.Email = :email")
     Optional<Usuarios> findByEmail(String email);
 
-    Optional<Usuarios> findByNM_Login(String NM_Login);
+    Optional<Usuarios> findByNmLogin(String NM_Login);
 }

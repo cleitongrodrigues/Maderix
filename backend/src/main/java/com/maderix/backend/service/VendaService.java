@@ -1,9 +1,12 @@
 package com.maderix.backend.service;
 
 import com.maderix.backend.enums.TipoMovimento;
+import com.maderix.backend.exception.BusinessRuleException;
+import com.maderix.backend.exception.ResourceNotFoundException;
 import com.maderix.backend.model.ItensVenda;
 import com.maderix.backend.model.Materiais;
 import com.maderix.backend.model.MovimentacaoEstoque;
+import com.maderix.backend.model.Usuarios;
 import com.maderix.backend.model.Vendas;
 import com.maderix.backend.repository.ClientesRepository;
 import com.maderix.backend.repository.ItensVendaRepository;
@@ -38,24 +41,26 @@ public class VendaService {
     private ContasReceberService contasReceberService;
 
     @Transactional
-    public Vendas registrarNovaVenda(Vendas novaVenda) {
-        if (novaVenda.getID_Cliente() == null) {
+    public Vendas registrarNovaVenda(Vendas novaVenda, Usuarios usuarioLogado) {
+        //Valida e busca as entidades       
+        if (novaVenda.getCliente() == null) {
             throw new IllegalArgumentException("Cliente é obrigatório para registrar uma venda.");
         }
-        clientesRepository.findById(novaVenda.getID_Cliente().getID_Cliente())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        clientesRepository.findById(novaVenda.getCliente().getID_Cliente())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
         BigDecimal valorTotalVenda = BigDecimal.ZERO;
+        novaVenda.setUsuario(usuarioLogado);
 
         if (novaVenda.getItensVendas() != null) {
             for(ItensVenda item: novaVenda.getItensVendas()){
                 Materiais material = materiaisRepository.findById(item.getID_Material().getID_Material())
-                        .orElseThrow(() -> new RuntimeException(
+                        .orElseThrow(() -> new ResourceNotFoundException(
                                 String.format("Material com ID %d não encontrado.", item.getID_Material().getID_Material())
                         ));
 
                 if (material.getEstoque_Atual() < item.getQuantidade()){
-                    throw new RuntimeException("Estoque insuficiente para o material: " + material.getNM_Material());
+                    throw new BusinessRuleException("Estoque insuficiente para o material: " + material.getNM_Material());
                 }
 
                 BigDecimal valorTotalItem = material.getPreco_Custo().multiply(BigDecimal.valueOf(item.getQuantidade()));
