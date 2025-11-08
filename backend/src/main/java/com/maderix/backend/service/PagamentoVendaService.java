@@ -69,7 +69,7 @@ public class PagamentoVendaService {
         pagamento.setConta(conta); // Pode ser null
         
         pagamento.setValor(dto.getValor());
-        pagamento.setTipo_Pagamento(dto.getTipoPagamento());
+        pagamento.setTipoPagamento(dto.getTipoPagamento());
         pagamento.setObservacao(dto.getObservacao());
     
         //salva o registro do pagamento
@@ -78,7 +78,7 @@ public class PagamentoVendaService {
         //Se o pagamento for total marca a conta como paga
         if(conta != null && conta.getValor().compareTo(pagamento.getValor()) <= 0){
             conta.setPago(true);
-            conta.setData_Pagamento(LocalDateTime.now());
+            conta.setDataPagamento(LocalDateTime.now());
             contasReceberRepository.save(conta);
         }
         return pagamentoSalvo;

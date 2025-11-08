@@ -38,9 +38,9 @@ public class EmpresaService {
         Empresa empresaExistente = empresaRepository.findById(id)
                                                .orElseThrow(() -> new ResourceNotFoundException("Empresa com o id: " + id + " não encontrado"));
 
-        empresaExistente.setCNPJ(detalheEmpresa.getCNPJ());
-        empresaExistente.setNM_Fantasia(detalheEmpresa.getNM_Fantasia());
-        empresaExistente.setRZ_Social(detalheEmpresa.getRZ_Social());
+        empresaExistente.setCnpj(detalheEmpresa.getCnpj());
+        empresaExistente.setNmFantasia(detalheEmpresa.getNmFantasia());
+        empresaExistente.setRzSocial(detalheEmpresa.getRzSocial());
 
         return empresaRepository.save(empresaExistente);
     }

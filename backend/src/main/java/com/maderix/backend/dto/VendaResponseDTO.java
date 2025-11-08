@@ -19,15 +19,15 @@ public class VendaResponseDTO {
     private List<ItemVendaResponseDTO> itensVendas; // DTO dos Itens (se necessário)
 
     public VendaResponseDTO(Vendas venda) {
-        this.idVenda = venda.getID_Venda();
-        this.valorTotal = venda.getValor_Total();
-        this.statusVenda = venda.getStatus_Venda();
-        this.dtVenda = venda.getDT_Venda();
+        this.idVenda = venda.getIdVenda();
+        this.valorTotal = venda.getValorTotal();
+        this.statusVenda = venda.getStatusVenda();
+        this.dtVenda = venda.getDataVenda();
         
         // Mapeamento de relacionamentos (acessando os Models aninhados)
-        this.nomeCliente = venda.getCliente() != null ? venda.getCliente().getNM_Cliente() : null;
-        this.nomeEmpresa = venda.getEmpresa() != null ? venda.getEmpresa().getNM_Fantasia() : null;
-        this.nomeUsuario = venda.getUsuario() != null ? venda.getUsuario().getnmUsuario() : null;
+        this.nomeCliente = venda.getCliente() != null ? venda.getCliente().getNmCliente() : null;
+        this.nomeEmpresa = venda.getEmpresa() != null ? venda.getEmpresa().getNmFantasia() : null;
+        this.nomeUsuario = venda.getUsuario() != null ? venda.getUsuario().getNmUsuario() : null;
         
         // NOTA: Para listar os itens, você precisaria de uma lógica de conversão aqui:
         /*

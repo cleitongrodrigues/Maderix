@@ -30,12 +30,12 @@ public class AutenticacaoService {
             throw new CredenciaisInvalidasException("Usuario inativo. Contate o administrador.");
         }
         //Valida senha do usuario
-        if (!passwordEncoder.matches(senhaPura, usuario.getSENHA_HASH())){
+        if (!passwordEncoder.matches(senhaPura, usuario.getSenhaHash())){
             throw new CredenciaisInvalidasException("Login ou senha Inválidos");
         }
 
         //Atualiza a data do ultimo login
-        usuario.setULTIMO_LOGIN(LocalDateTime.now());
+        usuario.setUltimoLogin(LocalDateTime.now());
         usuariosRepository.save(usuario);
 
         return usuario;
@@ -44,7 +44,7 @@ public class AutenticacaoService {
     public Usuarios salvarUsuarios(Usuarios novoUsuario, String senhaPura){
         //Criptografa a senha antes de salvar 
         String senhaHash = passwordEncoder.encode(senhaPura);
-        novoUsuario.setSENHA_HASH(senhaHash);
+        novoUsuario.setSenhaHash(senhaHash);
 
         return usuariosRepository.save(novoUsuario);
     }

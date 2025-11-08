@@ -26,16 +26,16 @@ public class MovimentacaoEstoqueService {
     @Transactional
     public MovimentacaoEstoque registrarMovimentacao(MovimentacaoEstoque movimentacao) {
 
-        Materiais material = materiaisRepository.findById(movimentacao.getID_Material().getID_Material())
+        Materiais material = materiaisRepository.findById(movimentacao.getIdMaterial().getIdMaterial())
                 .orElseThrow(() -> new ResourceNotFoundException("Material não encontrado."));
 
-        if (movimentacao.getTipo_Movimento().equals(TipoMovimento.ENTRADA) || movimentacao.getTipo_Movimento().equals(TipoMovimento.AJUSTE)) {
-            material.setEstoque_Atual(material.getEstoque_Atual() + movimentacao.getQuantidade());
-        } else if (movimentacao.getTipo_Movimento().equals(TipoMovimento.SAIDA)) {
-            if (material.getEstoque_Atual() < movimentacao.getQuantidade()) {
+        if (movimentacao.getTipoMovimento().equals(TipoMovimento.ENTRADA) || movimentacao.getTipoMovimento().equals(TipoMovimento.AJUSTE)) {
+            material.setEstoqueAtual(material.getEstoqueAtual() + movimentacao.getQuantidade());
+        } else if (movimentacao.getTipoMovimento().equals(TipoMovimento.SAIDA)) {
+            if (material.getEstoqueAtual() < movimentacao.getQuantidade()) {
                 throw new BusinessRuleException("Estoque insuficiente para a movimentação.");
             }
-            material.setEstoque_Atual(material.getEstoque_Atual() - movimentacao.getQuantidade());
+            material.setEstoqueAtual(material.getEstoqueAtual() - movimentacao.getQuantidade());
         }
 
         materiaisRepository.save(material);

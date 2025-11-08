@@ -20,10 +20,10 @@ public class PerfisUsuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Perfil")
-    private Integer ID_Perfil;
+    private Integer idPerfil;
 
     @Column(name = "NM_Perfil", length = 50, nullable = false, unique = true)
-    private String NM_Perfil;
+    private String nmPerfil;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -35,31 +35,31 @@ public class PerfisUsuario {
 
     public PerfisUsuario(){}
 
-    public Integer getID_Perfil() {
-        return ID_Perfil;
+
+    public Integer getIdPerfil() {
+        return this.idPerfil;
     }
 
-    public void setID_Perfil(Integer ID_Perfil) {
-        this.ID_Perfil = ID_Perfil;
+    public void setIdPerfil(Integer idPerfil) {
+        this.idPerfil = idPerfil;
     }
 
-    public String getNM_Perfil() {
-        return NM_Perfil;
+    public String getNmPerfil() {
+        return this.nmPerfil;
     }
 
-    public void setNM_Perfil(String NM_Perfil) {
-        this.NM_Perfil = NM_Perfil;
+    public void setNmPerfil(String nmPerfil) {
+        this.nmPerfil = nmPerfil;
     }
-    
+    public void setPermissoes(Set<Permissoes> permissoes) {
+        this.permissoes = permissoes;
+    }
+
     public Set<Permissoes> getPermissoes() {
     // Se for nulo, inicialize para evitar NullPointerException ao chamar .addAll() ou .removeIf()
     if (this.permissoes == null) {
         this.permissoes = new HashSet<>();
     }
     return this.permissoes;
-}
-
-    public void setPermissoes(Set<Permissoes> permissoes) {
-        this.permissoes = permissoes;
-    }
+    }   
 }

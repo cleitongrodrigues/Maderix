@@ -62,7 +62,7 @@ public class RecuperacaoSenhaService {
         Usuarios usuario = tokenRecuperacao.getUsuario();
         String novaSenhaHash = passwordEncoder.encode(senhaPura);
 
-        usuario.setSENHA_HASH(novaSenhaHash);
+        usuario.setSenhaHash(novaSenhaHash);
         usuariosRepository.save(usuario);
 
         tokenRecuperacao.setUtilizado(true);

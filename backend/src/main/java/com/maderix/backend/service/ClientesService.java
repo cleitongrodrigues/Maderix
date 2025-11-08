@@ -34,9 +34,9 @@ public class ClientesService {
         Clientes clienteExistente = clientesRepository.findById(id)
                                                       .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não encontrado"));
 
-        clienteExistente.setNM_Cliente(detalhCliente.getNM_Cliente());
+        clienteExistente.setNmCliente(detalhCliente.getNmCliente());
         clienteExistente.setEmail(detalhCliente.getEmail());
-        clienteExistente.setTel_Cliente(detalhCliente.getTel_Cliente());
+        clienteExistente.setTelCliente(detalhCliente.getTelCliente());
         
         return clientesRepository.save(clienteExistente);
     }

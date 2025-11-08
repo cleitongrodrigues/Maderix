@@ -46,7 +46,7 @@ public class CancelamentoVendaService {
         Usuarios usuario = usuariosRepository.findById(dto.getIdUsuario())
                                              .orElseThrow(() -> new ResourceNotFoundException("Usuário de cancelamento não encontrado."));                                       
 
-        if(venda.getStatus_Venda().equals("CANCELADA")){
+        if(venda.getStatusVenda().equals("CANCELADA")){
             throw new BusinessRuleException("A venda já está cancelada.");
         }
 
@@ -54,30 +54,30 @@ public class CancelamentoVendaService {
 
         //Reversão da saida dos materiais do estoque
         for(ItensVenda item : itens){
-            Materiais material = item.getID_Material();
+            Materiais material = item.getIdMaterial();
             int quantidadeEstornada = item.getQuantidade();
 
             MovimentacaoEstoque movimento = new MovimentacaoEstoque();
-            movimento.setID_Material(material);
-            movimento.setID_Usuario(usuario);
-            movimento.setID_Venda(venda);
-            movimento.setTipo_Movimento(TipoMovimento.ENTRADA);
+            movimento.setIdMaterial(material);
+            movimento.setIdUsuario(usuario);
+            movimento.setIdVenda(venda);
+            movimento.setTipoMovimento(TipoMovimento.ENTRADA);
             movimento.setQuantidade(quantidadeEstornada);
-            movimento.setValor_Unitario(material.getPreco_Custo());
-            movimento.setObservacao("Estorno de venda ID " + venda.getID_Venda() + " - Motivo: " + dto.getMotivo());
+            movimento.setValorUnitario(material.getPrecoCusto());
+            movimento.setObservacao("Estorno de venda ID " + venda.getIdVenda() + " - Motivo: " + dto.getMotivo());
 
             //Chama o service que espera um objeto MovimentacaoEstoque
             movimentacaoEstoqueService.registrarMovimentacao(movimento);
 
             //Atualiza o Estoque do Material
-            material.setEstoque_Atual(material.getEstoque_Atual() + quantidadeEstornada);
+            material.setEstoqueAtual(material.getEstoqueAtual() + quantidadeEstornada);
             materiaisRepository.save(material);
         }
 
         
         //Cancelar a conta a receber
         
-        Optional<ContasReceber> optionalConta = contasReceberRepository.findById(venda.getID_Venda());
+        Optional<ContasReceber> optionalConta = contasReceberRepository.findById(venda.getIdVenda());
         if(optionalConta.isPresent()){
             ContasReceber conta = optionalConta.get();
 
@@ -90,7 +90,7 @@ public class CancelamentoVendaService {
         }
 
         //Atualiza status da venda
-        venda.setStatus_Venda("CANCELADA");
+        venda.setStatusVenda("CANCELADA");
         vendasRepository.save(venda);
 
         //Registra o cancelamento

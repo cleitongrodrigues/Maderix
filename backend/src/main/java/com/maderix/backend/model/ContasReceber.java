@@ -12,7 +12,7 @@ public class ContasReceber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Conta")
-    private Integer ID_Conta;
+    private Integer idConta;
 
     @ManyToOne
     @JoinColumn(name = "ID_Venda", nullable = false)
@@ -23,41 +23,42 @@ public class ContasReceber {
     private Empresa empresa;
 
     @Column(name = "Numero", length = 50, nullable = true)
-    private String Numero;
+    private String numero;
 
     @Column(name = "Cliente", length = 150, nullable = true)
-    private String Cliente;
+    private String cliente;
 
     @Column(name = "Descricao", length = 255, nullable = true)
-    private String Descricao;
+    private String descricao;
 
     @Column(name = "Valor", nullable = false, precision = 10, scale = 2)
-    private BigDecimal Valor;
+    private BigDecimal valor;
 
     @Column(name = "Data_Vencimento", nullable = false)
-    private LocalDateTime Data_Vencimento;
+    private LocalDateTime dataVencimento;
 
     @Column(name = "Pago")
-    private boolean Pago = false;
+    private boolean pago = false;
 
     @Column(name = "Data_Pagamento", nullable = true)
-    private LocalDateTime Data_Pagamento;
+    private LocalDateTime dataPagamento;
 
     @Column(name = "DT_Cad_Conta", nullable = false)
     @CreationTimestamp
-    private LocalDateTime DT_Cad_Conta;
+    private LocalDateTime dataCadConta;
 
     @Column(name = "Cancelado", nullable = false)
-    private Boolean Cancelado = false;
+    private Boolean cancelado = false;
 
     public ContasReceber(){}
 
-    public Integer getID_Conta() {
-        return ID_Conta;
+
+    public Integer getIdConta() {
+        return this.idConta;
     }
 
-    public void setID_Conta(Integer ID_Conta) {
-        this.ID_Conta = ID_Conta;
+    public void setIdConta(Integer idConta) {
+        this.idConta = idConta;
     }
 
     public Vendas getVenda() {
@@ -75,85 +76,85 @@ public class ContasReceber {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-    public String getDescricao() {
-        return Descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        Descricao = descricao;
-    }
-
-    public BigDecimal getValor() {
-        return Valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        Valor = valor;
-    }
-
-    public LocalDateTime getData_Vencimento() {
-        return Data_Vencimento;
-    }
-
-    public void setData_Vencimento(LocalDateTime data_Vencimento) {
-        Data_Vencimento = data_Vencimento;
-    }
-
-    public boolean isPago() {
-        return Pago;
-    }
-
-    public void setPago(boolean pago) {
-        Pago = pago;
-    }
-
-    public LocalDateTime getData_Pagamento() {
-        return Data_Pagamento;
-    }
-
-    public void setData_Pagamento(LocalDateTime data_Pagamento) {
-        Data_Pagamento = data_Pagamento;
-    }
-
-    public LocalDateTime getDT_Cad_Conta() {
-        return DT_Cad_Conta;
-    }
-
-    public void setDT_Cad_Conta(LocalDateTime DT_Cad_Conta) {
-        this.DT_Cad_Conta = DT_Cad_Conta;
-    }
 
     public String getNumero() {
-        return this.Numero;
+        return this.numero;
     }
 
-    public void setNumero(String Numero) {
-        this.Numero = Numero;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public String getCliente() {
-        return this.Cliente;
+        return this.cliente;
     }
 
-    public void setCliente(String Cliente) {
-        this.Cliente = Cliente;
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getDescricao() {
+        return this.descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public BigDecimal getValor() {
+        return this.valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    public LocalDateTime getDataVencimento() {
+        return this.dataVencimento;
+    }
+
+    public void setDataVencimento(LocalDateTime dataVencimento) {
+        this.dataVencimento = dataVencimento;
+    }
+
+    public boolean isPago() {
+        return this.pago;
     }
 
     public boolean getPago() {
-        return this.Pago;
+        return this.pago;
     }
 
+    public void setPago(boolean pago) {
+        this.pago = pago;
+    }
+
+    public LocalDateTime getDataPagamento() {
+        return this.dataPagamento;
+    }
+
+    public void setDataPagamento(LocalDateTime dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+
+    public LocalDateTime getDataCadConta() {
+        return this.dataCadConta;
+    }
+
+    public void setDataCadConta(LocalDateTime dataCadConta) {
+        this.dataCadConta = dataCadConta;
+    }
 
     public Boolean isCancelado() {
-        return this.Cancelado;
+        return this.cancelado;
     }
 
     public Boolean getCancelado() {
-        return this.Cancelado;
+        return this.cancelado;
     }
 
-    public void setCancelado(Boolean Cancelado) {
-        this.Cancelado = Cancelado;
+    public void setCancelado(Boolean cancelado) {
+        this.cancelado = cancelado;
     }
     
 }

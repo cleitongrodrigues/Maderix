@@ -13,52 +13,55 @@ public class UnidadesMedida {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Unidade")
-    private Integer ID_Unidade;
+    private Integer idUnidade;
     
     @Column(name = "Sigla", length = 10, nullable = false, unique = true)
-    private String Sigla;
+    private String sigla;
 
     @Column(name = "Descricao", length = 50, nullable = false)
-    private String Descricao;
+    private String descricao;
 
     @Column(name = "Ativo", nullable = false)
-    private Boolean Ativo = true;
+    private Boolean ativo = true;
 
-
-    public Integer getID_Unidade() {
-        return this.ID_Unidade;
+    public UnidadesMedida() {
     }
 
-    public void setID_Unidade(Integer ID_Unidade) {
-        this.ID_Unidade = ID_Unidade;
+    public Integer getIdUnidade() {
+        return this.idUnidade;
+    }
+
+    public void setIdUnidade(Integer idUnidade) {
+        this.idUnidade = idUnidade;
     }
 
     public String getSigla() {
-        return this.Sigla;
+        return this.sigla;
     }
 
-    public void setSigla(String Sigla) {
-        this.Sigla = Sigla;
+    public void setSigla(String sigla) {
+        this.sigla = sigla;
     }
 
     public String getDescricao() {
-        return this.Descricao;
+        return this.descricao;
     }
 
-    public void setDescricao(String Descricao) {
-        this.Descricao = Descricao;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public Boolean isAtivo() {
-        return this.Ativo;
+        return this.ativo;
     }
 
     public Boolean getAtivo() {
-        return this.Ativo;
+        return this.ativo;
     }
 
-    public void setAtivo(Boolean Ativo) {
-        this.Ativo = Ativo;
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
+
 
 }

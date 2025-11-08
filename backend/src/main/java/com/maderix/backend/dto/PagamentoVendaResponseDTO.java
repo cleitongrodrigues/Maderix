@@ -17,13 +17,13 @@ public class PagamentoVendaResponseDTO {
     private String observacao;
 
     public PagamentoVendaResponseDTO(PagamentosVenda pagamento) {
-        this.idPagamento = pagamento.getID_Pagamento();
-        this.idVenda = pagamento.getVendas().getID_Venda();
-        this.nomeUsuario = pagamento.getUsuario().getnmLogin(); // Navega para o nome
-        this.idConta = pagamento.getConta() != null ? pagamento.getConta().getID_Conta() : null;
+        this.idPagamento = pagamento.getIdPagamento();
+        this.idVenda = pagamento.getVendas().getIdVenda();
+        this.nomeUsuario = pagamento.getUsuario().getNmLogin(); // Navega para o nome
+        this.idConta = pagamento.getConta() != null ? pagamento.getConta().getIdConta() : null;
         this.valor = pagamento.getValor();
-        this.tipoPagamento = pagamento.getTipo_Pagamento();
-        this.dataPagamento = pagamento.getData_Pagamento();
+        this.tipoPagamento = pagamento.getTipoPagamento();
+        this.dataPagamento = pagamento.getDataPagamento();
         this.observacao = pagamento.getObservacao();
     }
 

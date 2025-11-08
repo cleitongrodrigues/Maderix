@@ -11,72 +11,74 @@ public class Clientes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Cliente")
-    private Integer ID_Cliente;
+    private Integer idCliente;
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
-    private Empresa ID_Empresa;
+    private Empresa idEmpresa;
 
     @Column(name = "NM_Cliente", length = 150, nullable = false)
-    private String NM_Cliente;
+    private String nmCliente;
 
     @Column(name = "Tel_Cliente", length = 20)
-    private String Tel_Cliente;
+    private String telCliente;
 
     @Column(name = "Email", length = 100)
-    private String Email;
+    private String email;
 
     @Column(name = "DT_Cad_Cliente", updatable = false, nullable = false)// updatable Desabilita possibilidade de atualização
     @CreationTimestamp // Registra a data do Sistema
-    private LocalDateTime DT_Cad_Cliente;
+    private LocalDateTime dataCadCliente;
 
     public Clientes(){}
 
-    public Integer getID_Cliente() {
-        return ID_Cliente;
+
+    public Integer getIdCliente() {
+        return this.idCliente;
     }
 
-    public void setID_Cliente(Integer ID_Cliente) {
-        this.ID_Cliente = ID_Cliente;
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public Empresa getID_Empresa() {
-        return ID_Empresa;
+    public Empresa getIdEmpresa() {
+        return this.idEmpresa;
     }
 
-    public void setID_Empresa(Empresa ID_Empresa) {
-        this.ID_Empresa = ID_Empresa;
+    public void setIdEmpresa(Empresa idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
-    public String getNM_Cliente() {
-        return NM_Cliente;
+    public String getNmCliente() {
+        return this.nmCliente;
     }
 
-    public void setNM_Cliente(String NM_Cliente) {
-        this.NM_Cliente = NM_Cliente;
+    public void setNmCliente(String nmCliente) {
+        this.nmCliente = nmCliente;
     }
 
-    public String getTel_Cliente() {
-        return Tel_Cliente;
+    public String getTelCliente() {
+        return this.telCliente;
     }
 
-    public void setTel_Cliente(String tel_Cliente) {
-        Tel_Cliente = tel_Cliente;
+    public void setTelCliente(String telCliente) {
+        this.telCliente = telCliente;
     }
 
     public String getEmail() {
-        return Email;
+        return this.email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
-    public LocalDateTime getDT_Cad_Cliente() {
-        return DT_Cad_Cliente;
+    public LocalDateTime getDataCadCliente() {
+        return this.dataCadCliente;
     }
 
-    public void setDT_Cad_Cliente(LocalDateTime DT_Cad_Cliente) {
-        this.DT_Cad_Cliente = DT_Cad_Cliente;
+    public void setDataCadCliente(LocalDateTime dataCadCliente) {
+        this.dataCadCliente = dataCadCliente;
     }
+    
 }

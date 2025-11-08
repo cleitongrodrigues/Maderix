@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +19,7 @@ public class Usuarios implements UserDetails{
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Usuario")
-    private Integer ID_Usuario;
+    private Integer idUsuario;
 
     @ManyToOne
     @JoinColumn(name = "ID_Empresa", nullable = false)
@@ -31,38 +33,38 @@ public class Usuarios implements UserDetails{
     private String nmUsuario;
 
     @Column(name = "Email", length = 100, nullable = false, unique = true)
-    private String Email;
+    private String email;
 
     @Column(name = "NM_Login", length = 50 ,nullable = false, unique = true)
     private String nmLogin;
 
     @Column(name = "SENHA_HASH", length = 200, nullable = false)
-    private String SENHA_HASH;
+    private String senhaHash;
 
     @Column(name = "Tel_Usuario", length = 20)
-    private String Tel_Usuario;
+    private String telUsuario;
 
     @Column(name = "Ativo", nullable = false)
-    private Boolean Ativo = true;
+    private Boolean ativo = true;
 
     @Column(name = "ULTIMO_LOGIN", nullable = true)
-    private LocalDateTime ULTIMO_LOGIN;
+    private LocalDateTime ultimoLogin;
 
     @Column(name = "Senha", length = 255, nullable = false)
-    private String Senha;
+    private String senha;
 
     @Column(name = "DT_Cad_Usuario", updatable = false)
     @CreationTimestamp //Registra a data do sistema
-    private LocalDateTime DT_Cad_Usuario;
+    private LocalDateTime dataCadUsuario;
 
     public Usuarios(){}
 
-    public Integer getID_Usuario() {
-        return ID_Usuario;
+    public Integer getIdUsuario() {
+        return this.idUsuario;
     }
 
-    public void setID_Usuario(Integer ID_Usuario) {
-        this.ID_Usuario = ID_Usuario;
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public Empresa getEmpresa() {
@@ -81,80 +83,80 @@ public class Usuarios implements UserDetails{
         this.perfil = perfil;
     }
 
-    public String getnmUsuario() {
-        return nmUsuario;
+    public String getNmUsuario() {
+        return this.nmUsuario;
     }
 
-    public void setnmUsuario(String nmUsuario) {
+    public void setNmUsuario(String nmUsuario) {
         this.nmUsuario = nmUsuario;
     }
 
     public String getEmail() {
-        return Email;
+        return this.email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
-    public String getTel_Usuario() {
-        return Tel_Usuario;
-    }
-
-    public void setTel_Usuario(String tel_Usuario) {
-        Tel_Usuario = tel_Usuario;
-    }
-
-    public String getSenha() {
-        return Senha;
-    }
-
-    public void setSenha(String senha) {
-        Senha = senha;
-    }
-
-    public LocalDateTime getDT_Cad_Usuario() {
-        return DT_Cad_Usuario;
-    }
-
-    public void setDT_Cad_Usuario(LocalDateTime DT_Cad_Usuario) {
-        this.DT_Cad_Usuario = DT_Cad_Usuario;
-    }
-
-    public String getnmLogin() {
+    public String getNmLogin() {
         return this.nmLogin;
     }
 
-    public void setnmLogin(String nmLogin) {
+    public void setNmLogin(String nmLogin) {
         this.nmLogin = nmLogin;
     }
 
-    public String getSENHA_HASH() {
-        return this.SENHA_HASH;
+    public String getSenhaHash() {
+        return this.senhaHash;
     }
 
-    public void setSENHA_HASH(String SENHA_HASH) {
-        this.SENHA_HASH = SENHA_HASH;
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
+    public String getTelUsuario() {
+        return this.telUsuario;
+    }
+
+    public void setTelUsuario(String telUsuario) {
+        this.telUsuario = telUsuario;
     }
 
     public Boolean isAtivo() {
-        return this.Ativo;
+        return this.ativo;
     }
 
     public Boolean getAtivo() {
-        return this.Ativo;
+        return this.ativo;
     }
 
-    public void setAtivo(Boolean Ativo) {
-        this.Ativo = Ativo;
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
-    public LocalDateTime getULTIMO_LOGIN() {
-        return this.ULTIMO_LOGIN;
+    public LocalDateTime getUltimoLogin() {
+        return this.ultimoLogin;
     }
 
-    public void setULTIMO_LOGIN(LocalDateTime ULTIMO_LOGIN) {
-        this.ULTIMO_LOGIN = ULTIMO_LOGIN;
+    public void setUltimoLogin(LocalDateTime ultimoLogin) {
+        this.ultimoLogin = ultimoLogin;
+    }
+
+    public String getSenha() {
+        return this.senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public LocalDateTime getDataCadUsuario() {
+        return this.dataCadUsuario;
+    }
+
+    public void setDataCadUsuario(LocalDateTime dataCadUsuario) {
+        this.dataCadUsuario = dataCadUsuario;
     }
 
     @Override
@@ -162,13 +164,13 @@ public class Usuarios implements UserDetails{
         // Retorna as autoridades/permissões do usuário
         // Neste exemplo, estamos usando o perfil para definir a autoridade básica
         // Se você tiver a entidade Permissoes mapeada, use ela.
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.getNM_Perfil().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.getNmPerfil().toUpperCase()));
     }
 
     @Override
     public String getPassword() {
         // Retorna o hash da senha
-        return SENHA_HASH;
+        return senhaHash;
     }
 
     @Override
@@ -195,7 +197,7 @@ public class Usuarios implements UserDetails{
     @Override
     public boolean isEnabled() {
         // Retorna o status de ativo (seu campo Ativo)
-        return Ativo; 
+        return ativo; 
     }
 }
 

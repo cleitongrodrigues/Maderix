@@ -21,7 +21,7 @@ public class CancelamentosVenda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Cancelamento")
-    private Integer ID_Cancelamento;
+    private Integer idCancelamento;
 
     @ManyToOne
     @JoinColumn(name = "ID_Usuario", nullable = false)
@@ -33,21 +33,21 @@ public class CancelamentosVenda {
 
     @Column(name = "Data_Evento", nullable = false)
     @CreationTimestamp
-    private LocalDateTime Data_Evento;
+    private LocalDateTime dataEvento;
 
     @Column(name = "Motivo", nullable = true, length = 255)
-    private String Motivo;
+    private String motivo;
 
 
     public CancelamentosVenda() {
     }
 
-    public Integer getID_Cancelamento() {
-        return this.ID_Cancelamento;
+    public Integer getIdCancelamento() {
+        return this.idCancelamento;
     }
 
-    public void setID_Cancelamento(Integer ID_Cancelamento) {
-        this.ID_Cancelamento = ID_Cancelamento;
+    public void setIdCancelamento(Integer ID_Cancelamento) {
+        this.idCancelamento = ID_Cancelamento;
     }
 
     public Usuarios getUsuario() {
@@ -66,19 +66,19 @@ public class CancelamentosVenda {
         this.venda = venda;
     }
 
-    public LocalDateTime getData_Evento() {
-        return this.Data_Evento;
+    public LocalDateTime getDataEvento() {
+        return this.dataEvento;
     }
 
-    public void setData_Evento(LocalDateTime Data_Evento) {
-        this.Data_Evento = Data_Evento;
+    public void setDataEvento(LocalDateTime dataEvento) {
+        this.dataEvento = dataEvento;
     }
 
     public String getMotivo() {
-        return this.Motivo;
+        return this.motivo;
     }
 
-    public void setMotivo(String Motivo) {
-        this.Motivo = Motivo;
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
     }
 }

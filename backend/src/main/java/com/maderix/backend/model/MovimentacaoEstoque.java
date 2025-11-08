@@ -14,108 +14,110 @@ public class MovimentacaoEstoque {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Movimentacao")
-    private Integer ID_Movimentacao;
+    private Integer idMovimentacao;
 
     @ManyToOne
     @JoinColumn(name = "ID_Material", nullable = false)
-    private Materiais ID_Material;
+    private Materiais idMaterial;
 
     @ManyToOne
     @JoinColumn(name = "ID_Venda")
-    private Vendas ID_Venda;
+    private Vendas idVenda;
 
     @ManyToOne
     @JoinColumn(name = "ID_Usuario")
-    private Usuarios ID_Usuario;
+    private Usuarios idUsuario;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Tipo_Movimento", nullable = false, length = 50)
-    private TipoMovimento Tipo_Movimento;
+    private TipoMovimento tipoMovimento;
 
     @Column(name = "Quantidade", nullable = false)
-    private Integer Quantidade;
+    private Integer quantidade;
 
     @Column(name = "Valor_Unitario", nullable = false, precision = 10, scale = 2)
-    private BigDecimal Valor_Unitario;
+    private BigDecimal valorUnitario;
 
     @Column(name = "Observacao", nullable = true, length = 255)
-    private String Observacao;
+    private String observacao;
 
     @Column(name = "DT_Movimentacao", nullable = false)
     @CreationTimestamp
-    private LocalDateTime DT_Movimentacao;
+    private LocalDateTime dataMovimentacao;
 
     public MovimentacaoEstoque(){}
 
-    public Integer getID_Movimentacao() {
-        return ID_Movimentacao;
+
+    public Integer getIdMovimentacao() {
+        return this.idMovimentacao;
     }
 
-    public void setID_Movimentacao(Integer ID_Movimentacao) {
-        this.ID_Movimentacao = ID_Movimentacao;
+    public void setIdMovimentacao(Integer idMovimentacao) {
+        this.idMovimentacao = idMovimentacao;
     }
 
-    public Materiais getID_Material() {
-        return ID_Material;
+    public Materiais getIdMaterial() {
+        return this.idMaterial;
     }
 
-    public void setID_Material(Materiais ID_Material) {
-        this.ID_Material = ID_Material;
+    public void setIdMaterial(Materiais idMaterial) {
+        this.idMaterial = idMaterial;
     }
 
-    public Vendas getID_Venda() {
-        return ID_Venda;
+    public Vendas getIdVenda() {
+        return this.idVenda;
     }
 
-    public void setID_Venda(Vendas ID_Venda) {
-        this.ID_Venda = ID_Venda;
+    public void setIdVenda(Vendas idVenda) {
+        this.idVenda = idVenda;
     }
 
-    public Usuarios getID_Usuario() {
-        return ID_Usuario;
+    public Usuarios getIdUsuario() {
+        return this.idUsuario;
     }
 
-    public void setID_Usuario(Usuarios ID_Usuario) {
-        this.ID_Usuario = ID_Usuario;
+    public void setIdUsuario(Usuarios idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public TipoMovimento getTipo_Movimento() {
-        return Tipo_Movimento;
+    public TipoMovimento getTipoMovimento() {
+        return this.tipoMovimento;
     }
 
-    public void setTipo_Movimento(TipoMovimento tipo_Movimento) {
-        Tipo_Movimento = tipo_Movimento;
+    public void setTipoMovimento(TipoMovimento tipoMovimento) {
+        this.tipoMovimento = tipoMovimento;
     }
 
     public Integer getQuantidade() {
-        return Quantidade;
+        return this.quantidade;
     }
 
     public void setQuantidade(Integer quantidade) {
-        Quantidade = quantidade;
+        this.quantidade = quantidade;
     }
 
-    public BigDecimal getValor_Unitario() {
-        return Valor_Unitario;
+    public BigDecimal getValorUnitario() {
+        return this.valorUnitario;
     }
 
-    public void setValor_Unitario(BigDecimal valor_Unitario) {
-        Valor_Unitario = valor_Unitario;
+    public void setValorUnitario(BigDecimal valorUnitario) {
+        this.valorUnitario = valorUnitario;
     }
 
     public String getObservacao() {
-        return Observacao;
+        return this.observacao;
     }
 
     public void setObservacao(String observacao) {
-        Observacao = observacao;
+        this.observacao = observacao;
     }
 
-    public LocalDateTime getDT_Movimentacao() {
-        return DT_Movimentacao;
+    public LocalDateTime getDataMovimentacao() {
+        return this.dataMovimentacao;
     }
 
-    public void setDT_Movimentacao(LocalDateTime DT_Movimentacao) {
-        this.DT_Movimentacao = DT_Movimentacao;
+    public void setDataMovimentacao(LocalDateTime dataMovimentacao) {
+        this.dataMovimentacao = dataMovimentacao;
     }
+    
 }

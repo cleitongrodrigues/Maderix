@@ -13,7 +13,7 @@ public class Vendas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Venda")
-    private Integer ID_Venda;
+    private Integer idVenda;
 
     @ManyToOne
     @JoinColumn(name = "ID_Cliente", nullable = false)
@@ -28,27 +28,27 @@ public class Vendas {
     private Usuarios usuario;
 
     @Column(name = "Valor_Total", nullable = false, precision = 10, scale = 2)
-    private BigDecimal Valor_Total;
+    private BigDecimal valorTotal;
 
     @Column(name = "Status_Venda", length = (50),nullable = false)
     @org.hibernate.annotations.ColumnDefault("'ABERTA'")
-    private String Status_Venda;
+    private String statusVenda;
 
     @Column(name = "DT_Venda", updatable = false)
     @CreationTimestamp
-    private LocalDateTime DT_Venda;
+    private LocalDateTime dataVenda;
 
     @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY) 
     private List<ItensVenda> itensVendas;   
 
     public Vendas(){}
 
-    public Integer getID_Venda() {
-        return ID_Venda;
+    public Integer getIdVenda() {
+        return this.idVenda;
     }
 
-    public void setID_Venda(Integer ID_Venda) {
-        this.ID_Venda = ID_Venda;
+    public void setIdVenda(Integer idVenda) {
+        this.idVenda = idVenda;
     }
 
     public Clientes getCliente() {
@@ -75,35 +75,35 @@ public class Vendas {
         this.usuario = usuario;
     }
 
-    public BigDecimal getValor_Total() {
-        return Valor_Total;
+    public BigDecimal getValorTotal() {
+        return this.valorTotal;
     }
 
-    public void setValor_Total(BigDecimal valor_Total) {
-        Valor_Total = valor_Total;
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 
-    public String getStatus_Venda() {
-        return Status_Venda;
+    public String getStatusVenda() {
+        return this.statusVenda;
     }
 
-    public void setStatus_Venda(String status_Venda) {
-        Status_Venda = status_Venda;
+    public void setStatusVenda(String statusVenda) {
+        this.statusVenda = statusVenda;
     }
 
-    public LocalDateTime getDT_Venda() {
-        return DT_Venda;
+    public LocalDateTime getDataVenda() {
+        return this.dataVenda;
     }
 
-    public void setDT_Venda(LocalDateTime DT_Venda) {
-        this.DT_Venda = DT_Venda;
+    public void setDataVenda(LocalDateTime dataVenda) {
+        this.dataVenda = dataVenda;
     }
-
-    public List<ItensVenda> getItensVendas() {
-        return itensVendas;
-    }
-
     public void setItensVendas(List<ItensVenda> itensVendas) {
         this.itensVendas = itensVendas;
+    }
+    
+@   OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<ItensVenda> getItensVendas() {
+        return itensVendas;
     }
 }

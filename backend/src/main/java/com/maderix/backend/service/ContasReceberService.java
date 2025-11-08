@@ -21,9 +21,9 @@ public class ContasReceberService {
         ContasReceber conta = new ContasReceber();
         conta.setVenda(venda);
         conta.setEmpresa(venda.getEmpresa());
-        conta.setValor(venda.getValor_Total());
-        conta.setDescricao("Conta a receber gerada automaticamente pela venda " + venda.getID_Venda());
-        conta.setData_Vencimento(LocalDateTime.now().plusDays(30));
+        conta.setValor(venda.getValorTotal());
+        conta.setDescricao("Conta a receber gerada automaticamente pela venda " + venda.getIdVenda());
+        conta.setDataVencimento(LocalDateTime.now().plusDays(30));
         conta.setPago(false);
 
         return contasReceberRepository.save(conta);
@@ -42,7 +42,7 @@ public class ContasReceberService {
         ContasReceber conta = contasReceberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Conta a receber não encontrada"));
         conta.setPago(true);
-        conta.setData_Pagamento(LocalDateTime.now());
+        conta.setDataPagamento(LocalDateTime.now());
         return contasReceberRepository.save(conta);
     }
 

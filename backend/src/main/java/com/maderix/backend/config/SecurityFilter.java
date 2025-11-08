@@ -26,28 +26,46 @@ public class SecurityFilter extends OncePerRequestFilter{
 
     @Autowired
     private UsuariosRepository usuariosRepository;
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-    protected void doFilterInternal(HttpServletRequest request
-                                   ,HttpServletResponse response
-                                   ,FilterChain filterChain) throws ServletException, IOException{
-        
-        String token = this.recoverToken(request);
+        String path = request.getRequestURI();
 
-        if(token != null){
+        // ✅ Ignora todas as rotas públicas (Swagger, Auth, etc)
+        if (path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars")
+                || path.startsWith("/api/auth")
+                || path.equals("/")
+                || path.equals("/error")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = recoverToken(request);
+
+        if (token != null) {
             String login = tokenService.validaToken(token);
 
-            if(!login.isEmpty()){
-                UserDetails user = usuariosRepository.findByNmLogin(login)
-                                                     .orElse(null);
-
-            if(user != null){
-                UsernamePasswordAuthenticationToken autentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(autentication);
-            }
+            if (login != null && !login.isEmpty()) {
+                var userOpt = usuariosRepository.findByNmLogin(login);
+                if (userOpt.isPresent()) {
+                    var user = userOpt.get();
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
+
         filterChain.doFilter(request, response);
     }
+
 
     private String recoverToken(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");

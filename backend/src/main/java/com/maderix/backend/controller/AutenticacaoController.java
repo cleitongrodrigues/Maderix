@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.maderix.backend.dto.LoginRequestDTO;
+import com.maderix.backend.dto.LoginResponseDTO;
 import com.maderix.backend.dto.RecuperacaoSenhaRequestDTO;
 import com.maderix.backend.dto.ResetSenhaRequestDTO;
 import com.maderix.backend.dto.UsuarioResponseDTO;
 import com.maderix.backend.model.Usuarios;
 import com.maderix.backend.service.AutenticacaoService;
 import com.maderix.backend.service.RecuperacaoSenhaService;
+import com.maderix.backend.service.TokenService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,16 +30,22 @@ public class AutenticacaoController {
     @Autowired
     private RecuperacaoSenhaService recuperacaoSenhaService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
-    public ResponseEntity<UsuarioResponseDTO> login(@Valid @RequestBody LoginRequestDTO request){
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request){
         Usuarios usuarioAutenticado = autenticacaoService.autenticar(
             request.getNmLogin()
            ,request.getSenhaPura()
         );
 
-        UsuarioResponseDTO responseDTO = new UsuarioResponseDTO(usuarioAutenticado);
+        String tokenJWT = tokenService.generateToken(usuarioAutenticado);
 
-        return ResponseEntity.ok(responseDTO);
+        UsuarioResponseDTO usuarioDTO = new UsuarioResponseDTO(usuarioAutenticado);
+        LoginResponseDTO response = new LoginResponseDTO(tokenJWT, usuarioDTO);
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/esqueceu-senha")

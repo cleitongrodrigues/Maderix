@@ -17,19 +17,19 @@ public class UsuarioResponseDTO {
     private LocalDateTime ultimoLogin;
 
     public UsuarioResponseDTO(Usuarios usuario){
-        this.idUsuario    = usuario.getID_Usuario();
-        this.nmUsuario    = usuario.getnmUsuario();
+        this.idUsuario    = usuario.getIdUsuario();
+        this.nmUsuario    = usuario.getNmUsuario();
         this.email        = usuario.getEmail();
-        this.nmLogin      = usuario.getnmLogin();
+        this.nmLogin      = usuario.getNmLogin();
         this.ativo        = usuario.isAtivo();
-        this.dtCadUsuario = usuario.getDT_Cad_Usuario();
-        this.ultimoLogin  = usuario.getULTIMO_LOGIN();
+        this.dtCadUsuario = usuario.getDataCadUsuario();
+        this.ultimoLogin  = usuario.getUltimoLogin();
 
         if(usuario.getPerfil() != null){
-            this.nomePerfil  = usuario.getPerfil().getNM_Perfil();
+            this.nomePerfil  = usuario.getPerfil().getNmPerfil();
         }
         if(usuario.getEmpresa() != null){
-            this.nomeEmpresa = usuario.getEmpresa().getNM_Fantasia();
+            this.nomeEmpresa = usuario.getEmpresa().getNmFantasia();
         }
     }
 

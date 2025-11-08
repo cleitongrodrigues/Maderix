@@ -1,0 +1,64 @@
+POST api/vendas
+{
+  "cliente": {"idCliente": 1},
+  "empresa": {"idEmpresa": 1},
+  "statusVenda": "ABERTA",
+  "itensVendas": [
+    {
+      "idMaterial": 1,
+      "quantidade": 3 // Vai subtrair 3 unidades do estoque (10 - 3 = 7)
+    }
+  ]
+}
+
+POST api/materiais
+{
+  "empresa": {"idEmpresa": 1},
+  "unidadeMedida": {"idUnidade": 1},
+  "nmMaterial": "MDF Carvalho",
+  "codigo": "MDF-C001",
+  "precoVenda": 500.00,
+  "precoCusto": 350.00,
+  "estoqueAtual": 10, 
+  "fornecedor": "Madeireira Alfa",
+  "categoria": "Chapa",
+  "ativo": true
+}
+
+POST api/clientes
+{
+  "idEmpresa": {
+    "idEmpresa": 1
+  },
+  "nmCliente": "douglas",
+  "telCliente": "14997062581",
+  "email": "douglas@gmail.com"
+}
+
+POST api/vendas
+{
+  "idVenda": 1,
+  "cliente": {
+    "idCliente": 1
+  },
+  "empresa": {
+    "idEmpresa": 1
+  },
+  "usuario": {
+    "idUsuario": 1
+  },
+  "valorTotal": 100.0,
+  "statusVenda": "FINALIZADA",
+  "dataVenda": "2025-11-09T21:38:34.972Z",
+  "itensVendas": [
+    {
+      "idItemVenda": 1,
+      "idMaterial": {
+        "idMaterial": 1
+      },
+      "quantidade": 2,
+      "precoUnitario": 50.0,
+      "valorTotalItem": 100.0
+    }
+  ]
+}

@@ -19,6 +19,6 @@ public interface PagamentosVendaRepository extends JpaRepository<PagamentosVenda
     List<PagamentosVenda> findByConta(ContasReceber conta);
     List<PagamentosVenda> findByUsuario(Usuarios usuario);
 
-    @Query("SELECT SUM(p.Valor) FROM PagamentosVenda p WHERE p.vendas = :venda")
+    @Query("SELECT SUM(p.valor) FROM PagamentosVenda p WHERE p.vendas = :venda")
     BigDecimal getTotalPagoByVenda(@Param("venda") Vendas venda);
 }

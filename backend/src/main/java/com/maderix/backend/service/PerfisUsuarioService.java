@@ -23,6 +23,7 @@ public class PerfisUsuarioService {
 
     @Autowired
     private PermissoesRepository permissoesRepository;
+    
 
     public PerfisUsuario salvarPerfil(PerfisUsuario perfisUsuario) {
         return perfisUsuarioRepository.save(perfisUsuario);
@@ -40,7 +41,7 @@ public class PerfisUsuarioService {
         PerfisUsuario perfilExistente = perfisUsuarioRepository.findById(id)
                                                                .orElseThrow(() -> new RuntimeException("Perfil com o id: " + id + " não encontrado"));
 
-        perfilExistente.setNM_Perfil(detalhePerfil.getNM_Perfil());
+        perfilExistente.setNmPerfil(detalhePerfil.getNmPerfil());
 
         return perfisUsuarioRepository.save(perfilExistente);
     }
@@ -74,7 +75,7 @@ public class PerfisUsuarioService {
                 .orElseThrow(() -> new ResourceNotFoundException("Perfil com ID " + perfilId + " não encontrado."));
 
         // Remove as permissões da coleção
-        perfil.getPermissoes().removeIf(p -> permissoesIds.contains(p.getID_Permissoes()));
+        perfil.getPermissoes().removeIf(p -> permissoesIds.contains(p.getIdPermissoes()));
 
         return perfisUsuarioRepository.save(perfil);
     }

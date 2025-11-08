@@ -23,23 +23,23 @@ public class ItemVendaResponseDTO {
      * @param item A entidade ItensVenda a ser convertida.
      */
     public ItemVendaResponseDTO(ItensVenda item) {
-        this.idItemVenda = item.getID_Item_Venda();
+        this.idItemVenda = item.getIdItemVenda();
         this.quantidade = item.getQuantidade();
-        this.precoUnitario = item.getPreco_Unitario();
-        this.valorTotalItem = item.getValor_Total_Item();
+        this.precoUnitario = item.getPrecoUnitario();
+        this.valorTotalItem = item.getValorTotalItem();
         
         // --- Navegação para Entidades Relacionadas (Materiais) ---
-        if (item.getID_Material() != null) {
-            this.idMaterial = item.getID_Material().getID_Material();
-            this.nomeMaterial = item.getID_Material().getNM_Material();
-            this.codigoMaterial = item.getID_Material().getCodigo();
+        if (item.getIdMaterial() != null) {
+            this.idMaterial = item.getIdMaterial().getIdMaterial();
+            this.nomeMaterial = item.getIdMaterial().getNmMaterial();
+            this.codigoMaterial = item.getIdMaterial().getCodigo();
             
             // Navega para a Unidade de Medida
-            if (item.getID_Material().getUnidadeMedida() != null) {
-                this.unidadeSigla = item.getID_Material().getUnidadeMedida().getSigla();
+            if (item.getIdMaterial().getUnidadeMedida() != null) {
+                this.unidadeSigla = item.getIdMaterial().getUnidadeMedida().getSigla();
             }
         }
-        // Nota: Assumi que getID_Material() retorna a entidade Materiais, e esta tem um getID_Unidade().
+        // Nota: Assumi que getIdMaterial() retorna a entidade Materiais, e esta tem um getID_Unidade().
     }
 
     // --- Inclua todos os Getters e Setters aqui ---

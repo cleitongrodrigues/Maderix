@@ -21,7 +21,7 @@ public class PagamentosVenda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Pagamento")
-    private Integer ID_Pagamento;
+    private Integer idPagamento;
 
     @ManyToOne
     @JoinColumn(name = "ID_Venda", nullable = false)
@@ -33,31 +33,32 @@ public class PagamentosVenda {
 
     @Column(name = "Data_Pagamento", nullable = false, updatable = false)
     @CreationTimestamp
-    private LocalDateTime Data_Pagamento;
+    private LocalDateTime dataPagamento;
 
     @Column(name = "Tipo_Pagamento", length = 20 ,nullable = false)
-    private String Tipo_Pagamento;
+    private String tipoPagamento;
 
     @Column(name = "Valor", precision = 10, scale = 2, nullable = false)
-    private BigDecimal Valor;
+    private BigDecimal valor;
 
     @ManyToOne
     @JoinColumn(name = "ID_Usuario", nullable = false)
     private Usuarios usuario;
 
     @Column(name = "Observacao", length = 255, nullable = true)
-    private String Observacao;
+    private String observacao;
 
 
     public PagamentosVenda() {
     }
 
-    public Integer getID_Pagamento() {
-        return this.ID_Pagamento;
+
+    public Integer getIdPagamento() {
+        return this.idPagamento;
     }
 
-    public void setID_Pagamento(Integer ID_Pagamento) {
-        this.ID_Pagamento = ID_Pagamento;
+    public void setIdPagamento(Integer idPagamento) {
+        this.idPagamento = idPagamento;
     }
 
     public Vendas getVendas() {
@@ -76,28 +77,28 @@ public class PagamentosVenda {
         this.conta = conta;
     }
 
-    public LocalDateTime getData_Pagamento() {
-        return this.Data_Pagamento;
+    public LocalDateTime getDataPagamento() {
+        return this.dataPagamento;
     }
 
-    public void setData_Pagamento(LocalDateTime Data_Pagamento) {
-        this.Data_Pagamento = Data_Pagamento;
+    public void setDataPagamento(LocalDateTime dataPagamento) {
+        this.dataPagamento = dataPagamento;
     }
 
-    public String getTipo_Pagamento() {
-        return this.Tipo_Pagamento;
+    public String getTipoPagamento() {
+        return this.tipoPagamento;
     }
 
-    public void setTipo_Pagamento(String Tipo_Pagamento) {
-        this.Tipo_Pagamento = Tipo_Pagamento;
+    public void setTipoPagamento(String tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
     public BigDecimal getValor() {
-        return this.Valor;
+        return this.valor;
     }
 
-    public void setValor(BigDecimal Valor) {
-        this.Valor = Valor;
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
     }
 
     public Usuarios getUsuario() {
@@ -109,10 +110,11 @@ public class PagamentosVenda {
     }
 
     public String getObservacao() {
-        return this.Observacao;
+        return this.observacao;
     }
 
-    public void setObservacao(String Observacao) {
-        this.Observacao = Observacao;
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
+    
 }

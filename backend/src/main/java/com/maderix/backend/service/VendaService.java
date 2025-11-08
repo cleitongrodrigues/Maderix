@@ -46,7 +46,7 @@ public class VendaService {
         if (novaVenda.getCliente() == null) {
             throw new IllegalArgumentException("Cliente é obrigatório para registrar uma venda.");
         }
-        clientesRepository.findById(novaVenda.getCliente().getID_Cliente())
+        clientesRepository.findById(novaVenda.getCliente().getIdCliente())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
         BigDecimal valorTotalVenda = BigDecimal.ZERO;
@@ -54,24 +54,24 @@ public class VendaService {
 
         if (novaVenda.getItensVendas() != null) {
             for(ItensVenda item: novaVenda.getItensVendas()){
-                Materiais material = materiaisRepository.findById(item.getID_Material().getID_Material())
+                Materiais material = materiaisRepository.findById(item.getIdMaterial().getIdMaterial())
                         .orElseThrow(() -> new ResourceNotFoundException(
-                                String.format("Material com ID %d não encontrado.", item.getID_Material().getID_Material())
+                                String.format("Material com ID %d não encontrado.", item.getIdMaterial().getIdMaterial())
                         ));
 
-                if (material.getEstoque_Atual() < item.getQuantidade()){
-                    throw new BusinessRuleException("Estoque insuficiente para o material: " + material.getNM_Material());
+                if (material.getEstoqueAtual() < item.getQuantidade()){
+                    throw new BusinessRuleException("Estoque insuficiente para o material: " + material.getNmMaterial());
                 }
 
-                BigDecimal valorTotalItem = material.getPreco_Custo().multiply(BigDecimal.valueOf(item.getQuantidade()));
-                item.setValor_Total_Item(valorTotalItem);
+                BigDecimal valorTotalItem = material.getPrecoCusto().multiply(BigDecimal.valueOf(item.getQuantidade()));
+                item.setValorTotalItem(valorTotalItem);
 
                 item.setID_Venda(novaVenda);
 
                 MovimentacaoEstoque movimentacao = new MovimentacaoEstoque();
-                movimentacao.setID_Material(material);
+                movimentacao.setIdMaterial(material);
                 movimentacao.setQuantidade(item.getQuantidade());
-                movimentacao.setTipo_Movimento(TipoMovimento.SAIDA);
+                movimentacao.setTipoMovimento(TipoMovimento.SAIDA);
 
                 movimentacaoEstoqueService.registrarMovimentacao(movimentacao);
                 itensVendaRepository.save(item);
@@ -80,7 +80,7 @@ public class VendaService {
             }
         }
 
-        novaVenda.setValor_Total(valorTotalVenda);
+        novaVenda.setValorTotal(valorTotalVenda);
         Vendas vendaSalva = vendasRepository.save(novaVenda);
 
         contasReceberService.gerarConta(vendaSalva);

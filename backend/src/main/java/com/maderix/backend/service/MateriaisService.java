@@ -36,10 +36,10 @@ public class MateriaisService {
         Materiais materialExistente = materiaisRepository.findById(id)
             .orElseThrow(() -> new  ResourceNotFoundException("Material com ID" + id + "não encontrado."));
 
-        materialExistente.setNM_Material(materialDetalhes.getNM_Material());
+        materialExistente.setNmMaterial(materialDetalhes.getNmMaterial());
         materialExistente.setDescricao(materialDetalhes.getDescricao());
-        materialExistente.setEstoque_Atual(materialDetalhes.getEstoque_Atual());
-        materialExistente.setPreco_Custo(materialDetalhes.getPreco_Custo());
+        materialExistente.setEstoqueAtual(materialDetalhes.getEstoqueAtual());
+        materialExistente.setPrecoCusto(materialDetalhes.getPrecoCusto());
         materialExistente.setEmpresa(materialDetalhes.getEmpresa());
         materialExistente.setUnidadeMedida(materialDetalhes.getUnidadeMedida());
 

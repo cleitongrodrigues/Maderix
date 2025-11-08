@@ -11,70 +11,70 @@ public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Empresa")
-    private Integer ID_Empresa;
+    private Integer idEmpresa;
 
     @Column(name = "NM_Fantasia", nullable = false, length = 150)
-    private String NM_Fantasia;
+    private String nmFantasia;
 
     @Column(name = "RZ_Social", length = 150)
-    private String RZ_Social;
+    private String rzSocial;
 
     @Column(name = "CNPJ", unique = true, length = 18)
-    private String CNPJ;
+    private String cnpj;
 
     @CreationTimestamp // Registra a data do Sistema
     @Column(name = "DT_Cad_Empresa", nullable = false)
-    private LocalDateTime DT_Cad_Empresa;
+    private LocalDateTime dataCadEmpresa;
 
     public Empresa(Integer idEmpresa, String nomeFantasia, String razaoSocial, String cnpj, LocalDateTime dataCadastro) {
-        this.ID_Empresa = idEmpresa;
-        this.NM_Fantasia = nomeFantasia;
-        this.RZ_Social = razaoSocial;
-        this.CNPJ = cnpj;
-        this.DT_Cad_Empresa = dataCadastro;
+        this.idEmpresa = idEmpresa;
+        this.nmFantasia = nomeFantasia;
+        this.rzSocial = razaoSocial;
+        this.cnpj = cnpj;
+        this.dataCadEmpresa = dataCadastro;
     }
 
     public Empresa(){}
 
-    public Integer getID_Empresa() {
-        return ID_Empresa;
+
+    public Integer getIdEmpresa() {
+        return this.idEmpresa;
     }
 
-    public void setID_Empresa(Integer iD_Empresa) {
-        ID_Empresa = iD_Empresa;
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
-    public String getNM_Fantasia() {
-        return NM_Fantasia;
+    public String getNmFantasia() {
+        return this.nmFantasia;
     }
 
-    public void setNM_Fantasia(String nM_Fantasia) {
-        NM_Fantasia = nM_Fantasia;
+    public void setNmFantasia(String nmFantasia) {
+        this.nmFantasia = nmFantasia;
     }
 
-    public String getRZ_Social() {
-        return RZ_Social;
+    public String getRzSocial() {
+        return this.rzSocial;
     }
 
-    public void setRZ_Social(String rZ_Social) {
-        RZ_Social = rZ_Social;
+    public void setRzSocial(String rzSocial) {
+        this.rzSocial = rzSocial;
     }
 
-    public String getCNPJ() {
-        return CNPJ;
+    public String getCnpj() {
+        return this.cnpj;
     }
 
-    public void setCNPJ(String cNPJ) {
-        CNPJ = cNPJ;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
-    public LocalDateTime getDT_Cad_Empresa() {
-        return DT_Cad_Empresa;
+    public LocalDateTime getDataCadEmpresa() {
+        return this.dataCadEmpresa;
     }
 
-    public void setDT_Cad_Empresa(LocalDateTime dT_Cad_Empresa) {
-        DT_Cad_Empresa = dT_Cad_Empresa;
+    public void setDataCadEmpresa(LocalDateTime dataCadEmpresa) {
+        this.dataCadEmpresa = dataCadEmpresa;
     }
-
-
+    
 }

@@ -14,7 +14,7 @@ public class Permissoes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Permissoes")
-    private Integer ID_Permissoes;
+    private Integer idPermissoes;
 
     @Column(name = "CODIGO", length = 100 ,nullable = false, unique = true)
     private String codigo;
@@ -29,12 +29,12 @@ public class Permissoes {
     public Permissoes() {
     }
 
-    public Integer getID_Permissoes() {
-        return this.ID_Permissoes;
+    public Integer getIdPermissoes() {
+        return this.idPermissoes;
     }
 
-    public void setID_Permissoes(Integer ID_Permissoes) {
-        this.ID_Permissoes = ID_Permissoes;
+    public void setIdPermissoes(Integer idPermissoes) {
+        this.idPermissoes = idPermissoes;
     }
 
     public String getCodigo() {
@@ -60,6 +60,5 @@ public class Permissoes {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-
-
+    
 }

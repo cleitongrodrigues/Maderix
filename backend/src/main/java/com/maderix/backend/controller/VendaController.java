@@ -6,6 +6,7 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,7 @@ import jakarta.validation.Valid;
         private CancelamentoVendaService cancelamentoVendaService;
 
         @PostMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<VendaResponseDTO> registrarVenda(@Valid @RequestBody Vendas vendaRequestDTO){
             //Obtem o usuario logado do contexto de segurança (JWT)
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +47,7 @@ import jakarta.validation.Valid;
             //Verifica se o Usuario é valido antes de prosseguir 
             if(authentication == null || authentication.getPrincipal() == null || !(authentication.getPrincipal() instanceof Usuarios)){
                 // Esta exceção é importante caso o filtro JWT falhe (mas o Spring já deveria proteger)
-                throw new BusinessRuleException("Usuário de auditoria não encontrado no contexto de segurança.");
+                throw new BusinessRuleException("Usuário de  auditoria não encontrado no contexto de segurança.");
             }
 
             Usuarios usuarioLogado = (Usuarios) authentication.getPrincipal();
