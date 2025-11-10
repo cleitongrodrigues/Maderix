@@ -35,7 +35,6 @@ public class SecurityFilter extends OncePerRequestFilter{
 
         String path = request.getRequestURI();
 
-        // ✅ Ignora todas as rotas públicas (Swagger, Auth, etc)
         if (path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/swagger-resources")

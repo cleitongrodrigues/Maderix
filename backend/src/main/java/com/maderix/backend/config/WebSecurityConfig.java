@@ -32,7 +32,6 @@ public class WebSecurityConfig {
                 // 1. DESABILITAR CSRF (essencial para APIs REST Stateless)
                 .csrf(csrf -> csrf.disable())
                 
-                // 🚨 CORREÇÃO: MOVER HEADERS PARA AQUI
                 // Permite que o H2 Console seja exibido em um Iframe no navegador
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // <-- MOVIDO PARA CIMA
 
@@ -49,8 +48,6 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll() 
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        // 🚨 PERMISSÃO PÚBLICA PARA O H2 CONSOLE
-                        // Note que as regras do H2 devem vir antes de .anyRequest().authenticated()
                         .requestMatchers("/h2-console/**").permitAll() 
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                         
@@ -74,11 +71,11 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // CORREÇÃO: Ajustar os padrões permitidos para desenvolvimento
+        
         configuration.setAllowedOriginPatterns(List.of("*")); // Permite todas as origens (use domínios específicos em produção)
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Permite todos os cabeçalhos (incluindo Authorization)
-        configuration.setAllowCredentials(false); // Manter false para JWT, mas deve ser True se usar cookies/sessão
+        configuration.setAllowCredentials(false); 
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Aplica a configuração a todas as rotas

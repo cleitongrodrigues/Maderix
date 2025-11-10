@@ -1,91 +1,112 @@
 package com.maderix.backend.service;
 
-import com.maderix.backend.enums.TipoMovimento;
-import com.maderix.backend.exception.BusinessRuleException;
-import com.maderix.backend.exception.ResourceNotFoundException;
-import com.maderix.backend.model.ItensVenda;
-import com.maderix.backend.model.Materiais;
-import com.maderix.backend.model.MovimentacaoEstoque;
-import com.maderix.backend.model.Usuarios;
-import com.maderix.backend.model.Vendas;
-import com.maderix.backend.repository.ClientesRepository;
-import com.maderix.backend.repository.ItensVendaRepository;
-import com.maderix.backend.repository.MateriaisRepository;
-import com.maderix.backend.repository.VendasRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.maderix.backend.exception.BusinessRuleException;
+import com.maderix.backend.exception.ResourceNotFoundException;
+import com.maderix.backend.model.ItensVenda;
+import com.maderix.backend.model.MovimentacaoEstoque;
+import com.maderix.backend.model.Vendas;
+import com.maderix.backend.model.Materiais;
+import com.maderix.backend.dto.ItemVendaRequestDTO;
+import com.maderix.backend.dto.ItemVendaResponseDTO;
+import com.maderix.backend.enums.TipoMovimento;
+import com.maderix.backend.repository.VendasRepository;
+import com.maderix.backend.repository.ClientesRepository;
+import com.maderix.backend.repository.MateriaisRepository;
+
 @Service
 public class VendaService {
-    @Autowired
-    private VendasRepository vendasRepository;
 
     @Autowired
     private ClientesRepository clientesRepository;
 
     @Autowired
-    private MateriaisRepository materiaisRepository;
-
-    @Autowired
-    private ItensVendaRepository itensVendaRepository;
+    private VendasRepository vendasRepository;
 
     @Autowired
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @Autowired
-    private ContasReceberService contasReceberService;
+    private MateriaisRepository materiaisRepository;
 
     @Transactional
-    public Vendas registrarNovaVenda(Vendas novaVenda, Usuarios usuarioLogado) {
+    public Vendas registrarNovaVenda(Vendas vendaRequestDTO, com.maderix.backend.model.Usuarios usuarioLogado){
         //Valida e busca as entidades       
-        if (novaVenda.getCliente() == null) {
+        if (vendaRequestDTO.getCliente() == null) {
             throw new IllegalArgumentException("Cliente é obrigatório para registrar uma venda.");
         }
-        clientesRepository.findById(novaVenda.getCliente().getIdCliente())
+        clientesRepository.findById(vendaRequestDTO.getCliente().getIdCliente())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
         BigDecimal valorTotalVenda = BigDecimal.ZERO;
-        novaVenda.setUsuario(usuarioLogado);
+        vendaRequestDTO.setUsuario(usuarioLogado);
 
-        if (novaVenda.getItensVendas() != null) {
-            for(ItensVenda item: novaVenda.getItensVendas()){
-                Materiais material = materiaisRepository.findById(item.getIdMaterial().getIdMaterial())
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                String.format("Material com ID %d não encontrado.", item.getIdMaterial().getIdMaterial())
-                        ));
+        if (vendaRequestDTO.getItensVendas() != null) {
+            for (ItensVenda item : vendaRequestDTO.getItensVendas()) {
+                BigDecimal precoUnit = item.getPrecoUnitario();
+                Materiais mat = null;
 
-                if (material.getEstoqueAtual() < item.getQuantidade()){
-                    throw new BusinessRuleException("Estoque insuficiente para o material: " + material.getNmMaterial());
+                // tentar obter Materiais a partir do item (caso id ou objeto)
+                try {
+                    if (item.getIdMaterial() != null) {
+                        // se getIdMaterial() já for Materiais
+                        mat = item.getIdMaterial();
+                    }
+                } catch (Exception e) {
+                    // ignore
                 }
 
-                BigDecimal valorTotalItem = material.getPrecoCusto().multiply(BigDecimal.valueOf(item.getQuantidade()));
-                item.setValorTotalItem(valorTotalItem);
+                // se ainda não tem preço, tentar buscar pelo id do material (se possível)
+                if (precoUnit == null) {
+                    try {
+                        Integer idMat = null;
+                        try { idMat = item.getIdMaterial().getIdMaterial(); } catch (Exception e) { /* ignore */ }
+                        if (idMat == null) {
+                            // tenta extrair de outro getter caso exista
+                            try { idMat = (Integer) item.getClass().getMethod("getIdMaterialId").invoke(item); } catch (Exception ex) { /* ignore */ }
+                        }
+                        if (idMat != null) {
+                            Optional<Materiais> matOpt = materiaisRepository.findById(idMat);
+                            if (matOpt.isPresent()) {
+                                mat = matOpt.get();
+                                if (mat.getPrecoVenda() != null) precoUnit = mat.getPrecoVenda();
+                                else precoUnit = mat.getPrecoCusto();
+                            }
+                        }
+                    } catch (Exception e) {
+                        // ignore - validação abaixo
+                    }
+                }
 
-                item.setID_Venda(novaVenda);
+                if (precoUnit == null) {
+                    throw new BusinessRuleException("Não foi possível determinar precoUnitario para um item da venda. Informe precoUnitario no item ou cadastre preco no material.");
+                }
 
-                MovimentacaoEstoque movimentacao = new MovimentacaoEstoque();
-                movimentacao.setIdMaterial(material);
-                movimentacao.setQuantidade(item.getQuantidade());
-                movimentacao.setTipoMovimento(TipoMovimento.SAIDA);
+                item.setPrecoUnitario(precoUnit);
 
-                movimentacaoEstoqueService.registrarMovimentacao(movimentacao);
-                itensVendaRepository.save(item);
+                MovimentacaoEstoque mov = new MovimentacaoEstoque();
+                // atribui material ao movimento (usa o objeto Materiais quando disponível)
+                if (mat != null) mov.setIdMaterial(mat);
+                else mov.setIdMaterial(item.getIdMaterial());
 
-                valorTotalVenda = valorTotalVenda.add(valorTotalItem);
+                mov.setQuantidade(item.getQuantidade());
+                mov.setTipoMovimento(TipoMovimento.SAIDA);
+                mov.setValorUnitario(precoUnit);
+                // usuario de auditoria
+                mov.setIdUsuario(usuarioLogado);
+                // idVenda pode ser setado depois se desejar; persistimos a movimentação agora
+                movimentacaoEstoqueService.registrarMovimentacao(mov);
             }
         }
 
-        novaVenda.setValorTotal(valorTotalVenda);
-        Vendas vendaSalva = vendasRepository.save(novaVenda);
-
-        contasReceberService.gerarConta(vendaSalva);
-
-        return vendaSalva;
+        return vendasRepository.save(vendaRequestDTO);
     }
 
     public List<Vendas> buscarTodasVendas() {

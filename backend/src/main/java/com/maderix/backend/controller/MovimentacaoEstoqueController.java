@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.maderix.backend.dto.MovimentacaoRequestDTO;
 import com.maderix.backend.model.MovimentacaoEstoque;
 import com.maderix.backend.service.MovimentacaoEstoqueService;
 
@@ -24,10 +25,13 @@ public class MovimentacaoEstoqueController {
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @PostMapping
-    public ResponseEntity<MovimentacaoEstoque> registrarMovimentacao(@RequestBody MovimentacaoEstoque movimentacao){
-        MovimentacaoEstoque novaMovimentacao = movimentacaoEstoqueService.registrarMovimentacao(movimentacao);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaMovimentacao);
+    public ResponseEntity<?> criarMovimentacao(@RequestBody MovimentacaoRequestDTO dto){
+        // validações mínimas
+        if (dto.getIdMaterial() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("idMaterial obrigatório");
+        }
+        var mov = movimentacaoEstoqueService.registrarMovimentacao(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mov);
     }
 
     @GetMapping

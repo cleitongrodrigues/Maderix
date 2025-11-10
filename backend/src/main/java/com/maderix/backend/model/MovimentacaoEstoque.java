@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.maderix.backend.enums.TipoMovimento;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -119,5 +120,35 @@ public class MovimentacaoEstoque {
     public void setDataMovimentacao(LocalDateTime dataMovimentacao) {
         this.dataMovimentacao = dataMovimentacao;
     }
-    
+
+    // aceita "idMaterial": 1 ou "idMaterial": {"idMaterial":1}
+    @JsonSetter("idMaterial")
+    public void setIdMaterialFromInt(Object value) {
+        if (value == null) {
+            this.idMaterial = null;
+            return;
+        }
+        try {
+            if (value instanceof Number) {
+                Materiais m = new Materiais();
+                m.setIdMaterial(((Number) value).intValue());
+                this.idMaterial = m;
+                return;
+            }
+            // se vier como objeto mapeado pelo Jackson já, tenta extrair id
+            // O Json normalmente já transforma objeto em Materiais, mas tratamos em caso de Map
+            if (value instanceof java.util.Map) {
+                Object id = ((java.util.Map<?,?>) value).get("idMaterial");
+                if (id instanceof Number) {
+                    Materiais m = new Materiais();
+                    m.setIdMaterial(((Number) id).intValue());
+                    this.idMaterial = m;
+                    return;
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // fallback: deixe como null para tratamento posterior
+        this.idMaterial = null;
+    }
 }

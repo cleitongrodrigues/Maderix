@@ -2,6 +2,8 @@ package com.maderix.backend.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -58,6 +60,17 @@ public class ItensVenda {
 
     public void setIdMaterial(Materiais idMaterial) {
         this.idMaterial = idMaterial;
+    }
+
+    @JsonSetter("idMaterial")
+    public void setIdMaterialFromInt(Integer id) {
+        if (id == null) {
+            this.idMaterial = null;
+        } else {
+            Materiais m = new Materiais();
+            m.setIdMaterial(id);
+            this.idMaterial = m;
+        }
     }
 
     public Integer getQuantidade() {
