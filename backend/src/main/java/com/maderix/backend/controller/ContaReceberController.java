@@ -1,6 +1,7 @@
 package com.maderix.backend.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.maderix.backend.model.ContasReceber;
+import com.maderix.backend.dto.ContasReceberResponseDTO;
 import com.maderix.backend.service.ContasReceberService;
 
 @RestController
@@ -21,24 +22,28 @@ public class ContaReceberController {
     private ContasReceberService contasReceberService;
 
     @GetMapping
-    public ResponseEntity<List<ContasReceber>> buscarTodasContasReceber(){
-        List<ContasReceber> contasReceber = contasReceberService.buscarTodasContasReceber();
+    public ResponseEntity<List<ContasReceberResponseDTO>> buscarTodasContasReceber(){
+        List<ContasReceberResponseDTO> contasReceber = contasReceberService.buscarTodasContasReceber()
+                .stream()
+                .map(ContasReceberResponseDTO::new)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(contasReceber);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContasReceber> buscarContasReceberPorId(@PathVariable Integer id){
+    public ResponseEntity<ContasReceberResponseDTO> buscarContasReceberPorId(@PathVariable Integer id){
         return contasReceberService.buscarPorId(id)
+                                    .map(ContasReceberResponseDTO::new)
                                     .map(ResponseEntity::ok)
                                     .orElse(ResponseEntity.notFound().build());
 
     }
 
     @PatchMapping("/{id}/pagar")
-    public ResponseEntity<ContasReceber> marcarComoPaga(@PathVariable Integer id){
-        ContasReceber contaPaga = contasReceberService.marcarComoPaga(id);
+    public ResponseEntity<ContasReceberResponseDTO> marcarComoPaga(@PathVariable Integer id){
+        var contaPaga = contasReceberService.marcarComoPaga(id);
 
-        return ResponseEntity.ok(contaPaga);
+        return ResponseEntity.ok(new ContasReceberResponseDTO(contaPaga));
     }
 }

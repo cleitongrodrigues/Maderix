@@ -14,12 +14,15 @@ import com.maderix.backend.model.ItensVenda;
 import com.maderix.backend.model.MovimentacaoEstoque;
 import com.maderix.backend.model.Vendas;
 import com.maderix.backend.model.Materiais;
+import com.maderix.backend.model.Clientes;
+import com.maderix.backend.model.Empresa;
 import com.maderix.backend.dto.ItemVendaRequestDTO;
-import com.maderix.backend.dto.ItemVendaResponseDTO;
+import com.maderix.backend.dto.VendaRequestDTO;
 import com.maderix.backend.enums.TipoMovimento;
 import com.maderix.backend.repository.VendasRepository;
 import com.maderix.backend.repository.ClientesRepository;
 import com.maderix.backend.repository.MateriaisRepository;
+import com.maderix.backend.repository.EmpresaRepository;
 
 @Service
 public class VendaService {
@@ -36,77 +39,90 @@ public class VendaService {
     @Autowired
     private MateriaisRepository materiaisRepository;
 
+    @Autowired
+    private EmpresaRepository empresaRepository;
+
+    @Autowired
+    private ContasReceberService contasReceberService;
+
     @Transactional
-    public Vendas registrarNovaVenda(Vendas vendaRequestDTO, com.maderix.backend.model.Usuarios usuarioLogado){
-        //Valida e busca as entidades       
-        if (vendaRequestDTO.getCliente() == null) {
-            throw new IllegalArgumentException("Cliente é obrigatório para registrar uma venda.");
-        }
-        clientesRepository.findById(vendaRequestDTO.getCliente().getIdCliente())
+    public Vendas registrarNovaVenda(VendaRequestDTO vendaRequestDTO, com.maderix.backend.model.Usuarios usuarioLogado){
+        // Valida e busca Cliente
+        Clientes cliente = clientesRepository.findById(vendaRequestDTO.getIdCliente())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
+        // Valida e busca Empresa
+        Empresa empresa = empresaRepository.findById(vendaRequestDTO.getIdEmpresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
+
+        // Cria a entidade Venda
+        Vendas venda = new Vendas();
+        venda.setCliente(cliente);
+        venda.setEmpresa(empresa);
+        venda.setUsuario(usuarioLogado);
+        venda.setStatusVenda("ABERTA");
+
         BigDecimal valorTotalVenda = BigDecimal.ZERO;
-        vendaRequestDTO.setUsuario(usuarioLogado);
 
-        if (vendaRequestDTO.getItensVendas() != null) {
-            for (ItensVenda item : vendaRequestDTO.getItensVendas()) {
-                BigDecimal precoUnit = item.getPrecoUnitario();
-                Materiais mat = null;
+        // Processa os itens da venda
+        if (vendaRequestDTO.getItens() != null && !vendaRequestDTO.getItens().isEmpty()) {
+            for (ItemVendaRequestDTO itemDTO : vendaRequestDTO.getItens()) {
+                // Busca o Material
+                Materiais material = materiaisRepository.findById(itemDTO.getIdMaterial())
+                        .orElseThrow(() -> new ResourceNotFoundException("Material não encontrado: " + itemDTO.getIdMaterial()));
 
-                // tentar obter Materiais a partir do item (caso id ou objeto)
-                try {
-                    if (item.getIdMaterial() != null) {
-                        // se getIdMaterial() já for Materiais
-                        mat = item.getIdMaterial();
-                    }
-                } catch (Exception e) {
-                    // ignore
+                // Define o preço unitário (do DTO ou do Material)
+                BigDecimal precoUnitario = itemDTO.getValorUnitario();
+                if (precoUnitario == null) {
+                    precoUnitario = material.getPrecoVenda() != null 
+                        ? material.getPrecoVenda() 
+                        : material.getPrecoCusto();
                 }
 
-                // se ainda não tem preço, tentar buscar pelo id do material (se possível)
-                if (precoUnit == null) {
-                    try {
-                        Integer idMat = null;
-                        try { idMat = item.getIdMaterial().getIdMaterial(); } catch (Exception e) { /* ignore */ }
-                        if (idMat == null) {
-                            // tenta extrair de outro getter caso exista
-                            try { idMat = (Integer) item.getClass().getMethod("getIdMaterialId").invoke(item); } catch (Exception ex) { /* ignore */ }
-                        }
-                        if (idMat != null) {
-                            Optional<Materiais> matOpt = materiaisRepository.findById(idMat);
-                            if (matOpt.isPresent()) {
-                                mat = matOpt.get();
-                                if (mat.getPrecoVenda() != null) precoUnit = mat.getPrecoVenda();
-                                else precoUnit = mat.getPrecoCusto();
-                            }
-                        }
-                    } catch (Exception e) {
-                        // ignore - validação abaixo
-                    }
+                if (precoUnitario == null) {
+                    throw new BusinessRuleException("Não foi possível determinar o preço para o material: " + material.getNmMaterial());
                 }
 
-                if (precoUnit == null) {
-                    throw new BusinessRuleException("Não foi possível determinar precoUnitario para um item da venda. Informe precoUnitario no item ou cadastre preco no material.");
+                // Cria o item da venda
+                ItensVenda itemVenda = new ItensVenda();
+                itemVenda.setIdMaterial(material);
+                itemVenda.setQuantidade(itemDTO.getQuantidade());
+                itemVenda.setPrecoUnitario(precoUnitario);
+                itemVenda.setValorTotalItem(precoUnitario.multiply(new BigDecimal(itemDTO.getQuantidade())));
+                itemVenda.setID_Venda(venda);
+
+                // Adiciona o item à venda
+                if (venda.getItensVendas() == null) {
+                    venda.setItensVendas(new java.util.ArrayList<>());
                 }
+                venda.getItensVendas().add(itemVenda);
 
-                item.setPrecoUnitario(precoUnit);
+                // Soma ao valor total
+                valorTotalVenda = valorTotalVenda.add(itemVenda.getValorTotalItem());
 
-                MovimentacaoEstoque mov = new MovimentacaoEstoque();
-                // atribui material ao movimento (usa o objeto Materiais quando disponível)
-                if (mat != null) mov.setIdMaterial(mat);
-                else mov.setIdMaterial(item.getIdMaterial());
-
-                mov.setQuantidade(item.getQuantidade());
-                mov.setTipoMovimento(TipoMovimento.SAIDA);
-                mov.setValorUnitario(precoUnit);
-                // usuario de auditoria
-                mov.setIdUsuario(usuarioLogado);
-                // idVenda pode ser setado depois se desejar; persistimos a movimentação agora
-                movimentacaoEstoqueService.registrarMovimentacao(mov);
+                // Registra movimentação de estoque (SAÍDA)
+                MovimentacaoEstoque movimentacao = new MovimentacaoEstoque();
+                movimentacao.setIdMaterial(material);
+                movimentacao.setQuantidade(itemDTO.getQuantidade());
+                movimentacao.setTipoMovimento(TipoMovimento.SAIDA);
+                movimentacao.setValorUnitario(precoUnitario);
+                movimentacao.setIdUsuario(usuarioLogado);
+                movimentacaoEstoqueService.registrarMovimentacao(movimentacao);
             }
+        } else {
+            throw new BusinessRuleException("A venda deve conter pelo menos um item.");
         }
 
-        return vendasRepository.save(vendaRequestDTO);
+        // Define o valor total da venda
+        venda.setValorTotal(valorTotalVenda);
+
+        // Salva a venda com os itens
+        Vendas vendaSalva = vendasRepository.save(venda);
+
+        // Gera automaticamente uma conta a receber para esta venda
+        contasReceberService.gerarConta(vendaSalva);
+
+        return vendaSalva;
     }
 
     public List<Vendas> buscarTodasVendas() {

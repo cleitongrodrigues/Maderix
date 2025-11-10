@@ -1,4 +1,44 @@
-POST api/vendas
+POST api/vendas (FORMATO ATUALIZADO - SIMPLIFICADO)
+{
+  "idCliente": 1,
+  "idEmpresa": 1,
+  "itens": [
+    {
+      "idMaterial": 1,
+      "quantidade": 2,
+      "valorUnitario": 50.00
+    }
+  ]
+}
+
+// OBS: Ao criar uma venda, o sistema automaticamente:
+// 1. Cria a venda
+// 2. Cria os itens da venda
+// 3. Registra movimentação de estoque (SAÍDA)
+// 4. Cria uma conta a receber com vencimento em 30 dias
+
+// RESPOSTA SIMPLIFICADA DO GET /api/contasReceber
+// Agora retorna apenas os dados essenciais, sem objetos aninhados gigantes
+[
+  {
+    "idConta": 1,
+    "numero": "VENDA-1",
+    "cliente": "douglas",
+    "descricao": "Venda #1 - Cliente: douglas",
+    "valor": 100.00,
+    "dataVencimento": "2025-12-10T22:00:00",
+    "pago": false,
+    "dataPagamento": null,
+    "cancelado": false,
+    "idVenda": 1,
+    "statusVenda": "ABERTA",
+    "idEmpresa": 1,
+    "nomeEmpresa": "Maderix Central"
+  }
+]
+
+// FORMATO ANTIGO (NÃO USAR MAIS)
+POST api/vendas (DEPRECATED)
 {
   "cliente": {"idCliente": 1},
   "empresa": {"idEmpresa": 1},
@@ -6,7 +46,7 @@ POST api/vendas
   "itensVendas": [
     {
       "idMaterial": 1,
-      "quantidade": 3 // Vai subtrair 3 unidades do estoque (10 - 3 = 7)
+      "quantidade": 3
     }
   ]
 }
@@ -37,28 +77,14 @@ POST api/clientes
 
 POST api/vendas
 {
-  "idVenda": 1,
-  "cliente": {
-    "idCliente": 1
-  },
-  "empresa": {
-    "idEmpresa": 1
-  },
-  "usuario": {
-    "idUsuario": 1
-  },
-  "valorTotal": 100.0,
-  "statusVenda": "FINALIZADA",
-  "dataVenda": "2025-11-09T21:38:34.972Z",
-  "itensVendas": [
+  "idCliente": 1,
+  "idEmpresa": 1,
+  "itens": [
     {
-      "idItemVenda": 1,
-      "idMaterial": {
-        "idMaterial": 1
-      },
+      "idMaterial": 1,
       "quantidade": 2,
-      "precoUnitario": 50.0,
-      "valorTotalItem": 100.0
+      "valorUnitario": 50.00
     }
   ]
 }
+

@@ -22,9 +22,26 @@ public class ContasReceberService {
         conta.setVenda(venda);
         conta.setEmpresa(venda.getEmpresa());
         conta.setValor(venda.getValorTotal());
-        conta.setDescricao("Conta a receber gerada automaticamente pela venda " + venda.getIdVenda());
+        
+        // Define o nome do cliente
+        if (venda.getCliente() != null) {
+            conta.setCliente(venda.getCliente().getNmCliente());
+        }
+        
+        // Gera um número de conta baseado no ID da venda
+        conta.setNumero("VENDA-" + venda.getIdVenda());
+        
+        // Define descrição mais detalhada
+        String descricao = "Venda #" + venda.getIdVenda();
+        if (venda.getCliente() != null) {
+            descricao += " - Cliente: " + venda.getCliente().getNmCliente();
+        }
+        conta.setDescricao(descricao);
+        
+        // Define vencimento para 30 dias
         conta.setDataVencimento(LocalDateTime.now().plusDays(30));
         conta.setPago(false);
+        conta.setCancelado(false);
 
         return contasReceberRepository.save(conta);
     }
