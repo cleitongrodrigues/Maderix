@@ -79,4 +79,8 @@ public class PerfisUsuarioService {
 
         return perfisUsuarioRepository.save(perfil);
     }
+
+    public void deletarPerfil(Integer id) {
+        perfisUsuarioRepository.deleteById(id);
+    }
 }

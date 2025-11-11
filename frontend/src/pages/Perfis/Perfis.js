@@ -8,18 +8,10 @@ import Highlight from "../../components/Highlight/Highlight";
 import useDelayedLoader from "../../hooks/useDelayedLoader";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
+import { perfisAPI } from "../../services/api";
 import "./Perfis.css";
 
 const ITEMS_PER_PAGE = 10;
-
-function generateMockPerfis(count = 6) {
-  const base = [
-    { ID_Perfil: 1, NM_Perfil: "Administrador", Permissoes: ["CLIENTES_MANAGE","USUARIOS_MANAGE","PERFIS_MANAGE","ESTOQUE_MANAGE","VENDAS_MANAGE"] },
-    { ID_Perfil: 2, NM_Perfil: "Operador", Permissoes: ["CLIENTES_VIEW","ESTOQUE_MOV","VENDAS_VIEW"] },
-    { ID_Perfil: 3, NM_Perfil: "Conferente", Permissoes: ["ESTOQUE_VIEW","ESTOQUE_MOV"] },
-  ];
-  return Array.from({ length: count }).map((_, i) => ({ ...base[i % base.length], ID_Perfil: i + 1 }));
-}
 
 function Perfis() {
   const [perfis, setPerfis] = useState([]);
@@ -34,13 +26,13 @@ function Perfis() {
   useEffect(() => {
     async function fetchPerfis() {
       try {
-        const res = await fetch("/api/perfis");
-        if (!res.ok) throw new Error("no-api");
-        const data = await res.json();
-        if (Array.isArray(data) && data.length) setPerfis(data);
-        else setPerfis(generateMockPerfis(6));
+        console.log("🔵 Buscando perfis...");
+        const data = await perfisAPI.listar();
+        console.log("✅ Perfis carregados:", data);
+        setPerfis(Array.isArray(data) ? data : []);
       } catch (err) {
-        setPerfis(generateMockPerfis(6));
+        console.error("❌ Erro ao buscar perfis:", err);
+        setPerfis([]);
       } finally {
         setLoading(false);
       }
@@ -50,7 +42,7 @@ function Perfis() {
 
   // Filtrar perfis pela busca
   const filtered = perfis.filter((p) => {
-    const nome = (p.NM_Perfil ?? p.nome ?? "").toLowerCase();
+    const nome = (p.nmPerfil ?? p.NM_Perfil ?? "").toLowerCase();
     const query = searchQuery.toLowerCase();
     return nome.includes(query);
   });
@@ -63,26 +55,35 @@ function Perfis() {
   const handleEdit = (p) => { setEditing(p); setIsFormOpen(true); };
 
   // Calcular estatísticas
-  const totalPermissoes = Array.from(new Set(perfis.flatMap(p => p.Permissoes || []))).length;
+  const totalPermissoes = Array.from(new Set(perfis.flatMap(p => p.permissoes || p.Permissoes || []))).length;
   const mediaPermissoesPorPerfil = perfis.length > 0 
-    ? Math.round(perfis.reduce((acc, p) => acc + (p.Permissoes?.length || 0), 0) / perfis.length) 
+    ? Math.round(perfis.reduce((acc, p) => acc + ((p.permissoes?.length ?? p.Permissoes?.length) || 0), 0) / perfis.length) 
     : 0;
 
   const handleSave = (saved) => {
+    console.log("🔵 Perfil salvo, atualizando lista:", saved);
     setPerfis((prev) => {
-      const exists = prev.find((x) => (x.ID_Perfil ?? x.id) === (saved.ID_Perfil ?? saved.id));
-      if (exists) return prev.map((x) => ((x.ID_Perfil ?? x.id) === (saved.ID_Perfil ?? saved.id) ? { ...x, ...saved } : x));
+      const id = saved.idPerfil ?? saved.ID_Perfil;
+      const exists = prev.find((x) => (x.idPerfil ?? x.ID_Perfil) === id);
+      if (exists) {
+        return prev.map((x) => ((x.idPerfil ?? x.ID_Perfil) === id ? { ...x, ...saved } : x));
+      }
       return [saved, ...prev];
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('Confirma exclusão do perfil?')) return;
-    fetch(`/api/perfis/${id}`, { method: 'DELETE' }).then(() => {
-      setPerfis((s) => s.filter((p) => (p.ID_Perfil ?? p.id) !== id));
-    }).catch(() => {
-      setPerfis((s) => s.filter((p) => (p.ID_Perfil ?? p.id) !== id));
-    });
+    try {
+      console.log("🔵 Deletando perfil:", id);
+      await perfisAPI.deletar(id);
+      console.log("✅ Perfil deletado com sucesso");
+      setPerfis((prev) => prev.filter((p) => (p.idPerfil ?? p.ID_Perfil) !== id));
+      alert("Perfil excluído com sucesso!");
+    } catch (err) {
+      console.error("❌ Erro ao deletar perfil:", err);
+      alert("Erro ao excluir perfil: " + (err.message || "Erro desconhecido"));
+    }
   };
 
   const goToPage = (p) => { if (p < 1 || p > totalPages) return; setCurrentPage(p); };
@@ -167,29 +168,29 @@ function Perfis() {
                     </tr>
                   ) : (
                     currentItems.map((p) => (
-                      <tr key={p.ID_Perfil ?? p.id}>
-                        <td><Highlight text={String(p.ID_Perfil ?? p.id)} query={searchQuery} /></td>
+                      <tr key={p.idPerfil ?? p.ID_Perfil}>
+                        <td><Highlight text={String(p.idPerfil ?? p.ID_Perfil)} query={searchQuery} /></td>
                         <td>
-                          <strong><Highlight text={p.NM_Perfil ?? p.nome} query={searchQuery} /></strong>
+                          <strong><Highlight text={p.nmPerfil ?? p.NM_Perfil} query={searchQuery} /></strong>
                         </td>
                         <td className="permissions-cell">
                           <div className="permissions-badges">
-                            {(p.Permissoes || []).length === 0 ? (
+                            {((p.permissoes ?? p.Permissoes) || []).length === 0 ? (
                               <span className="no-permissions">Sem permissões</span>
                             ) : (
                               <>
-                                {(p.Permissoes || []).slice(0, 3).map((perm) => (
+                                {((p.permissoes ?? p.Permissoes) || []).slice(0, 3).map((perm) => (
                                   <span 
-                                    key={perm} 
+                                    key={perm.idPermissoes ?? perm} 
                                     className="permission-badge" 
-                                    title={PERMISSIONS_META[perm]?.description ?? perm}
+                                    title={PERMISSIONS_META[perm.nmPermissoes ?? perm]?.description ?? (perm.nmPermissoes ?? perm)}
                                   >
-                                    {PERMISSIONS_META[perm]?.label ?? perm}
+                                    {PERMISSIONS_META[perm.nmPermissoes ?? perm]?.label ?? (perm.nmPermissoes ?? perm)}
                                   </span>
                                 ))}
-                                {(p.Permissoes || []).length > 3 && (
+                                {((p.permissoes ?? p.Permissoes) || []).length > 3 && (
                                   <span className="permission-badge more-badge">
-                                    +{(p.Permissoes || []).length - 3}
+                                    +{((p.permissoes ?? p.Permissoes) || []).length - 3}
                                   </span>
                                 )}
                               </>
@@ -199,7 +200,7 @@ function Perfis() {
                         <td className="celula-acoes">
                           <ActionButtons 
                             onEdit={() => handleEdit(p)} 
-                            onDelete={() => handleDelete(p.ID_Perfil ?? p.id)} 
+                            onDelete={() => handleDelete(p.idPerfil ?? p.ID_Perfil)} 
                           />
                         </td>
                       </tr>
@@ -235,8 +236,10 @@ function Perfis() {
             </div>
             <div style={{ maxHeight: '60vh', overflow: 'auto', marginTop: 8 }}>
               <div className="permissions-grid all-perms">
-                {Array.from(new Set(perfis.flatMap(p => p.Permissoes || []))).map((perm) => (
-                  <span key={perm} className="perm-pill" title={PERMISSIONS_META[perm]?.description ?? ''}>{PERMISSIONS_META[perm]?.label ?? perm}</span>
+                {Array.from(new Set(perfis.flatMap(p => (p.permissoes ?? p.Permissoes) || []))).map((perm) => (
+                  <span key={perm.idPermissoes ?? perm} className="perm-pill" title={PERMISSIONS_META[perm.nmPermissoes ?? perm]?.description ?? ''}>
+                    {PERMISSIONS_META[perm.nmPermissoes ?? perm]?.label ?? (perm.nmPermissoes ?? perm)}
+                  </span>
                 ))}
               </div>
             </div>

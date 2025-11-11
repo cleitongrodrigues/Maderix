@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Perfis.css";
 import { DEFAULT_PERMISSIONS, PERMISSIONS_META } from '../../utils/permissions';
+import { perfisAPI } from "../../services/api";
 
 function PerfilForm({ isOpen, onClose, onSave, initialData = null }) {
   const [nome, setNome] = useState("");
@@ -10,10 +11,16 @@ function PerfilForm({ isOpen, onClose, onSave, initialData = null }) {
 
   useEffect(() => {
     if (initialData) {
-      setNome(initialData.NM_Perfil ?? initialData.nome ?? "");
-      setPermissoes(initialData.Permissoes ? [...initialData.Permissoes] : []);
+      setNome(initialData.nmPerfil ?? initialData.NM_Perfil ?? "");
+      // Backend retorna array de objetos Permissoes, extrair nmPermissoes
+      const perms = initialData.permissoes ?? initialData.Permissoes ?? [];
+      const permsArray = Array.isArray(perms) 
+        ? perms.map(p => typeof p === 'string' ? p : (p.nmPermissoes ?? p.NM_Permissoes ?? '')) 
+        : [];
+      setPermissoes(permsArray);
     } else {
-      setNome(''); setPermissoes([]);
+      setNome(''); 
+      setPermissoes([]);
     }
     setMessage({ type: "", text: "" });
   }, [initialData, isOpen]);
@@ -39,26 +46,31 @@ function PerfilForm({ isOpen, onClose, onSave, initialData = null }) {
     }
 
     setSaving(true);
-    const payload = { NM_Perfil: nome, Permissoes: permissoes };
+    const payload = { nmPerfil: nome };
+    
     try {
-      const url = initialData ? `/api/perfis/${initialData.ID_Perfil ?? initialData.id}` : '/api/perfis';
-      const method = initialData ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error('Status ' + res.status);
-      const saved = await res.json();
+      console.log("🔵 Salvando perfil:", payload);
+      
+      let saved;
+      if (initialData) {
+        // Editando perfil existente
+        const id = initialData.idPerfil ?? initialData.ID_Perfil;
+        saved = await perfisAPI.atualizar(id, payload);
+        console.log("✅ Perfil atualizado:", saved);
+      } else {
+        // Criando novo perfil
+        saved = await perfisAPI.criar(payload);
+        console.log("✅ Perfil criado:", saved);
+      }
+      
       setMessage({ type: "success", text: "✅ Perfil salvo com sucesso!" });
       setTimeout(() => {
         onSave && onSave(saved);
         onClose && onClose();
       }, 1000);
     } catch (err) {
-      const fakeId = Math.floor(Math.random() * 100000) + 1000;
-      const saved = { ID_Perfil: initialData ? (initialData.ID_Perfil ?? initialData.id) : fakeId, NM_Perfil: nome, Permissoes: permissoes };
-      setMessage({ type: "success", text: "✅ Perfil salvo com sucesso!" });
-      setTimeout(() => {
-        onSave && onSave(saved);
-        onClose && onClose();
-      }, 1000);
+      console.error("❌ Erro ao salvar perfil:", err);
+      setMessage({ type: "error", text: "❌ Erro ao salvar perfil: " + (err.message || "Erro desconhecido") });
     } finally { 
       setSaving(false); 
     }
