@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Loading from "../../components/Loading/Loading";
-import { forgotPassword as apiForgotPassword } from "../../services/auth";
+import { login as apiLogin, forgotPassword as apiForgotPassword } from "../../services/auth";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [nmLogin, setNmLogin] = useState("");
+  const [senhaPura, setSenhaPura] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   // Forgot password modal state
@@ -14,6 +14,7 @@ function Login() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSubmitting, setForgotSubmitting] = useState(false);
   const [forgotMessage, setForgotMessage] = useState("");
+  const [recoveryToken, setRecoveryToken] = useState("");
   const navigate = useNavigate();
   
   // Ao entrar na tela de login, garantimos que a sessão seja limpa
@@ -21,20 +22,58 @@ function Login() {
     try { localStorage.removeItem('token'); } catch {}
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
     setSubmitting(true);
-    // Autenticação stub: usuário admin / senha admin
-    // Simula um pequeno delay de rede para mostrar o spinner
-    setTimeout(() => {
-      if ((email === "admin" || email === "admin@admin.com") && password === "admin") {
-        localStorage.setItem("token", "stub-admin");
-        navigate("/home");
+    
+    try {
+      console.log("🔵 Tentando login com:", { nmLogin });
+      
+      // Chama API real
+      const response = await apiLogin(nmLogin, senhaPura);
+      
+      console.log("✅ Login bem-sucedido:", response);
+      
+      // Salva token JWT
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        console.log("✅ Token salvo no localStorage");
       } else {
-        setError("Usuário ou senha inválidos. Use admin/admin para entrar.");
+        console.warn("⚠️ Resposta sem token:", response);
       }
+      
+      // Opcional: salvar dados do usuário
+      if (response.usuario) {
+        localStorage.setItem("usuario", JSON.stringify(response.usuario));
+        console.log("✅ Dados do usuário salvos:", response.usuario);
+      }
+      
+      navigate("/home");
+    } catch (err) {
+      console.error("❌ Erro ao fazer login:", err);
+      console.error("❌ Status:", err.status);
+      console.error("❌ Data:", err.data);
+      
+      // Mensagens de erro mais específicas
+      let errorMessage = "Erro ao fazer login. ";
+      
+      if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+        errorMessage = "❌ Não foi possível conectar ao servidor. Verifique se o backend está rodando em http://localhost:8080";
+      } else if (err.status === 401) {
+        errorMessage = "❌ Usuário ou senha incorretos. Verifique suas credenciais.";
+      } else if (err.status === 400) {
+        errorMessage = "❌ Dados inválidos: " + (err.data?.message || err.message);
+      } else if (err.status === 500) {
+        errorMessage = "❌ Erro no servidor. Tente novamente em alguns instantes.";
+      } else {
+        errorMessage = "❌ " + (err.message || "Erro desconhecido");
+      }
+      
+      setError(errorMessage);
+    } finally {
       setSubmitting(false);
-    }, 700);
+    }
   }
 
   function openForgot(e) {
@@ -58,11 +97,20 @@ function Login() {
     try {
       setForgotSubmitting(true);
       setForgotMessage("");
-      await apiForgotPassword(forgotEmail);
-      setForgotMessage("Se existir uma conta com este email, enviaremos instruções para redefinir a senha.");
+      setRecoveryToken("");
+      
+      const response = await apiForgotPassword(forgotEmail);
+      
+      // Mostra token retornado (apenas em desenvolvimento)
+      if (response.token) {
+        setRecoveryToken(response.token);
+        setForgotMessage(`✅ ${response.mensagem}\n\n🔑 Token (copie para resetar senha):\n${response.token}`);
+      } else {
+        setForgotMessage(response.mensagem || "Instruções enviadas com sucesso.");
+      }
     } catch (err) {
-      // Mantém mensagem genérica para não vazar existência do email
-      setForgotMessage("Se existir uma conta com este email, enviaremos instruções para redefinir a senha.");
+      console.error("Erro ao solicitar recuperação:", err);
+      setForgotMessage(err.message || "Erro ao solicitar recuperação de senha.");
     } finally {
       setForgotSubmitting(false);
     }
@@ -77,15 +125,15 @@ function Login() {
         <input
           type="text"
           placeholder="Usuário"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={nmLogin}
+          onChange={(e) => setNmLogin(e.target.value)}
           disabled={submitting}
         />
         <input
           type="password"
           placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={senhaPura}
+          onChange={(e) => setSenhaPura(e.target.value)}
           disabled={submitting}
         />
         <button type="submit" disabled={submitting}>Entrar</button>
@@ -119,7 +167,23 @@ function Login() {
                   {forgotSubmitting ? "Enviando..." : "Enviar instruções"}
                 </button>
               </form>
-              {forgotMessage && <div className="forgot-message">{forgotMessage}</div>}
+              {forgotMessage && (
+                <div className="forgot-message" style={{ whiteSpace: 'pre-wrap' }}>
+                  {forgotMessage}
+                </div>
+              )}
+              {recoveryToken && (
+                <button 
+                  className="forgot-submit" 
+                  style={{ marginTop: '10px' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(recoveryToken);
+                    alert('Token copiado para a área de transferência!');
+                  }}
+                >
+                  📋 Copiar Token
+                </button>
+              )}
             </div>
           </div>
         </div>

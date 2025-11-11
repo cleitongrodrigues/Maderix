@@ -9,6 +9,7 @@ import TableSkeleton from "../../../components/TableSkeleton/TableSkeleton";
 import SearchBar from "../../../components/SearchBar/SearchBar";
 import formatPhone from "../../../utils/formatPhone";
 import Highlight from "../../../components/Highlight/Highlight";
+import { clientesAPI } from "../../../services/api";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -41,31 +42,14 @@ function Clientes() {
     setError(null);
     setIsMock(false);
     try {
-      const res = await fetch("/api/clientes");
-      if (!res.ok) {
-        // fallback para mock caso backend não responda corretamente
-        console.warn("GET /api/clientes retornou status", res.status, "— carregando dados fictícios");
-        const mock = generateMockClientes(30);
-        setClientes(mock);
-        setIsMock(true);
-        return;
-      }
-
-      const data = await res.json();
-      if (!Array.isArray(data) || data.length === 0) {
-        // usa mock se retorno estiver vazio
-        const mock = generateMockClientes(30);
-        setClientes(mock);
-        setIsMock(true);
-      } else {
-        setClientes(data);
-      }
+      console.log("🔵 Buscando clientes da API...");
+      const data = await clientesAPI.listar();
+      console.log("✅ Clientes carregados:", data.length);
+      setClientes(data);
     } catch (err) {
-      console.warn("Erro ao buscar clientes, usando dados fictícios:", err);
-      setError(null);
-      const mock = generateMockClientes(30);
-      setClientes(mock);
-      setIsMock(true);
+      console.error("❌ Erro ao buscar clientes:", err);
+      setError("Erro ao carregar clientes: " + (err.message || "Erro desconhecido"));
+      setClientes([]);
     } finally {
       setLoading(false);
     }
@@ -81,9 +65,9 @@ function Clientes() {
   const filteredClients = clientes.filter((c) => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return true;
-    const id = String(c.ID_Cliente ?? c.id ?? c.ID ?? "").toLowerCase();
-    const nome = (c.NM_Cliente ?? c.nome ?? c.name ?? "").toLowerCase();
-    const email = (c.Email ?? c.email ?? "").toLowerCase();
+    const id = String(c.idCliente ?? c.ID_Cliente ?? "").toLowerCase();
+    const nome = (c.nmCliente ?? c.NM_Cliente ?? "").toLowerCase();
+    const email = (c.email ?? c.Email ?? "").toLowerCase();
     return id.includes(q) || nome.includes(q) || email.includes(q);
   });
 
@@ -104,7 +88,7 @@ function Clientes() {
   }, []);
 
   const handleEdit = (id) => {
-    const found = clientes.find((c) => (c.ID_Cliente ?? c.id ?? c.ID) === id);
+    const found = clientes.find((c) => (c.idCliente ?? c.ID_Cliente) === id);
     setEditingItem(found || null);
     setIsFormOpen(true);
     setOpenMenuId(null);
@@ -117,16 +101,15 @@ function Clientes() {
       return;
     }
 
-    // Tenta excluir no backend; se falhar, remove localmente
     try {
-      const res = await fetch(`/api/clientes/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      setClientes((prev) => prev.filter((c) => (c.ID_Cliente ?? c.id ?? c.ID) !== id));
+      console.log("🔵 Excluindo cliente ID:", id);
+      await clientesAPI.deletar(id);
+      console.log("✅ Cliente excluído com sucesso");
+      setClientes((prev) => prev.filter((c) => (c.idCliente ?? c.ID_Cliente) !== id));
       alert("Cliente excluído com sucesso.");
     } catch (err) {
-      // fallback: remover da lista local para efeito visual
-      setClientes((prev) => prev.filter((c) => (c.ID_Cliente ?? c.id ?? c.ID) !== id));
-      alert("Cliente removido localmente. Verifique o backend: " + (err.message || err));
+      console.error("❌ Erro ao excluir cliente:", err);
+      alert("Erro ao excluir cliente: " + (err.message || "Erro desconhecido"));
     } finally {
       setOpenMenuId(null);
     }
@@ -134,11 +117,11 @@ function Clientes() {
 
   const handleSave = (saved) => {
     // Atualiza lista local com o item salvo (criação ou edição)
-    const id = saved.ID_Cliente ?? saved.id ?? saved.ID;
+    const id = saved.idCliente ?? saved.ID_Cliente;
     setClientes((prev) => {
-      const exists = prev.some((c) => (c.ID_Cliente ?? c.id ?? c.ID) === id);
+      const exists = prev.some((c) => (c.idCliente ?? c.ID_Cliente) === id);
       if (exists) {
-        return prev.map((c) => ((c.ID_Cliente ?? c.id ?? c.ID) === id ? saved : c));
+        return prev.map((c) => ((c.idCliente ?? c.ID_Cliente) === id ? saved : c));
       }
       return [saved, ...prev];
     });
@@ -199,7 +182,7 @@ function Clientes() {
             <div className="card-content">
               <h3>Clientes últimos 7 dias</h3>
               <p>{clientes.filter(c => {
-                const dt = new Date(c.DT_Cad_Cliente ?? c.dtCadCliente ?? c.createdAt ?? null);
+                const dt = new Date(c.dataCadCliente ?? c.DT_Cad_Cliente ?? null);
                 if (!dt || isNaN(dt)) return false;
                 const diff = (Date.now() - dt.getTime()) / (1000 * 60 * 60 * 24);
                 return diff <= 7;
@@ -246,11 +229,11 @@ function Clientes() {
                     </tr>
                   ) : (
                     filteredCurrent.map((cliente) => {
-                      const id = cliente.ID_Cliente ?? cliente.id ?? cliente.ID;
-                      const nome = cliente.NM_Cliente ?? cliente.nome ?? cliente.name;
-                      const tel = cliente.Tel_Cliente ?? cliente.tel ?? cliente.telefone ?? "";
-                      const email = cliente.Email ?? cliente.email ?? "";
-                      const dt = cliente.DT_Cad_Cliente ?? cliente.dtCadCliente ?? cliente.createdAt ?? "";
+                      const id = cliente.idCliente ?? cliente.ID_Cliente;
+                      const nome = cliente.nmCliente ?? cliente.NM_Cliente;
+                      const tel = cliente.telCliente ?? cliente.Tel_Cliente ?? "";
+                      const email = cliente.email ?? cliente.Email ?? "";
+                      const dt = cliente.dataCadCliente ?? cliente.DT_Cad_Cliente ?? "";
 
                       return (
                         <tr key={id}>

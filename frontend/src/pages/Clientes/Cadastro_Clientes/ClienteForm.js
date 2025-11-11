@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Clientes.css";
+import { clientesAPI } from "../../../services/api";
+import { empresasAPI } from "../../../services/api";
 
 function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
   const [nome, setNome] = useState("");
@@ -10,19 +12,21 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // Busca empresas para preencher select; fallback caso não haja backend
+    // Busca empresas para preencher select
     async function fetchEmpresas() {
       try {
-        const res = await fetch("/api/empresas");
-        if (!res.ok) throw new Error("no-api");
-        const data = await res.json();
+        console.log("🔵 Buscando empresas...");
+        const data = await empresasAPI.listar();
+        console.log("✅ Empresas carregadas:", data.length);
         if (Array.isArray(data) && data.length > 0) {
           setEmpresas(data);
         } else {
-          setEmpresas([{ ID_Empresa: 1, NM_Fantasia: "Empresa Exemplo" }]);
+          // Fallback caso não haja empresas
+          setEmpresas([{ idEmpresa: 1, nmFantasia: "Empresa Padrão" }]);
         }
       } catch (err) {
-        setEmpresas([{ ID_Empresa: 1, NM_Fantasia: "Empresa Exemplo" }]);
+        console.error("❌ Erro ao buscar empresas:", err);
+        setEmpresas([{ idEmpresa: 1, nmFantasia: "Empresa Padrão" }]);
       }
     }
 
@@ -31,15 +35,15 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
 
   useEffect(() => {
     if (initialData) {
-      setNome(initialData.NM_Cliente ?? initialData.nome ?? "");
-      setTelefone(initialData.Tel_Cliente ?? initialData.tel ?? "");
-      setEmail(initialData.Email ?? initialData.email ?? "");
-      setIdEmpresa(initialData.ID_Empresa ?? initialData.idEmpresa ?? "");
+      setNome(initialData.nmCliente ?? initialData.NM_Cliente ?? "");
+      setTelefone(initialData.telCliente ?? initialData.Tel_Cliente ?? "");
+      setEmail(initialData.email ?? initialData.Email ?? "");
+      setIdEmpresa(initialData.idEmpresa ?? initialData.ID_Empresa ?? "");
     } else {
       setNome("");
       setTelefone("");
       setEmail("");
-      setIdEmpresa(empresas[0]?.ID_Empresa ?? "");
+      setIdEmpresa(empresas[0]?.idEmpresa ?? empresas[0]?.ID_Empresa ?? "");
     }
   }, [initialData, isOpen, empresas]);
 
@@ -62,35 +66,29 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
     }
 
     setSaving(true);
-    const payload = { ID_Empresa: idEmpresa, NM_Cliente: nome, Tel_Cliente: telefone, Email: email };
+    const payload = { idEmpresa: idEmpresa, nmCliente: nome, telCliente: telefone, email: email };
 
     try {
-      const url = initialData ? `/api/clientes/${initialData.ID_Cliente ?? initialData.id ?? initialData.ID}` : "/api/clientes";
-      const method = initialData ? "PUT" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-
-      const created = await res.json();
-      onSave && onSave(created);
+      console.log("🔵 Salvando cliente:", payload);
+      
+      let saved;
+      if (initialData) {
+        // Editando cliente existente
+        const id = initialData.idCliente ?? initialData.ID_Cliente;
+        saved = await clientesAPI.atualizar(id, payload);
+        console.log("✅ Cliente atualizado:", saved);
+      } else {
+        // Criando novo cliente
+        saved = await clientesAPI.criar(payload);
+        console.log("✅ Cliente criado:", saved);
+      }
+      
+      onSave && onSave(saved);
       onClose && onClose();
+      alert(initialData ? "Cliente atualizado com sucesso!" : "Cliente cadastrado com sucesso!");
     } catch (err) {
-      // fallback: simulate created object
-      const fakeId = Math.floor(Math.random() * 100000) + 1000;
-      const created = {
-        ID_Cliente: initialData ? (initialData.ID_Cliente ?? initialData.id ?? fakeId) : fakeId,
-        ID_Empresa: idEmpresa,
-        NM_Cliente: nome,
-        Tel_Cliente: telefone,
-        Email: email,
-        DT_Cad_Cliente: new Date().toISOString(),
-      };
-      onSave && onSave(created);
-      onClose && onClose();
+      console.error("❌ Erro ao salvar cliente:", err);
+      alert("Erro ao salvar cliente: " + (err.message || "Erro desconhecido"));
     } finally {
       setSaving(false);
     }
@@ -124,8 +122,8 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
             >
               <option value="">-- Selecione uma empresa --</option>
               {empresas.map((emp) => (
-                <option key={emp.ID_Empresa ?? emp.id} value={emp.ID_Empresa ?? emp.id}>
-                  {emp.NM_Fantasia ?? emp.nmFantasia ?? emp.name}
+                <option key={emp.idEmpresa ?? emp.ID_Empresa} value={emp.idEmpresa ?? emp.ID_Empresa}>
+                  {emp.nmFantasia ?? emp.NM_Fantasia ?? emp.name}
                 </option>
               ))}
             </select>
@@ -170,9 +168,9 @@ function ClienteForm({ isOpen, onClose, onSave, initialData = null }) {
             </div>
           </div>
 
-          {initialData && initialData.DT_Cad_Cliente && (
+          {initialData && initialData.dataCadCliente && (
             <div className="info-box">
-              <strong>📅 Data de Cadastro:</strong> {new Date(initialData.DT_Cad_Cliente).toLocaleString('pt-BR')}
+              <strong>📅 Data de Cadastro:</strong> {new Date(initialData.dataCadCliente).toLocaleString('pt-BR')}
             </div>
           )}
 
