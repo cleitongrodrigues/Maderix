@@ -36,12 +36,12 @@ public class PerfisUsuarioController {
 
     @PatchMapping("/{perfilId}/permissoes/adicionar")
     public ResponseEntity<PerfisUsuario> adicionar(
-        @PathVariable Integer id
-       ,@Valid @RequestBody PerfilPermissaoRequestDTO requestDTO 
+        @PathVariable("perfilId") Integer id,
+        @Valid @RequestBody PerfilPermissaoRequestDTO requestDTO 
     ){
         PerfisUsuario perfilAtualizado = perfisUsuarioService.adicionarPermissoes(
-            id
-           ,requestDTO.getPermissoesIds()
+            id,
+            requestDTO.getPermissoesIds()
         );
 
         return ResponseEntity.ok(perfilAtualizado);
@@ -50,12 +50,12 @@ public class PerfisUsuarioController {
 
     @PatchMapping("/{perfilId}/permissoes/remover")
     public ResponseEntity<PerfisUsuario> removerPermissoes(
-        @PathVariable Integer id
-       ,@Valid @RequestBody PerfilPermissaoRequestDTO requestDTO 
+        @PathVariable("perfilId") Integer id,
+        @Valid @RequestBody PerfilPermissaoRequestDTO requestDTO 
     ){
         PerfisUsuario perfilAtualizado = perfisUsuarioService.removerPermissoes(
-            id
-           ,requestDTO.getPermissoesIds()
+            id,
+            requestDTO.getPermissoesIds()
         );
 
         return ResponseEntity.ok(perfilAtualizado);
@@ -75,7 +75,7 @@ public class PerfisUsuarioController {
                                    .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<PerfisUsuario> atualizarPerfil(@PathVariable Integer id, @RequestBody PerfisUsuario detalhePerfil){
         PerfisUsuario perfilAtualizado = perfisUsuarioService.atualizarPerfil(id, detalhePerfil);
 

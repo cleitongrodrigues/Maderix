@@ -80,6 +80,10 @@ public class PagamentoVendaService {
             conta.setPago(true);
             conta.setDataPagamento(LocalDateTime.now());
             contasReceberRepository.save(conta);
+            
+            // Atualiza status da venda para PAGA
+            venda.setStatusVenda("PAGA");
+            vendasRepository.save(venda);
         }
         return pagamentoSalvo;
     }

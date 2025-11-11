@@ -38,7 +38,7 @@ public class Vendas {
     @CreationTimestamp
     private LocalDateTime dataVenda;
 
-    @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.LAZY) 
+    @OneToMany(mappedBy = "ID_Venda", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true) 
     private List<ItensVenda> itensVendas;   
 
     public Vendas(){}

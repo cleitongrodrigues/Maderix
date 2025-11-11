@@ -1,6 +1,7 @@
 package com.maderix.backend.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.maderix.backend.dto.MaterialRequestDTO;
+import com.maderix.backend.dto.MaterialResponseDTO;
 import com.maderix.backend.model.Materiais;
 import com.maderix.backend.service.MateriaisService;
 
@@ -29,31 +32,35 @@ public class MaterialController {
     private MateriaisService materialService;
 
     @PostMapping
-    public ResponseEntity<Materiais> criarMaterial(@Valid @RequestBody Materiais material){
-        Materiais novoMaterial = materialService.salvarMaterial(material);
+    public ResponseEntity<MaterialResponseDTO> criarMaterial(@Valid @RequestBody MaterialRequestDTO requestDTO){
+        Materiais novoMaterial = materialService.salvarMaterial(requestDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoMaterial);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MaterialResponseDTO(novoMaterial));
     }
 
     @GetMapping
-    public ResponseEntity<List<Materiais>> buscarTodosMateriais(){
-        List<Materiais> materiais = materialService.buscarTodosMaterias();
+    public ResponseEntity<List<MaterialResponseDTO>> buscarTodosMateriais(){
+        List<MaterialResponseDTO> materiais = materialService.buscarTodosMaterias()
+                .stream()
+                .map(MaterialResponseDTO::new)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(materiais);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Materiais> buscarMaterialPorId(@PathVariable Integer id){
+    public ResponseEntity<MaterialResponseDTO> buscarMaterialPorId(@PathVariable Integer id){
         return materialService.buscarMaterialPorId(id)
+                              .map(MaterialResponseDTO::new)
                               .map(ResponseEntity::ok)
                               .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Materiais> atualizarMaterial(@PathVariable Integer id, @Valid @RequestBody Materiais materialDetalhes) {
-        Materiais materialAtualizado = materialService.atualizarMaterial(id, materialDetalhes);
+    public ResponseEntity<MaterialResponseDTO> atualizarMaterial(@PathVariable Integer id, @Valid @RequestBody MaterialRequestDTO requestDTO) {
+        Materiais materialAtualizado = materialService.atualizarMaterial(id, requestDTO);
         
-        return ResponseEntity.ok(materialAtualizado);
+        return ResponseEntity.ok(new MaterialResponseDTO(materialAtualizado));
     }
 
     @DeleteMapping("/{id}")

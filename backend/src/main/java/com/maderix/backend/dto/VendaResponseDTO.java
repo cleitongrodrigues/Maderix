@@ -6,6 +6,7 @@ import com.maderix.backend.model.Vendas;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VendaResponseDTO {
 
@@ -29,12 +30,12 @@ public class VendaResponseDTO {
         this.nomeEmpresa = venda.getEmpresa() != null ? venda.getEmpresa().getNmFantasia() : null;
         this.nomeUsuario = venda.getUsuario() != null ? venda.getUsuario().getNmUsuario() : null;
         
-        // NOTA: Para listar os itens, você precisaria de uma lógica de conversão aqui:
-        /*
-        this.itensVendas = venda.getItensVendas().stream()
-            .map(ItemVendaResponseDTO::new)
-            .collect(Collectors.toList());
-        */
+        // Converte os itens da venda para DTOs
+        if (venda.getItensVendas() != null && !venda.getItensVendas().isEmpty()) {
+            this.itensVendas = venda.getItensVendas().stream()
+                .map(ItemVendaResponseDTO::new)
+                .collect(Collectors.toList());
+        }
     }
     
 

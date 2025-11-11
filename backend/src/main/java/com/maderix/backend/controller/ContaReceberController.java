@@ -25,6 +25,7 @@ public class ContaReceberController {
     public ResponseEntity<List<ContasReceberResponseDTO>> buscarTodasContasReceber(){
         List<ContasReceberResponseDTO> contasReceber = contasReceberService.buscarTodasContasReceber()
                 .stream()
+                .filter(conta -> !conta.isPago()) // Retorna apenas contas pendentes (não pagas)
                 .map(ContasReceberResponseDTO::new)
                 .collect(Collectors.toList());
 

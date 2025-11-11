@@ -1,6 +1,7 @@
 package com.maderix.backend.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.maderix.backend.dto.ClienteRequestDTO;
+import com.maderix.backend.dto.ClienteResponseDTO;
 import com.maderix.backend.model.Clientes;
 import com.maderix.backend.service.ClientesService;
 
@@ -29,31 +32,35 @@ public class ClienteController {
     private ClientesService clientesService;
 
     @PostMapping
-    public ResponseEntity <Clientes> criarCliente(@Valid     @RequestBody Clientes cliente){
-        Clientes novoCliente = clientesService.salvarCliente(cliente);
+    public ResponseEntity<ClienteResponseDTO> criarCliente(@Valid @RequestBody ClienteRequestDTO requestDTO){
+        Clientes novoCliente = clientesService.salvarCliente(requestDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ClienteResponseDTO(novoCliente));
     }
 
     @GetMapping
-    public ResponseEntity<List<Clientes>> buscarTodosClientes(){
-        List<Clientes> clientes = clientesService.buscarTodosClientes();
+    public ResponseEntity<List<ClienteResponseDTO>> buscarTodosClientes(){
+        List<ClienteResponseDTO> clientes = clientesService.buscarTodosClientes()
+                .stream()
+                .map(ClienteResponseDTO::new)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(clientes);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Clientes> buscarClientePorId(@PathVariable Integer id){
+    public ResponseEntity<ClienteResponseDTO> buscarClientePorId(@PathVariable Integer id){
         return clientesService.buscarClientePorId(id)
+                              .map(ClienteResponseDTO::new)
                               .map(ResponseEntity::ok)
                               .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Clientes> atualizaClientes(@PathVariable Integer id, @Valid @RequestBody Clientes detalheCliente){
-        Clientes clienteAtualizado = clientesService.atualizaClientes(id, detalheCliente);
+    public ResponseEntity<ClienteResponseDTO> atualizaClientes(@PathVariable Integer id, @Valid @RequestBody ClienteRequestDTO requestDTO){
+        Clientes clienteAtualizado = clientesService.atualizaClientes(id, requestDTO);
 
-        return ResponseEntity.ok(clienteAtualizado);
+        return ResponseEntity.ok(new ClienteResponseDTO(clienteAtualizado));
     }
 
     @DeleteMapping("/{id}")

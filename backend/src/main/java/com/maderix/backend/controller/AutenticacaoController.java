@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.maderix.backend.dto.LoginRequestDTO;
 import com.maderix.backend.dto.LoginResponseDTO;
 import com.maderix.backend.dto.RecuperacaoSenhaRequestDTO;
+import com.maderix.backend.dto.RecuperacaoSenhaResponseDTO;
 import com.maderix.backend.dto.ResetSenhaRequestDTO;
 import com.maderix.backend.dto.UsuarioResponseDTO;
+import com.maderix.backend.model.TokensRecuperacao;
 import com.maderix.backend.model.Usuarios;
 import com.maderix.backend.service.AutenticacaoService;
 import com.maderix.backend.service.RecuperacaoSenhaService;
@@ -49,18 +51,20 @@ public class AutenticacaoController {
     }
 
     @PostMapping("/esqueceu-senha")
-    public ResponseEntity<Void> solicitarRecuperacao(@RequestBody RecuperacaoSenhaRequestDTO request
-                                                                 ,HttpServletRequest httpRequest){
-                                                                    
+    public ResponseEntity<RecuperacaoSenhaResponseDTO> solicitarRecuperacao(
+        @RequestBody RecuperacaoSenhaRequestDTO request,
+        HttpServletRequest httpRequest
+    ){
         String ipSolicitacao = httpRequest.getRemoteAddr();      
         
-        recuperacaoSenhaService.gerarToken(
-            request.getEmail()
-           ,ipSolicitacao
+        TokensRecuperacao tokenGerado = recuperacaoSenhaService.gerarToken(
+            request.getEmail(),
+            ipSolicitacao
         );
 
-
-        return ResponseEntity.ok().build();
+        RecuperacaoSenhaResponseDTO response = new RecuperacaoSenhaResponseDTO(tokenGerado);
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reset-senha")

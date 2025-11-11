@@ -11,6 +11,46 @@ POST api/vendas (FORMATO ATUALIZADO - SIMPLIFICADO)
   ]
 }
 
+// ============================================
+// RECUPERAÇÃO DE SENHA
+// ============================================
+
+POST /api/auth/esqueceu-senha
+{
+  "email": "usuario@email.com"
+}
+
+// RESPOSTA:
+{
+  "token": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "email": "usuario@email.com",
+  "mensagem": "Token de recuperação gerado com sucesso. Válido por 15 minutos."
+}
+
+POST /api/auth/reset-senha
+{
+  "token": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "novaSenhaPura": "NovaSenha@123"
+}
+
+// ============================================
+// PERFIS E PERMISSÕES
+// ============================================
+
+PATCH /api/perfis/{perfilId}/permissoes/adicionar
+{
+  "permissoesIds": [1, 2, 3]
+}
+
+PATCH /api/perfis/{perfilId}/permissoes/remover
+{
+  "permissoesIds": [2, 3]
+}
+
+// ============================================
+// VENDAS
+// ============================================
+
 // OBS: Ao criar uma venda, o sistema automaticamente:
 // 1. Cria a venda
 // 2. Cria os itens da venda
@@ -51,10 +91,10 @@ POST api/vendas (DEPRECATED)
   ]
 }
 
-POST api/materiais
+POST api/materiais (FORMATO ATUALIZADO)
 {
-  "empresa": {"idEmpresa": 1},
-  "unidadeMedida": {"idUnidade": 1},
+  "idEmpresa": 1,
+  "idUnidade": 1,
   "nmMaterial": "MDF Carvalho",
   "codigo": "MDF-C001",
   "precoVenda": 500.00,
@@ -65,15 +105,25 @@ POST api/materiais
   "ativo": true
 }
 
-POST api/clientes
+POST api/clientes (FORMATO ATUALIZADO)
 {
-  "idEmpresa": {
-    "idEmpresa": 1
-  },
+  "idEmpresa": 1,
   "nmCliente": "douglas",
   "telCliente": "14997062581",
   "email": "douglas@gmail.com"
 }
+
+POST api/movimentacaoEstoque
+{
+  "idMaterial": 1,
+  "tipoMovimento": "ENTRADA",
+  "quantidade": 10,
+  "valorUnitario": 50.00,
+  "observacao": "RECEBIMENTO DE MERCADORIA"
+}
+
+// OBS: O idUsuario é preenchido automaticamente com o usuário logado
+// Tipos de movimento válidos: "ENTRADA", "SAIDA", "AJUSTE"
 
 POST api/vendas
 {
