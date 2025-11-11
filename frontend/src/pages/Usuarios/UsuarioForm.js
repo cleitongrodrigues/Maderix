@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Usuarios.css";
+import { usuariosAPI, perfisAPI, empresasAPI } from "../../services/api";
 
 function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
   const [nome, setNome] = useState("");
@@ -9,42 +10,59 @@ function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
   const [senha, setSenha] = useState("");
   const [confirm, setConfirm] = useState("");
   const [idPerfil, setIdPerfil] = useState("");
+  const [idEmpresa, setIdEmpresa] = useState("");
   const [perfis, setPerfis] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
   const [ativo, setAtivo] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [alterarSenha, setAlterarSenha] = useState(false);
 
   useEffect(() => {
-    // fetch perfis
-    async function fetchPerfis() {
+    // Busca perfis e empresas
+    async function fetchData() {
       try {
-        const res = await fetch("/api/perfis");
-        if (!res.ok) throw new Error("no-api");
-        const data = await res.json();
-        if (Array.isArray(data) && data.length) setPerfis(data);
-        else setPerfis([{ ID_Perfil: 1, NM_Perfil: "Admin" }, { ID_Perfil: 2, NM_Perfil: "Operador" }]);
+        console.log("🔵 Buscando perfis...");
+        const dataPerfis = await perfisAPI.listar();
+        console.log("✅ Perfis carregados:", dataPerfis);
+        setPerfis(Array.isArray(dataPerfis) ? dataPerfis : []);
+
+        console.log("🔵 Buscando empresas...");
+        const dataEmpresas = await empresasAPI.listar();
+        console.log("✅ Empresas carregadas:", dataEmpresas);
+        setEmpresas(Array.isArray(dataEmpresas) ? dataEmpresas : []);
       } catch (err) {
-        setPerfis([{ ID_Perfil: 1, NM_Perfil: "Admin" }, { ID_Perfil: 2, NM_Perfil: "Operador" }]);
+        console.error("❌ Erro ao buscar dados:", err);
+        setPerfis([]);
+        setEmpresas([]);
       }
     }
-    fetchPerfis();
+    fetchData();
   }, []);
 
   useEffect(() => {
     if (initialData) {
-      setNome(initialData.NM_Usuario ?? initialData.nome ?? "");
-      setLogin(initialData.Login ?? initialData.login ?? "");
-      setEmail(initialData.Email ?? initialData.email ?? "");
-      setTelefone(formatTelefone(initialData.Tel_Usuario ?? initialData.tel ?? ""));
-      setIdPerfil(initialData.ID_Perfil ?? initialData.idPerfil ?? perfis[0]?.ID_Perfil ?? "");
-      setAtivo(initialData.Ativo ?? true);
+      setNome(initialData.nmUsuario ?? initialData.NM_Usuario ?? "");
+      setLogin(initialData.nmLogin ?? initialData.Login ?? "");
+      setEmail(initialData.email ?? initialData.Email ?? "");
+      setTelefone(formatTelefone(initialData.telUsuario ?? initialData.Tel_Usuario ?? ""));
+      setIdPerfil(initialData.perfil?.idPerfil ?? initialData.ID_Perfil ?? perfis[0]?.idPerfil ?? perfis[0]?.ID_Perfil ?? "");
+      setIdEmpresa(initialData.empresa?.idEmpresa ?? initialData.ID_Empresa ?? empresas[0]?.idEmpresa ?? empresas[0]?.ID_Empresa ?? "");
+      setAtivo(initialData.ativo ?? initialData.Ativo ?? true);
     } else {
-      setNome(""); setLogin(""); setEmail(""); setTelefone(""); setSenha(""); setConfirm(""); setAtivo(true); setIdPerfil(perfis[0]?.ID_Perfil ?? "");
+      setNome(""); 
+      setLogin(""); 
+      setEmail(""); 
+      setTelefone(""); 
+      setSenha(""); 
+      setConfirm(""); 
+      setAtivo(true); 
+      setIdPerfil(perfis[0]?.idPerfil ?? perfis[0]?.ID_Perfil ?? "");
+      setIdEmpresa(empresas[0]?.idEmpresa ?? empresas[0]?.ID_Empresa ?? "");
     }
     setMessage({ type: "", text: "" });
     setAlterarSenha(false); // Reset checkbox ao abrir modal
-  }, [initialData, isOpen, perfis]);
+  }, [initialData, isOpen, perfis, empresas]);
 
   if (!isOpen) return null;
 
@@ -88,6 +106,10 @@ function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
       setMessage({ type: "error", text: "❌ Selecione um perfil" });
       return;
     }
+    if (!idEmpresa) {
+      setMessage({ type: "error", text: "❌ Selecione uma empresa" });
+      return;
+    }
     // Validação de senha: obrigatória para novo usuário OU quando marcou "Alterar Senha"
     if (!initialData || alterarSenha) {
       if (!senha || senha.length < 6) {
@@ -102,48 +124,42 @@ function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
 
     setSaving(true);
     const payload = { 
-      NM_Usuario: nome, 
-      Login: login, 
-      Email: email, 
-      Tel_Usuario: telefone.replace(/\D/g, ""), // salva apenas números
-      ID_Perfil: idPerfil, 
-      Ativo: ativo 
+      nmUsuario: nome, 
+      nmLogin: login, 
+      email: email, 
+      telUsuario: telefone.replace(/\D/g, ""), // salva apenas números
+      idPerfil: idPerfil,
+      idEmpresa: idEmpresa, 
+      ativo: ativo 
     };
     // Incluir senha: novo usuário OU editando com "Alterar Senha" marcado
     if (!initialData || alterarSenha) {
-      payload.Senha = senha;
+      payload.senha = senha;
     }
 
     try {
-      const url = initialData ? `/api/usuarios/${initialData.ID_Usuario ?? initialData.id}` : "/api/usuarios";
-      const method = initialData ? "PUT" : "POST";
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error('Status ' + res.status);
-      const saved = await res.json();
+      console.log("🔵 Salvando usuário:", payload);
+      
+      let saved;
+      if (initialData) {
+        // Editando usuário existente
+        const id = initialData.idUsuario ?? initialData.ID_Usuario;
+        saved = await usuariosAPI.atualizar(id, payload);
+        console.log("✅ Usuário atualizado:", saved);
+      } else {
+        // Criando novo usuário
+        saved = await usuariosAPI.criar(payload);
+        console.log("✅ Usuário criado:", saved);
+      }
+      
       setMessage({ type: "success", text: "✅ Usuário salvo com sucesso!" });
       setTimeout(() => {
         onSave && onSave(saved);
         onClose && onClose();
       }, 1000);
     } catch (err) {
-      // fallback created object
-      const fakeId = Math.floor(Math.random() * 100000) + 1000;
-      const saved = { 
-        ID_Usuario: initialData ? (initialData.ID_Usuario ?? initialData.id) : fakeId, 
-        NM_Usuario: nome, 
-        Login: login, 
-        Email: email, 
-        Tel_Usuario: telefone, 
-        ID_Perfil: idPerfil, 
-        PerfilNome: perfis.find(p => p.ID_Perfil === idPerfil)?.NM_Perfil ?? 'Operador', 
-        Ativo: ativo, 
-        DT_Cad_Usuario: new Date().toISOString() 
-      };
-      setMessage({ type: "success", text: "✅ Usuário salvo com sucesso!" });
-      setTimeout(() => {
-        onSave && onSave(saved);
-        onClose && onClose();
-      }, 1000);
+      console.error("❌ Erro ao salvar usuário:", err);
+      setMessage({ type: "error", text: "❌ Erro ao salvar usuário: " + (err.message || "Erro desconhecido") });
     } finally { 
       setSaving(false); 
     }
@@ -159,12 +175,12 @@ function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
 
         <div className="modal-body">
           {/* Info box quando editando */}
-          {initialData && initialData.DT_Cad_Usuario && (
+          {initialData && initialData.dataCadUsuario && (
             <div className="info-box">
               <div className="info-item">
                 <span className="info-label">📅 Cadastrado em:</span>
                 <span className="info-value">
-                  {new Date(initialData.DT_Cad_Usuario).toLocaleDateString('pt-BR')} às {new Date(initialData.DT_Cad_Usuario).toLocaleTimeString('pt-BR')}
+                  {new Date(initialData.dataCadUsuario).toLocaleDateString('pt-BR')} às {new Date(initialData.dataCadUsuario).toLocaleTimeString('pt-BR')}
                 </span>
               </div>
               <div className="info-item">
@@ -177,15 +193,26 @@ function UsuarioForm({ isOpen, onClose, onSave, initialData = null }) {
           )}
 
           <form onSubmit={handleSubmit} id="usuario-form">
-            {/* Perfil e Status */}
+            {/* Empresa, Perfil e Status */}
             <div className="form-row">
+              <div className="form-group">
+                <label>Empresa <span className="required">*</span></label>
+                <select value={idEmpresa} onChange={(e) => setIdEmpresa(Number(e.target.value))} required>
+                  <option value="">-- Selecione --</option>
+                  {empresas.map(emp => (
+                    <option key={emp.idEmpresa ?? emp.ID_Empresa} value={emp.idEmpresa ?? emp.ID_Empresa}>
+                      {emp.nmFantasia ?? emp.NM_Fantasia ?? emp.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="form-group">
                 <label>Perfil <span className="required">*</span></label>
                 <select value={idPerfil} onChange={(e) => setIdPerfil(Number(e.target.value))} required>
                   <option value="">-- Selecione --</option>
                   {perfis.map(p => (
-                    <option key={p.ID_Perfil ?? p.id} value={p.ID_Perfil ?? p.id}>
-                      {p.NM_Perfil ?? p.nmPerfil ?? p.name}
+                    <option key={p.idPerfil ?? p.ID_Perfil} value={p.idPerfil ?? p.ID_Perfil}>
+                      {p.nmPerfil ?? p.NM_Perfil ?? p.name}
                     </option>
                   ))}
                 </select>

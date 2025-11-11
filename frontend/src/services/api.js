@@ -68,11 +68,11 @@ export const unidadesAPI = {
 
 // ==================== USUÁRIOS ====================
 export const usuariosAPI = {
-  listar: () => get("/usuarios"),
-  buscarPorId: (id) => get(`/usuarios/${id}`),
-  criar: (usuario) => post("/usuarios", usuario),
-  atualizar: (id, usuario) => put(`/usuarios/${id}`, usuario),
-  deletar: (id) => del(`/usuarios/${id}`),
+  listar: () => get("/usuario"),
+  buscarPorId: (id) => get(`/usuario/${id}`),
+  criar: (usuario) => post("/usuario", usuario),
+  atualizar: (id, usuario) => put(`/usuario/${id}`, usuario),
+  deletar: (id) => del(`/usuario/${id}`),
 };
 
 // ==================== PERFIS ====================

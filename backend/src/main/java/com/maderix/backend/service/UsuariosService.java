@@ -24,4 +24,12 @@ public class UsuariosService {
     public Optional<Usuarios> buscarUsuarioPorEmail(String email){
         return usuariosRepository.findByEmail(email);
     }
+
+    public Optional<Usuarios> buscarUsuarioPorId(Integer id) {
+        return usuariosRepository.findById(id);
+    }
+
+    public void deletarUsuario(Integer id) {
+        usuariosRepository.deleteById(id);
+    }
 }

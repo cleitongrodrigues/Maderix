@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react";
 import UsuarioForm from "./UsuarioForm";
 import Pagination from "../../components/Pagination/Pagination";
 import ActionButtons from "../../components/ActionButtons";
-import sampleUsuarios from "./sampleUsuarios";
 import "./Usuarios.css";
 import useDelayedLoader from "../../hooks/useDelayedLoader";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import Highlight from "../../components/Highlight/Highlight";
+import { usuariosAPI } from "../../services/api";
 
 
-const USE_MOCK = true;
 const ITEMS_PER_PAGE = 10;
 
 function generateMockUsuarios(count = 30) {
@@ -40,33 +39,14 @@ function Usuarios() {
 
   useEffect(() => {
     async function fetchUsuarios() {
-      if (USE_MOCK) {
-        // load from localStorage if present, otherwise use sample data
-        const stored = localStorage.getItem("mock_usuarios");
-        if (stored) {
-          try {
-            const parsed = JSON.parse(stored);
-            setUsuarios(parsed);
-          } catch (e) {
-            setUsuarios(sampleUsuarios);
-            localStorage.setItem("mock_usuarios", JSON.stringify(sampleUsuarios));
-          }
-        } else {
-          setUsuarios(sampleUsuarios);
-          localStorage.setItem("mock_usuarios", JSON.stringify(sampleUsuarios));
-        }
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await fetch("/api/usuarios");
-        if (!res.ok) throw new Error("no-api");
-        const data = await res.json();
-        if (Array.isArray(data) && data.length) setUsuarios(data);
-        else setUsuarios(sampleUsuarios);
+        console.log("🔵 Buscando usuários...");
+        const data = await usuariosAPI.listar();
+        console.log("✅ Usuários carregados:", data);
+        setUsuarios(Array.isArray(data) ? data : []);
       } catch (err) {
-        setUsuarios(sampleUsuarios);
+        console.error("❌ Erro ao buscar usuários:", err);
+        setUsuarios([]);
       } finally {
         setLoading(false);
       }
@@ -83,18 +63,18 @@ function Usuarios() {
     // Filtro de busca
     const q = searchQuery.trim().toLowerCase();
     if (q) {
-      const match = (String(u.ID_Usuario ?? u.id ?? "").toLowerCase().includes(q) ||
-        (u.NM_Usuario ?? u.nome ?? "").toLowerCase().includes(q) ||
-        (u.Login ?? "").toLowerCase().includes(q) ||
-        (u.Email ?? "").toLowerCase().includes(q));
+      const match = (String(u.idUsuario ?? u.ID_Usuario ?? "").toLowerCase().includes(q) ||
+        (u.nmUsuario ?? u.NM_Usuario ?? "").toLowerCase().includes(q) ||
+        (u.nmLogin ?? u.Login ?? "").toLowerCase().includes(q) ||
+        (u.email ?? u.Email ?? "").toLowerCase().includes(q));
       if (!match) return false;
     }
 
     // Filtro de status ativo/inativo
     if (filtroAtivo === 'ativos') {
-      return u.Ativo === true;
+      return u.ativo === true;
     } else if (filtroAtivo === 'inativos') {
-      return u.Ativo === false;
+      return u.ativo === false;
     }
 
     return true;
@@ -117,62 +97,28 @@ function Usuarios() {
   };
 
   const handleSave = (saved) => {
-    // saved is the user object returned from form
-    if (USE_MOCK) {
-      setUsuarios((prev) => {
-        const idKey = 'ID_Usuario';
-        const savedId = saved[idKey];
-        if (savedId) {
-          const updated = prev.map((p) => ((p.ID_Usuario ?? p.id) === savedId ? { ...p, ...saved } : p));
-          localStorage.setItem('mock_usuarios', JSON.stringify(updated));
-          return updated;
-        }
-        // create new
-        const maxId = prev.reduce((m, x) => Math.max(m, (x.ID_Usuario ?? x.id) || 0), 0);
-        const newItem = { ...saved, ID_Usuario: maxId + 1, DT_Cad_Usuario: new Date().toISOString(), Ativo: true };
-        const newArr = [newItem, ...prev];
-        localStorage.setItem('mock_usuarios', JSON.stringify(newArr));
-        return newArr;
-      });
-      return;
-    }
-
+    console.log("🔵 Usuário salvo, atualizando lista:", saved);
     setUsuarios((prev) => {
-      const exists = prev.find((p) => (p.ID_Usuario ?? p.id) === (saved.ID_Usuario ?? saved.id));
-      if (exists) return prev.map((p) => ((p.ID_Usuario ?? p.id) === (saved.ID_Usuario ?? saved.id) ? { ...p, ...saved } : p));
+      const id = saved.idUsuario ?? saved.ID_Usuario;
+      const exists = prev.find((p) => (p.idUsuario ?? p.ID_Usuario) === id);
+      if (exists) {
+        return prev.map((p) => ((p.idUsuario ?? p.ID_Usuario) === id ? { ...p, ...saved } : p));
+      }
       return [saved, ...prev];
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Confirma exclusão do usuário?")) return;
-    if (USE_MOCK) {
-      setUsuarios((s) => {
-        const next = s.filter((u) => (u.ID_Usuario ?? u.id) !== id);
-        localStorage.setItem('mock_usuarios', JSON.stringify(next));
-        return next;
-      });
-      return;
-    }
-    // try api then fallback
-    fetch(`/api/usuarios/${id}`, { method: "DELETE" }).then(() => {
-      setUsuarios((s) => s.filter((u) => (u.ID_Usuario ?? u.id) !== id));
-    }).catch(() => {
-      setUsuarios((s) => s.filter((u) => (u.ID_Usuario ?? u.id) !== id));
-    });
-  };
-
-  const handleToggleActive = (u) => {
-    const id = u.ID_Usuario ?? u.id;
-    const newVal = !u.Ativo;
-    // optimistic
-    setUsuarios((prev) => {
-      const updated = prev.map((p) => ((p.ID_Usuario ?? p.id) === id ? { ...p, Ativo: newVal } : p));
-      if (USE_MOCK) localStorage.setItem('mock_usuarios', JSON.stringify(updated));
-      return updated;
-    });
-    if (!USE_MOCK) {
-      fetch(`/api/usuarios/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ Ativo: newVal }) }).catch(() => {});
+    try {
+      console.log("🔵 Deletando usuário:", id);
+      await usuariosAPI.deletar(id);
+      console.log("✅ Usuário deletado com sucesso");
+      setUsuarios((prev) => prev.filter((u) => (u.idUsuario ?? u.ID_Usuario) !== id));
+      alert("Usuário excluído com sucesso!");
+    } catch (err) {
+      console.error("❌ Erro ao deletar usuário:", err);
+      alert("Erro ao excluir usuário: " + (err.message || "Erro desconhecido"));
     }
   };
 
@@ -193,8 +139,8 @@ function Usuarios() {
     setCurrentPage(1); // Reset página
   };
 
-  const uniqueProfiles = Array.from(new Set(usuarios.map(u => u.PerfilNome).filter(Boolean)));
-  const totalAtivos = usuarios.filter(u => u.Ativo).length;
+  const uniqueProfiles = Array.from(new Set(usuarios.map(u => u.perfil?.nmPerfil ?? u.PerfilNome).filter(Boolean)));
+  const totalAtivos = usuarios.filter(u => u.ativo ?? u.Ativo).length;
   const percentualAtivos = usuarios.length > 0 ? Math.round((totalAtivos / usuarios.length) * 100) : 0;
 
   return (
@@ -292,19 +238,19 @@ function Usuarios() {
                     </tr>
                   ) : (
                     currentItemsFiltered.map((u) => (
-                      <tr key={u.ID_Usuario ?? u.id}>
-                        <td><Highlight text={String(u.ID_Usuario ?? u.id)} query={searchQuery} /></td>
-                        <td><strong><Highlight text={u.NM_Usuario ?? u.nome} query={searchQuery} /></strong></td>
-                        <td><Highlight text={u.Login} query={searchQuery} /></td>
+                      <tr key={u.idUsuario ?? u.ID_Usuario}>
+                        <td><Highlight text={String(u.idUsuario ?? u.ID_Usuario)} query={searchQuery} /></td>
+                        <td><strong><Highlight text={u.nmUsuario ?? u.NM_Usuario} query={searchQuery} /></strong></td>
+                        <td><Highlight text={u.nmLogin ?? u.Login} query={searchQuery} /></td>
                         <td>
                           <span className="perfil-badge">
-                            <Highlight text={u.PerfilNome ?? "-"} query={searchQuery} />
+                            <Highlight text={u.perfil?.nmPerfil ?? u.PerfilNome ?? "-"} query={searchQuery} />
                           </span>
                         </td>
-                        <td><Highlight text={u.Email} query={searchQuery} /></td>
-                        <td className="telefone-cell">{u.Tel_Usuario || "-"}</td>
+                        <td><Highlight text={u.email ?? u.Email} query={searchQuery} /></td>
+                        <td className="telefone-cell">{u.telUsuario ?? u.Tel_Usuario ?? "-"}</td>
                         <td>
-                          {u.Ativo ? (
+                          {(u.ativo ?? u.Ativo) ? (
                             <span className="status-badge status-ativo">✅ Ativo</span>
                           ) : (
                             <span className="status-badge status-inativo">⭕ Inativo</span>
@@ -314,15 +260,8 @@ function Usuarios() {
                           <div className="botoes-acao">
                             <ActionButtons
                               onEdit={() => handleEdit(u)}
-                              onDelete={() => handleDelete(u.ID_Usuario ?? u.id)}
+                              onDelete={() => handleDelete(u.idUsuario ?? u.ID_Usuario)}
                             />
-                            <button 
-                              className={`btn-toggle ${u.Ativo ? 'btn-desativar' : 'btn-ativar'}`}
-                              onClick={() => handleToggleActive(u)}
-                              title={u.Ativo ? 'Desativar usuário' : 'Ativar usuário'}
-                            >
-                              {u.Ativo ? '⏸️ Desativar' : '▶️ Ativar'}
-                            </button>
                           </div>
                         </td>
                       </tr>

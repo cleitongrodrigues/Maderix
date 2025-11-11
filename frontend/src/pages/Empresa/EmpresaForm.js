@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "./Empresa.css";
+import { empresasAPI } from "../../services/api";
 
-export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = false }) {
+export default function EmpresaForm({ empresa = null, onClose, onSaved }) {
   const [nmFantasia, setNmFantasia] = useState("");
   const [rzSocial, setRzSocial] = useState("");
   const [cnpj, setCnpj] = useState("");
-  const [endereco, setEndereco] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (empresa) {
-      setNmFantasia(empresa.NM_Fantasia ?? empresa.nmFantasia ?? "");
-      setRzSocial(empresa.RZ_Social ?? empresa.rz_Social ?? "");
-      setCnpj(empresa.CNPJ ?? empresa.cnpj ?? "");
-      setEndereco(empresa.Endereco ?? empresa.endereco ?? "");
-      setTelefone(empresa.Telefone ?? empresa.telefone ?? "");
-      setEmail(empresa.Email ?? empresa.email ?? "");
+      setNmFantasia(empresa.nmFantasia ?? empresa.NM_Fantasia ?? "");
+      setRzSocial(empresa.rzSocial ?? empresa.RZ_Social ?? "");
+      setCnpj(empresa.cnpj ?? empresa.CNPJ ?? "");
     } else {
       setNmFantasia("");
       setRzSocial("");
       setCnpj("");
-      setEndereco("");
-      setTelefone("");
-      setEmail("");
     }
   }, [empresa]);
 
@@ -44,14 +36,6 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = f
     return v;
   }
 
-  function formatTelefone(v) {
-    const nums = (v || "").replace(/\D/g, "").slice(0, 11);
-    if (nums.length <= 2) return nums;
-    if (nums.length <= 6) return `(${nums.slice(0,2)}) ${nums.slice(2)}`;
-    if (nums.length <= 10) return `(${nums.slice(0,2)}) ${nums.slice(2,6)}-${nums.slice(6)}`;
-    return `(${nums.slice(0,2)}) ${nums.slice(2,7)}-${nums.slice(7)}`;
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     
@@ -68,35 +52,33 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = f
       alert("❌ CNPJ inválido! Deve conter 14 dígitos.");
       return;
     }
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("❌ Email inválido!");
-      return;
-    }
 
     setSaving(true);
     const payload = { 
-      NM_Fantasia: nmFantasia.trim(), 
-      RZ_Social: rzSocial.trim(), 
-      CNPJ: cnpj.replace(/\D/g, '') || null,
-      Endereco: endereco.trim() || null,
-      Telefone: telefone.replace(/\D/g, '') || null,
-      Email: email.trim() || null
+      nmFantasia: nmFantasia.trim(), 
+      rzSocial: rzSocial.trim(), 
+      cnpj: cnpj.replace(/\D/g, '') || null
     };
 
     try {
-      const url = empresa ? `/api/empresas/${empresa.ID_Empresa ?? empresa.id}` : "/api/empresas";
-      const method = empresa ? "PUT" : "POST";
-      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || `Status ${res.status}`);
+      console.log("🔵 Salvando empresa:", payload);
+      
+      let saved;
+      if (empresa) {
+        const id = empresa.idEmpresa ?? empresa.ID_Empresa;
+        saved = await empresasAPI.atualizar(id, payload);
+        console.log("✅ Empresa atualizada:", saved);
+      } else {
+        saved = await empresasAPI.criar(payload);
+        console.log("✅ Empresa criada:", saved);
       }
-      const saved = await res.json();
+      
       alert(empresa ? "✅ Empresa atualizada com sucesso!" : "✅ Empresa cadastrada com sucesso!");
       onSaved && onSaved(saved);
       onClose && onClose();
     } catch (err) {
-      alert("❌ Erro ao salvar: " + (err.message || err));
+      console.error("❌ Erro ao salvar empresa:", err);
+      alert("❌ Erro ao salvar: " + (err.message || "Erro desconhecido"));
     } finally {
       setSaving(false);
     }
@@ -115,9 +97,9 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = f
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
             {/* Informação de cadastro (apenas na edição) */}
-            {isEdicao && empresa.DT_Cad_Empresa && (
+            {isEdicao && (empresa.dataCadEmpresa ?? empresa.DT_Cad_Empresa) && (
               <div className="info-box">
-                📅 Cadastrada em: {new Date(empresa.DT_Cad_Empresa).toLocaleDateString('pt-BR')} às {new Date(empresa.DT_Cad_Empresa).toLocaleTimeString('pt-BR')}
+                📅 Cadastrada em: {new Date(empresa.dataCadEmpresa ?? empresa.DT_Cad_Empresa).toLocaleDateString('pt-BR')} às {new Date(empresa.dataCadEmpresa ?? empresa.DT_Cad_Empresa).toLocaleTimeString('pt-BR')}
               </div>
             )}
 
@@ -163,46 +145,9 @@ export default function EmpresaForm({ empresa = null, onClose, onSaved, mock = f
                 placeholder="00.000.000/0000-00"
                 disabled={saving}
               />
-            </div>
-
-            {/* Linha 3: Endereço */}
-            <div className="form-group">
-              <label htmlFor="endereco">Endereço Completo</label>
-              <input
-                id="endereco"
-                type="text"
-                value={endereco}
-                onChange={(e) => setEndereco(e.target.value)}
-                placeholder="Rua, número, bairro, cidade - UF"
-                disabled={saving}
-              />
-            </div>
-
-            {/* Linha 4: Telefone e Email */}
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="telefone">Telefone</label>
-                <input
-                  id="telefone"
-                  type="text"
-                  value={telefone}
-                  onChange={(e) => setTelefone(formatTelefone(e.target.value))}
-                  onBlur={(e) => setTelefone(formatTelefone(e.target.value))}
-                  placeholder="(11) 99999-9999"
-                  disabled={saving}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="contato@empresa.com"
-                  disabled={saving}
-                />
-              </div>
+              <small style={{ color: '#6c757d', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                Opcional - Deixe em branco se não houver CNPJ
+              </small>
             </div>
           </div>
 

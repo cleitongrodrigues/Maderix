@@ -4,8 +4,7 @@ import "./Empresa.css";
 import sampleEmpresas from "./sampleEmpresas";
 import Pagination from "../../components/Pagination/Pagination";
 import ActionButtons from "../../components/ActionButtons";
-
-const USE_MOCK = true;
+import { empresasAPI } from "../../services/api";
 
 function Empresa() {
   const [empresas, setEmpresas] = useState([]);
@@ -26,26 +25,21 @@ function Empresa() {
   };
 
   useEffect(() => {
-    if (USE_MOCK) {
-      setEmpresas(sampleEmpresas);
-    } else {
-      fetchList();
-    }
+    fetchEmpresas();
   }, []);
 
-  async function fetchList() {
+  async function fetchEmpresas() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/empresas");
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      const data = await res.json();
-      // if backend returns empty array, use sample data so UI shows records during frontend dev
-      setEmpresas(Array.isArray(data) && data.length > 0 ? data : sampleEmpresas);
+      console.log("🔵 Buscando empresas...");
+      const data = await empresasAPI.listar();
+      console.log("✅ Empresas carregadas:", data.length);
+      setEmpresas(data);
     } catch (err) {
-      setError("Não foi possível carregar empresas. (fallback)");
-      // fallback sample data
-      setEmpresas(sampleEmpresas);
+      console.error("❌ Erro ao buscar empresas:", err);
+      setError("Não foi possível carregar empresas.");
+      setEmpresas([]);
     } finally {
       setLoading(false);
     }
@@ -62,42 +56,32 @@ function Empresa() {
   }
 
   async function handleDelete(emp) {
-    if (!window.confirm(`Excluir empresa "${emp.NM_Fantasia}"?`)) return;
-    if (USE_MOCK) {
-      setEmpresas((prev) => prev.filter((p) => (p.ID_Empresa ?? p.id) !== (emp.ID_Empresa ?? emp.id)));
-      return;
-    }
+    const nome = emp.nmFantasia ?? emp.NM_Fantasia ?? 'esta empresa';
+    if (!window.confirm(`Excluir empresa "${nome}"?`)) return;
 
     try {
-      const res = await fetch(`/api/empresas/${emp.ID_Empresa ?? emp.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      alert("Empresa excluída com sucesso");
-      fetchList();
+      const id = emp.idEmpresa ?? emp.ID_Empresa;
+      console.log("🔵 Excluindo empresa ID:", id);
+      await empresasAPI.deletar(id);
+      console.log("✅ Empresa excluída");
+      setEmpresas((prev) => prev.filter((p) => (p.idEmpresa ?? p.ID_Empresa) !== id));
+      alert("✅ Empresa excluída com sucesso!");
     } catch (err) {
-      alert("Erro ao excluir. (remova manualmente se necessário)");
+      console.error("❌ Erro ao excluir empresa:", err);
+      alert("❌ Erro ao excluir empresa: " + (err.message || "Erro desconhecido"));
     }
   }
 
-  // default server-side saved handler
-  function handleSaved() {
-    setOpenForm(false);
-    setSelected(null);
-    fetchList();
-  }
-
-  // local/mock save handler (create or update in-memory)
-  function handleSavedLocal(obj) {
-    if (!obj) return;
+  // Handler para empresa salva
+  function handleSaved(saved) {
+    console.log('✅ Empresa salva:', saved);
+    const id = saved.idEmpresa;
     setEmpresas((prev) => {
-      const id = obj.ID_Empresa ?? obj.id;
-      if (id) {
-        // update existing
-        return prev.map((p) => ((p.ID_Empresa ?? p.id) === id ? { ...p, ...obj } : p));
+      const exists = prev.some((e) => (e.idEmpresa || e.ID_Empresa) === id);
+      if (exists) {
+        return prev.map((e) => ((e.idEmpresa || e.ID_Empresa) === id ? saved : e));
       }
-      // create new: generate next ID
-      const nextId = prev.reduce((max, cur) => Math.max(max, cur.ID_Empresa ?? cur.id ?? 0), 0) + 1;
-      const created = { ID_Empresa: nextId, ...obj, DT_Cad_Empresa: new Date().toISOString() };
-      return [created, ...prev];
+      return [saved, ...prev];
     });
     setOpenForm(false);
     setSelected(null);
@@ -107,9 +91,9 @@ function Empresa() {
     if (!search) return true;
     const s = search.toLowerCase();
     return (
-      String(e.NM_Fantasia ?? e.nmFantasia ?? "").toLowerCase().includes(s) ||
-      String(e.CNPJ ?? e.cnpj ?? "").toLowerCase().includes(s) ||
-      String(e.RZ_Social ?? e.rz_Social ?? "").toLowerCase().includes(s)
+      String(e.nmFantasia ?? e.NM_Fantasia ?? "").toLowerCase().includes(s) ||
+      String(e.cnpj ?? e.CNPJ ?? "").toLowerCase().includes(s) ||
+      String(e.rzSocial ?? e.RZ_Social ?? "").toLowerCase().includes(s)
     );
   });
 
@@ -198,14 +182,14 @@ function Empresa() {
               </tr>
             ) : (
               pageData.map((e) => (
-                <tr key={e.ID_Empresa ?? e.id}>
-                  <td>{e.ID_Empresa ?? e.id}</td>
-                  <td><strong>{e.NM_Fantasia ?? e.nmFantasia}</strong></td>
-                  <td className="cnpj-cell">{formatarCNPJ(e.CNPJ ?? e.cnpj)}</td>
-                  <td>{e.RZ_Social ?? e.rz_Social}</td>
+                <tr key={e.idEmpresa ?? e.ID_Empresa ?? e.id}>
+                  <td>{e.idEmpresa ?? e.ID_Empresa ?? e.id}</td>
+                  <td><strong>{e.nmFantasia ?? e.NM_Fantasia}</strong></td>
+                  <td className="cnpj-cell">{formatarCNPJ(e.cnpj ?? e.CNPJ)}</td>
+                  <td>{e.rzSocial ?? e.RZ_Social ?? '-'}</td>
                   <td>
-                    {e.DT_Cad_Empresa 
-                      ? new Date(e.DT_Cad_Empresa).toLocaleDateString('pt-BR') 
+                    {e.dataCadEmpresa ?? e.DT_Cad_Empresa 
+                      ? new Date(e.dataCadEmpresa ?? e.DT_Cad_Empresa).toLocaleDateString('pt-BR') 
                       : "-"}
                   </td>
                   <td className="celula-acoes">
@@ -235,9 +219,8 @@ function Empresa() {
       {openForm && (
         <EmpresaForm
           empresa={selected}
-          mock={USE_MOCK}
           onClose={() => setOpenForm(false)}
-          onSaved={USE_MOCK ? handleSavedLocal : handleSaved}
+          onSaved={handleSaved}
         />
       )}
     </div>
