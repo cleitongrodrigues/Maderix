@@ -16,11 +16,6 @@ function Login() {
   const [forgotMessage, setForgotMessage] = useState("");
   const [recoveryToken, setRecoveryToken] = useState("");
   const navigate = useNavigate();
-  
-  // Ao entrar na tela de login, garantimos que a sessão seja limpa
-  useEffect(() => {
-    try { localStorage.removeItem('token'); } catch {}
-  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();

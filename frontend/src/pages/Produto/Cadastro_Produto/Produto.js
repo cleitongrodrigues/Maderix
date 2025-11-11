@@ -1,49 +1,88 @@
 import React, { useState, useEffect } from "react";
 import "./Produto.css";
+import { materiaisAPI, empresasAPI, unidadesAPI } from "../../../services/api";
 
 function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
   const [loading, setLoading] = useState(false);
+  const [empresas, setEmpresas] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   const [formData, setFormData] = useState({
+    idEmpresa: '',
+    idUnidade: '',
     codigo: '',
-    nome: '',
+    nmMaterial: '',
     fornecedor: '',
     categoria: '',
-    unidadeMedida: '',
-    quantidade: '',
+    estoqueAtual: '',
     precoCusto: '',
     precoVenda: '',
-    descricao: ''
+    descricao: '',
+    ativo: true
   });
+
+  // Busca empresas e unidades
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        console.log("🔵 Buscando empresas e unidades...");
+        const [empresasData, unidadesData] = await Promise.all([
+          empresasAPI.listar(),
+          unidadesAPI.listar()
+        ]);
+        console.log("✅ Empresas:", empresasData.length, "Unidades:", unidadesData.length);
+        setEmpresas(empresasData || []);
+        setUnidades(unidadesData || []);
+      } catch (err) {
+        console.error("❌ Erro ao buscar dados:", err);
+      }
+    }
+    fetchData();
+  }, []);
 
   // Preenche o formulário quando está editando
   useEffect(() => {
     if (produtoParaEditar) {
       setFormData({
+        idEmpresa: produtoParaEditar.idEmpresa || '',
+        idUnidade: produtoParaEditar.idUnidade || '',
         codigo: produtoParaEditar.codigo || '',
-        nome: produtoParaEditar.nome || '',
+        nmMaterial: produtoParaEditar.nmMaterial || '',
         fornecedor: produtoParaEditar.fornecedor || '',
         categoria: produtoParaEditar.categoria || '',
-        unidadeMedida: produtoParaEditar.unidadeMedida || '',
-        quantidade: produtoParaEditar.quantidade || '',
+        estoqueAtual: produtoParaEditar.estoqueAtual || '',
         precoCusto: formatarMoeda(produtoParaEditar.precoCusto) || '',
         precoVenda: formatarMoeda(produtoParaEditar.precoVenda) || '',
-        descricao: produtoParaEditar.descricao || ''
+        descricao: produtoParaEditar.descricao || '',
+        ativo: produtoParaEditar.ativo !== undefined ? produtoParaEditar.ativo : true
       });
     } else {
       // Limpa o formulário para novo cadastro
       setFormData({
+        idEmpresa: '',
+        idUnidade: '',
         codigo: '',
-        nome: '',
+        nmMaterial: '',
         fornecedor: '',
         categoria: '',
-        unidadeMedida: '',
-        quantidade: '',
+        estoqueAtual: '',
         precoCusto: '',
         precoVenda: '',
-        descricao: ''
+        descricao: '',
+        ativo: true
       });
     }
   }, [produtoParaEditar, isOpen]);
+
+  // Define empresa e unidade padrão quando as listas são carregadas (apenas para novo cadastro)
+  useEffect(() => {
+    if (!produtoParaEditar && empresas.length > 0 && unidades.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        idEmpresa: prev.idEmpresa || empresas[0]?.idEmpresa || '',
+        idUnidade: prev.idUnidade || unidades[0]?.idUnidade || ''
+      }));
+    }
+  }, [empresas, unidades, produtoParaEditar]);
 
   // Função para formatar valor como moeda brasileira
   const formatarMoeda = (valor) => {
@@ -81,7 +120,7 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
   // Validações
   const validarFormulario = () => {
     // Campos obrigatórios
-    if (!formData.nome.trim()) {
+    if (!formData.nmMaterial.trim()) {
       alert('❌ Nome do produto é obrigatório!');
       return false;
     }
@@ -89,13 +128,21 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
       alert('❌ Código do produto é obrigatório!');
       return false;
     }
-    if (!formData.quantidade) {
+    if (!formData.idEmpresa) {
+      alert('❌ Selecione uma empresa!');
+      return false;
+    }
+    if (!formData.idUnidade) {
+      alert('❌ Selecione uma unidade de medida!');
+      return false;
+    }
+    if (!formData.estoqueAtual && formData.estoqueAtual !== 0) {
       alert('❌ Quantidade em estoque é obrigatória!');
       return false;
     }
 
     // Validação de quantidade
-    const quantidade = parseInt(formData.quantidade);
+    const quantidade = parseInt(formData.estoqueAtual);
     if (isNaN(quantidade) || quantidade < 0) {
       alert('❌ Quantidade em estoque deve ser um número válido e não negativo!');
       return false;
@@ -137,32 +184,46 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
     setLoading(true);
 
     try {
-      // Simula delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const produtoData = {
-        id: produtoParaEditar?.id || Date.now(),
+      const payload = {
+        idEmpresa: parseInt(formData.idEmpresa),
+        idUnidade: parseInt(formData.idUnidade),
+        nmMaterial: formData.nmMaterial,
         codigo: formData.codigo,
-        nome: formData.nome,
-        fornecedor: formData.fornecedor,
-        categoria: formData.categoria,
-        unidadeMedida: formData.unidadeMedida,
-        quantidade: parseInt(formData.quantidade),
-        precoCusto: parseMoneyToNumber(formData.precoCusto),
         precoVenda: parseMoneyToNumber(formData.precoVenda),
-        descricao: formData.descricao,
-        dataCadastro: produtoParaEditar?.dataCadastro || new Date().toISOString()
+        descricao: formData.descricao || null,
+        precoCusto: parseMoneyToNumber(formData.precoCusto),
+        estoqueAtual: parseInt(formData.estoqueAtual),
+        fornecedor: formData.fornecedor || null,
+        categoria: formData.categoria || null,
+        ativo: formData.ativo
       };
 
+      console.log("🔵 Salvando material...");
+      console.log("📤 Payload enviado:", JSON.stringify(payload, null, 2));
+
+      let saved;
+      if (produtoParaEditar) {
+        // Editando material existente
+        const id = produtoParaEditar.idMaterial;
+        saved = await materiaisAPI.atualizar(id, payload);
+        console.log("✅ Material atualizado");
+        console.log("📥 Resposta da API:", JSON.stringify(saved, null, 2));
+      } else {
+        // Criando novo material
+        saved = await materiaisAPI.criar(payload);
+        console.log("✅ Material criado");
+        console.log("📥 Resposta da API:", JSON.stringify(saved, null, 2));
+      }
+
       if (onSave) {
-        onSave(produtoData);
+        onSave(saved);
       }
 
       alert(produtoParaEditar ? '✅ Produto atualizado com sucesso!' : '✅ Produto cadastrado com sucesso!');
       onClose();
     } catch (error) {
-      console.error('Erro ao salvar produto:', error);
-      alert('❌ Erro ao salvar produto. Tente novamente.');
+      console.error('❌ Erro ao salvar produto:', error);
+      alert('❌ Erro ao salvar produto: ' + (error.message || 'Erro desconhecido'));
     } finally {
       setLoading(false);
     }
@@ -183,11 +244,51 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
             {/* Informação de cadastro (apenas na edição) */}
-            {isEdicao && produtoParaEditar.dataCadastro && (
+            {isEdicao && produtoParaEditar.dataCadMaterial && (
               <div className="info-box">
-                📅 Cadastrado em: {new Date(produtoParaEditar.dataCadastro).toLocaleDateString('pt-BR')}
+                📅 Cadastrado em: {new Date(produtoParaEditar.dataCadMaterial).toLocaleDateString('pt-BR')}
               </div>
             )}
+
+            {/* Linha 0: Empresa e Unidade */}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="idEmpresa">Empresa *</label>
+                <select
+                  id="idEmpresa"
+                  name="idEmpresa"
+                  value={formData.idEmpresa}
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                >
+                  <option value="">-- Selecione uma empresa --</option>
+                  {empresas.map((emp) => (
+                    <option key={emp.idEmpresa} value={emp.idEmpresa}>
+                      {emp.nmFantasia}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="idUnidade">Unidade de Medida *</label>
+                <select
+                  id="idUnidade"
+                  name="idUnidade"
+                  value={formData.idUnidade}
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                >
+                  <option value="">-- Selecione --</option>
+                  {unidades.map((und) => (
+                    <option key={und.idUnidade} value={und.idUnidade}>
+                      {und.sigla} - {und.descricao || und.sigla}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
             {/* Linha 1: Código e Nome */}
             <div className="form-row">
@@ -205,12 +306,12 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="nome">Nome do Produto *</label>
+                <label htmlFor="nmMaterial">Nome do Produto *</label>
                 <input
-                  id="nome"
-                  name="nome"
+                  id="nmMaterial"
+                  name="nmMaterial"
                   type="text"
-                  value={formData.nome}
+                  value={formData.nmMaterial}
                   onChange={handleChange}
                   placeholder="Ex: Cadeira Escritório"
                   disabled={loading}
@@ -247,33 +348,24 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
               </div>
             </div>
 
-            {/* Linha 3: Unidade de Medida e Quantidade */}
+            {/* Linha 3: Quantidade em Estoque */}
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="unidadeMedida">Unidade de Medida</label>
+                <label htmlFor="estoqueAtual">📦 Quantidade em Estoque *</label>
                 <input
-                  id="unidadeMedida"
-                  name="unidadeMedida"
-                  type="text"
-                  value={formData.unidadeMedida}
-                  onChange={handleChange}
-                  placeholder="Ex: UN, KG, CX"
-                  disabled={loading}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="quantidade">📦 Quantidade em Estoque *</label>
-                <input
-                  id="quantidade"
-                  name="quantidade"
+                  id="estoqueAtual"
+                  name="estoqueAtual"
                   type="number"
-                  value={formData.quantidade}
+                  value={formData.estoqueAtual}
                   onChange={handleChange}
                   placeholder="0"
                   min="0"
                   disabled={loading}
                   required
                 />
+              </div>
+              <div className="form-group">
+                {/* Espaço vazio para manter layout */}
               </div>
             </div>
 

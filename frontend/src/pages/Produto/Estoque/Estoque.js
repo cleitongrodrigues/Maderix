@@ -1,14 +1,17 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Produto from "../Cadastro_Produto/Produto"; // Adicione esta importação
 import Pagination from "../../../components/Pagination/Pagination";
 import ActionButtons from "../../../components/ActionButtons";
 import ProductDetailModal from "../../../components/ProductDetailModal";
 import { Outlet } from "react-router-dom";
 import "./Estoque.css";
+import { materiaisAPI } from "../../../services/api";
 
 const ITEMS_PER_PAGE = 10; 
 
 function Estoque() {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const pageSize = 10;
@@ -25,29 +28,26 @@ function Estoque() {
   }, []);
     
   const handleEdit = (id) => {
-    const produto = produtos.find(p => p.id === id);
+    const produto = produtos.find(p => (p.idMaterial || p.id) === id);
     if (produto) {
-      // Converter formato de exibição para formato do modal
-      const produtoFormatado = {
-        ...produto,
-        codigo: `PROD${String(id).padStart(3, '0')}`,
-        fornecedor: 'Fornecedor Exemplo',
-        categoria: 'Categoria Exemplo',
-        unidadeMedida: 'UN',
-        precoCusto: parseFloat(produto.preco.replace('R$ ', '').replace(',', '.')) * 0.7, // 70% do preço
-        precoVenda: parseFloat(produto.preco.replace('R$ ', '').replace(',', '.')),
-        descricao: `Descrição do produto ${produto.nome}`,
-        dataCadastro: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString()
-      };
-      setProdutoParaEditar(produtoFormatado);
+      setProdutoParaEditar(produto);
       setIsModalOpen(true);
     }
     setOpenMenuId(null); 
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if(window.confirm(`Tem certeza que deseja excluir o produto ${id}?`)) {
-      alert(`Produto ${id} excluído!`);
+      try {
+        console.log("🔵 Excluindo material ID:", id);
+        await materiaisAPI.deletar(id);
+        console.log("✅ Material excluído");
+        setProdutos(prev => prev.filter(p => (p.idMaterial || p.id) !== id));
+        alert('✅ Produto excluído com sucesso!');
+      } catch (err) {
+        console.error("❌ Erro ao excluir material:", err);
+        alert('❌ Erro ao excluir produto: ' + (err.message || 'Erro desconhecido'));
+      }
     }
     setOpenMenuId(null); 
   };
@@ -82,22 +82,34 @@ function Estoque() {
     // navigate('/estoque/movimentacoes');
   };
 
-  // --- Dados e Paginação ---
-  const [produtos] = useState(() => 
-    Array.from({ length: 35 }, (_, i) => ({
-      id: i + 1,
-      nome: `Produto ${String.fromCharCode(65 + (i % 26))}${Math.floor(i / 26) + 1}`,
-      quantidade: Math.floor(Math.random() * 100),
-      preco: `R$ ${(Math.random() * 100 + 10).toFixed(2).replace('.', ',')}`,
-    }))
-  );
+  // Buscar materiais da API
+  useEffect(() => {
+    async function fetchMateriais() {
+      try {
+        setLoading(true);
+        console.log("🔵 Buscando materiais...");
+        const data = await materiaisAPI.listar();
+        console.log("✅ Materiais carregados:", data.length);
+        setProdutos(data);
+      } catch (err) {
+        console.error("❌ Erro ao buscar materiais:", err);
+        setProdutos([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchMateriais();
+  }, []);
 
   // filter products by search query (case-insensitive) e filtro de cards
-  let filteredProdutos = produtos.filter(p => p.nome.toLowerCase().includes(searchQuery.trim().toLowerCase()));
+  let filteredProdutos = produtos.filter(p => {
+    const nome = p.nmMaterial || p.nome || '';
+    return nome.toLowerCase().includes(searchQuery.trim().toLowerCase());
+  });
   
   // Aplica filtro dos cards se houver
   if (filtroAtivo === 'falta') {
-    filteredProdutos = filteredProdutos.filter(p => p.quantidade < 5);
+    filteredProdutos = filteredProdutos.filter(p => (p.estoqueAtual || p.quantidade || 0) < 5);
   }
   // Se filtroAtivo === 'total', mostra todos (não precisa filtrar)
 
@@ -107,20 +119,20 @@ function Estoque() {
 
     switch (ordenacao.campo) {
       case 'id':
-        valorA = a.id;
-        valorB = b.id;
+        valorA = a.idMaterial || a.id;
+        valorB = b.idMaterial || b.id;
         break;
       case 'nome':
-        valorA = a.nome.toLowerCase();
-        valorB = b.nome.toLowerCase();
+        valorA = (a.nmMaterial || a.nome || '').toLowerCase();
+        valorB = (b.nmMaterial || b.nome || '').toLowerCase();
         break;
       case 'quantidade':
-        valorA = a.quantidade;
-        valorB = b.quantidade;
+        valorA = a.estoqueAtual || a.quantidade || 0;
+        valorB = b.estoqueAtual || b.quantidade || 0;
         break;
       case 'preco':
-        valorA = parseFloat(a.preco.replace('R$ ', '').replace(',', '.'));
-        valorB = parseFloat(b.preco.replace('R$ ', '').replace(',', '.'));
+        valorA = parseFloat(a.precoVenda || a.preco?.replace?.('R$ ', '').replace(',', '.') || 0);
+        valorB = parseFloat(b.precoVenda || b.preco?.replace?.('R$ ', '').replace(',', '.') || 0);
         break;
       default:
         return 0;
@@ -178,10 +190,17 @@ function Estoque() {
   };
 
   // Função para salvar produto (novo ou editado)
-  const handleSaveProduto = (produtoData) => {
-    console.log('Produto salvo:', produtoData);
-    // Aqui você integraria com a API para salvar no backend
-    // Por enquanto, apenas fecha o modal
+  const handleSaveProduto = (saved) => {
+    console.log('✅ Material salvo:', saved);
+    // Atualiza a lista local
+    const id = saved.idMaterial;
+    setProdutos((prev) => {
+      const exists = prev.some((p) => (p.idMaterial || p.id) === id);
+      if (exists) {
+        return prev.map((p) => ((p.idMaterial || p.id) === id ? saved : p));
+      }
+      return [saved, ...prev];
+    });
   };
 
   // Função para abrir modal de novo cadastro
@@ -257,7 +276,7 @@ function Estoque() {
                   <div className="card-icon">⚠️</div>
                   <div className="card-content">
                     <h3>Produtos em Falta</h3>
-                    <p>{produtos.filter(p => p.quantidade < 5).length}</p>
+                    <p>{produtos.filter(p => (p.estoqueAtual || p.quantidade || 0) < 5).length}</p>
                   </div>
                 </div>
               </div>
@@ -340,25 +359,34 @@ function Estoque() {
                     </td>
                   </tr>
                 ) : (
-                  currentProducts.map((produto) => (
-                    <tr key={produto.id} className={produto.quantidade < 5 ? 'baixo-estoque' : ''}>
-                      <td>{produto.id}</td>
-                      <td>{produto.nome}</td>
-                      <td>
-                        {produto.quantidade < 5 && <span className="icone-alerta">⚠️</span>}
-                        {produto.quantidade}
-                      </td>
-                      <td style={{width: '110px', minWidth: '90px', maxWidth: '130px'}}>{produto.preco}</td>
-                      <td className="celula-acoes">
-                        <ActionButtons 
-                          showView={true}
-                          onView={() => handleViewDetails(produto)}
-                          onEdit={() => handleEdit(produto.id)} 
-                          onDelete={() => handleDelete(produto.id)} 
-                        />
-                      </td>
-                    </tr>
-                  ))
+                  currentProducts.map((produto) => {
+                    const id = produto.idMaterial || produto.id;
+                    const nome = produto.nmMaterial || produto.nome || '';
+                    const quantidade = produto.estoqueAtual ?? produto.quantidade ?? 0;
+                    const preco = produto.precoVenda 
+                      ? `R$ ${produto.precoVenda.toFixed(2).replace('.', ',')}` 
+                      : (produto.preco || 'R$ 0,00');
+                    
+                    return (
+                      <tr key={id} className={quantidade < 5 ? 'baixo-estoque' : ''}>
+                        <td>{id}</td>
+                        <td>{nome}</td>
+                        <td>
+                          {quantidade < 5 && <span className="icone-alerta">⚠️</span>}
+                          {quantidade}
+                        </td>
+                        <td style={{width: '110px', minWidth: '90px', maxWidth: '130px'}}>{preco}</td>
+                        <td className="celula-acoes">
+                          <ActionButtons 
+                            showView={true}
+                            onView={() => handleViewDetails(produto)}
+                            onEdit={() => handleEdit(id)} 
+                            onDelete={() => handleDelete(id)} 
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

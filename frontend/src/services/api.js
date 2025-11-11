@@ -59,11 +59,11 @@ export const empresasAPI = {
 
 // ==================== UNIDADES DE MEDIDA ====================
 export const unidadesAPI = {
-  listar: () => get("/unidades"),
-  buscarPorId: (id) => get(`/unidades/${id}`),
-  criar: (unidade) => post("/unidades", unidade),
-  atualizar: (id, unidade) => put(`/unidades/${id}`, unidade),
-  deletar: (id) => del(`/unidades/${id}`),
+  listar: () => get("/unidadeMedida"),
+  buscarPorId: (id) => get(`/unidadeMedida/${id}`),
+  criar: (unidade) => post("/unidadeMedida", unidade),
+  atualizar: (id, unidade) => put(`/unidadeMedida/${id}`, unidade),
+  deletar: (id) => del(`/unidadeMedida/${id}`),
 };
 
 // ==================== USUÁRIOS ====================

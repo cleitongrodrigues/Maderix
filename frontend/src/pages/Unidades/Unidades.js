@@ -9,8 +9,8 @@ import Highlight from "../../components/Highlight/Highlight";
 import useDelayedLoader from "../../hooks/useDelayedLoader";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
+import { unidadesAPI } from "../../services/api";
 
-const USE_MOCK = true;
 const PAGE_SIZE = 10;
 
 function Unidades() {
@@ -21,82 +21,69 @@ function Unidades() {
   const [editing, setEditing] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Buscar unidades da API
   useEffect(() => {
-    if (USE_MOCK) {
-      const stored = localStorage.getItem('mock_unidades');
-      if (stored) {
-        try { setUnidades(JSON.parse(stored)); }
-        catch (e) { setUnidades(sampleUnidades); localStorage.setItem('mock_unidades', JSON.stringify(sampleUnidades)); }
-      } else { setUnidades(sampleUnidades); localStorage.setItem('mock_unidades', JSON.stringify(sampleUnidades)); }
-      setLoading(false);
-      return;
-    }
-
-    async function fetchData() {
+    async function fetchUnidades() {
       try {
-        const res = await fetch('/api/unidades');
-        if (!res.ok) throw new Error('no-api');
-        const data = await res.json();
-        setUnidades(Array.isArray(data) ? data : sampleUnidades);
-      } catch (err) { setUnidades(sampleUnidades); }
-      finally { setLoading(false); }
+        setLoading(true);
+        console.log("🔵 Buscando unidades de medida...");
+        const data = await unidadesAPI.listar();
+        console.log("✅ Unidades carregadas:", data.length);
+        setUnidades(data);
+      } catch (err) {
+        console.error("❌ Erro ao buscar unidades:", err);
+        setUnidades([]);
+      } finally {
+        setLoading(false);
+      }
     }
-    fetchData();
+    fetchUnidades();
   }, []);
 
   const openCreate = () => { setEditing(null); setIsOpen(true); };
   const openEdit = (u) => { setEditing(u); setIsOpen(true); };
 
   const handleSave = (saved) => {
-    if (USE_MOCK) {
-      setUnidades(prev => {
-        const idKey = 'ID_Unidade';
-        const sid = saved[idKey] ?? saved.id;
-        if (sid) {
-          const updated = prev.map(p => ((p.ID_Unidade ?? p.id) === sid ? { ...p, ...saved } : p));
-          localStorage.setItem('mock_unidades', JSON.stringify(updated));
-          return updated;
-        }
-        const maxId = prev.reduce((m, x) => Math.max(m, (x.ID_Unidade ?? x.id) || 0), 0);
-        const newItem = { ...saved, ID_Unidade: maxId + 1, DT_Cad_Unidade: new Date().toISOString() };
-        const next = [newItem, ...prev];
-        localStorage.setItem('mock_unidades', JSON.stringify(next));
-        return next;
-      });
-      return;
-    }
-    setUnidades(prev => {
-      const exists = prev.find(p => (p.ID_Unidade ?? p.id) === (saved.ID_Unidade ?? saved.id));
-      if (exists) return prev.map(p => ((p.ID_Unidade ?? p.id) === (saved.ID_Unidade ?? saved.id) ? { ...p, ...saved } : p));
+    console.log('✅ Unidade salva:', saved);
+    const id = saved.idUnidade;
+    setUnidades((prev) => {
+      const exists = prev.some((u) => (u.idUnidade || u.ID_Unidade) === id);
+      if (exists) {
+        return prev.map((u) => ((u.idUnidade || u.ID_Unidade) === id ? saved : u));
+      }
       return [saved, ...prev];
     });
   };
 
-  const handleDelete = (id) => {
-    if (!window.confirm('Confirma exclusão da unidade?')) return;
-    if (USE_MOCK) {
-      setUnidades(prev => { const next = prev.filter(u => (u.ID_Unidade ?? u.id) !== id); localStorage.setItem('mock_unidades', JSON.stringify(next)); return next; });
-      return;
+  const handleDelete = async (id) => {
+    if (!window.confirm('Confirma exclusão da unidade de medida?')) return;
+    try {
+      console.log("🔵 Excluindo unidade ID:", id);
+      await unidadesAPI.deletar(id);
+      console.log("✅ Unidade excluída");
+      setUnidades(prev => prev.filter(u => (u.idUnidade || u.ID_Unidade) !== id));
+      alert('✅ Unidade excluída com sucesso!');
+    } catch (err) {
+      console.error("❌ Erro ao excluir unidade:", err);
+      alert('❌ Erro ao excluir unidade: ' + (err.message || 'Erro desconhecido'));
     }
-    fetch(`/api/unidades/${id}`, { method: 'DELETE' }).then(() => setUnidades(prev => prev.filter(u => (u.ID_Unidade ?? u.id) !== id))).catch(() => {});
   };
 
   // Filtrar unidades pela busca
   const filtered = unidades.filter((u) => {
-    const sigla = (u.Sigla ?? "").toLowerCase();
-    const descricao = (u.Descricao ?? "").toLowerCase();
+    const sigla = (u.sigla ?? u.Sigla ?? "").toLowerCase();
+    const descricao = (u.descricao ?? u.Descricao ?? "").toLowerCase();
     const query = searchQuery.toLowerCase();
     return sigla.includes(query) || descricao.includes(query);
   });
 
   // Calcular estatísticas
   const totalUnidades = unidades.length;
-  const unidadesComDescricao = unidades.filter(u => u.Descricao && u.Descricao.trim()).length;
-  const unidadesRecentes = unidades.filter(u => {
-    if (!u.DT_Cad_Unidade) return false;
-    const diffDays = Math.floor((Date.now() - new Date(u.DT_Cad_Unidade)) / (1000 * 60 * 60 * 24));
-    return diffDays <= 30;
+  const unidadesComDescricao = unidades.filter(u => {
+    const desc = u.descricao ?? u.Descricao;
+    return desc && desc.trim();
   }).length;
+  const unidadesRecentes = 0; // API não retorna data de cadastro no model atual
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
@@ -169,7 +156,7 @@ function Unidades() {
                     <th>ID</th>
                     <th>Sigla</th>
                     <th>Descrição</th>
-                    <th>Data de Cadastro</th>
+                    <th>Status</th>
                     <th className="col-acoes">Ações</th>
                   </tr>
                 </thead>
@@ -182,23 +169,25 @@ function Unidades() {
                     </tr>
                   ) : (
                     pageItems.map(u => (
-                      <tr key={u.ID_Unidade ?? u.id}>
-                        <td><Highlight text={String(u.ID_Unidade ?? u.id)} query={searchQuery} /></td>
+                      <tr key={u.idUnidade ?? u.ID_Unidade}>
+                        <td><Highlight text={String(u.idUnidade ?? u.ID_Unidade ?? u.id)} query={searchQuery} /></td>
                         <td>
                           <span className="sigla-badge">
-                            <Highlight text={u.Sigla} query={searchQuery} />
+                            <Highlight text={u.sigla ?? u.Sigla} query={searchQuery} />
                           </span>
                         </td>
                         <td>
-                          <strong><Highlight text={u.Descricao || '-'} query={searchQuery} /></strong>
+                          <strong><Highlight text={u.descricao ?? u.Descricao ?? '-'} query={searchQuery} /></strong>
                         </td>
-                        <td className="data-cell">
-                          {u.DT_Cad_Unidade ? new Date(u.DT_Cad_Unidade).toLocaleDateString('pt-BR') : '-'}
+                        <td>
+                          <span className={`status-badge ${(u.ativo ?? u.Ativo) ? 'ativo' : 'inativo'}`}>
+                            {(u.ativo ?? u.Ativo) ? '✅ Ativo' : '❌ Inativo'}
+                          </span>
                         </td>
                         <td className="celula-acoes">
                           <ActionButtons 
                             onEdit={() => openEdit(u)} 
-                            onDelete={() => handleDelete(u.ID_Unidade ?? u.id)} 
+                            onDelete={() => handleDelete(u.idUnidade ?? u.ID_Unidade ?? u.id)} 
                           />
                         </td>
                       </tr>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './TopBar.css';
 import SearchModal from '../SearchModal';
 import HelpModal from '../HelpModal';
@@ -6,6 +7,7 @@ import ReportsModal from '../ReportsModal';
 import CompanySelector from '../CompanySelector';
 
 function TopBar({ menuCollapsed, onToggleMenu, empresaAtual, onOpenCompanySelector }) {
+  const navigate = useNavigate();
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [reportsModalOpen, setReportsModalOpen] = useState(false);
@@ -125,6 +127,20 @@ function TopBar({ menuCollapsed, onToggleMenu, empresaAtual, onOpenCompanySelect
               {totalNotificacoesNaoLidas > 0 && (
                 <span className="top-bar-badge">{totalNotificacoesNaoLidas}</span>
               )}
+            </button>
+
+            {/* Logout */}
+            <button
+              className="top-bar-btn logout-btn"
+              onClick={() => {
+                if (window.confirm('Deseja realmente sair do sistema?')) {
+                  localStorage.removeItem('token');
+                  navigate('/');
+                }
+              }}
+              title="Sair do Sistema"
+            >
+              <span className="top-bar-icon">🚪</span>
             </button>
           </div>
         </div>
