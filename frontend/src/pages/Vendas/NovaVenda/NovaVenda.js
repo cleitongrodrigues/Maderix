@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import "./NovaVenda.css";
 import { clientesAPI, materiaisAPI } from "../../../services/api";
@@ -73,7 +72,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
     e.preventDefault();
     // Validações
     const itensInvalidos = itens.filter(item =>
-      !item.name.trim() || item.qty <= 0 || item.unitPrice <= 0
+      !item.nome || !String(item.nome).trim() || item.qty <= 0 || item.unitPrice <= 0
     );
     if (itensInvalidos.length > 0) {
       alert("Por favor, preencha todos os campos dos itens com valores válidos (quantidade e preço devem ser maiores que zero).");
@@ -92,6 +91,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
         valorUnitario: Number(item.unitPrice)
       }))
     };
+    console.log('[NovaVenda] Dados enviados para API:', vendaData);
     if (onSave) onSave(vendaData, !!vendaParaEditar);
     onClose();
   };
@@ -106,18 +106,18 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
 
   const atualizarItem = (index, field, value) => {
     const novosItens = [...itens];
-    if (field === 'idMaterial') {
-      // Ao selecionar um material, preenche nome e unitPrice automaticamente
-      const material = materiais.find(m => String(m.idMaterial) === String(value));
+    if (field === 'nome') {
+      // Busca o material pelo nome selecionado
+      const material = materiais.find(m => (m.nmMaterial || m.nome || m.codigo || '') === value);
       if (material) {
         novosItens[index] = {
           ...novosItens[index],
+          nome: value,
           idMaterial: material.idMaterial,
-          nome: material.nmMaterial,
           unitPrice: material.precoVenda || 0
         };
       } else {
-        novosItens[index] = { ...novosItens[index], idMaterial: value };
+        novosItens[index] = { ...novosItens[index], nome: value, idMaterial: '' };
       }
     } else if (field === 'qty') {
       value = Math.max(1, parseInt(value) || 1);
@@ -125,8 +125,8 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
     } else if (field === 'unitPrice') {
       value = Math.max(0, parseFloat(value) || 0);
       novosItens[index] = { ...novosItens[index], unitPrice: value };
-    } else if (field === 'nome') {
-      novosItens[index] = { ...novosItens[index], nome: value };
+    } else if (field === 'idMaterial') {
+      novosItens[index] = { ...novosItens[index], idMaterial: value };
     }
     setItens(novosItens);
   };
@@ -209,26 +209,30 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
               <div className="itens-list">
                 {itens.map((item, index) => (
                   <div key={index} className="item-row">
-                    <select
+                    <input
+                      id={`idMaterial-${index}`}
+                      type="text"
                       value={item.idMaterial}
-                      onChange={e => atualizarItem(index, 'idMaterial', e.target.value)}
+                      readOnly
+                      required
+                      className="input-id-material"
+                      placeholder="ID do produto"
+                    />
+                    <select
+                      id={`nomeMaterial-${index}`}
+                      value={item.nome}
+                      onChange={e => atualizarItem(index, 'nome', e.target.value)}
                       required
                     >
-                      <option value="">Selecione o produto</option>
+                      <option value="">Selecione o nome do produto</option>
                       {materiais.map(mat => (
-                        <option key={mat.idMaterial} value={mat.idMaterial}>
-                          {mat.idMaterial}
+                        <option key={mat.idMaterial} value={mat.nmMaterial || mat.nome || mat.codigo || ''}>
+                          {mat.nmMaterial || mat.nome || mat.codigo || ''}
                         </option>
                       ))}
                     </select>
                     <input
-                      type="text"
-                      placeholder="Nome do produto"
-                      value={item.nome}
-                      readOnly
-                      required
-                    />
-                    <input
+                      id={`qty-${index}`}
                       type="number"
                       placeholder="Qtd"
                       min="1"
@@ -239,6 +243,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
                     <div className="preco-wrapper">
                       <span className="preco-prefix">R$</span>
                       <input
+                        id={`unitPrice-${index}`}
                         type="text"
                         placeholder="0,00"
                         className="input-preco"

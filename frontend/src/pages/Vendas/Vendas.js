@@ -8,7 +8,8 @@ import NovaVenda from "./NovaVenda/NovaVenda";
 import { vendasAPI } from "../../services/api";
 
 function formatCurrency(v) {
-	return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+	if (v === undefined || v === null || isNaN(v)) return "R$ 0,00";
+	return Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 function getPaymentIcon(payment) {
@@ -37,6 +38,27 @@ function Vendas() {
 	const [page, setPage] = useState(1);
 	const pageSize = 10;
 
+	// Mapear os dados da venda para os nomes esperados pelo grid
+	const mapVenda = (v) => ({
+		id: v.idVenda,
+		date: v.dtVenda,
+		customer: v.nomeCliente,
+		seller: v.nomeUsuario,
+		company: v.nomeEmpresa,
+		total: v.valorTotal,
+		status: v.statusVenda,
+		itemsCount: Array.isArray(v.itensVendas) ? v.itensVendas.length : 0,
+		items: Array.isArray(v.itensVendas) ? v.itensVendas.map(item => ({
+			idMaterial: item.idMaterial,
+			name: item.nomeMaterial,
+			sku: item.codigoMaterial,
+			qty: item.quantidade,
+			unitPrice: item.precoUnitario,
+			total: item.valorTotalItem,
+			unidade: item.unidadeSigla
+		})) : []
+	});
+
 	// Buscar vendas da API
 	useEffect(() => {
 		async function fetchVendas() {
@@ -45,7 +67,8 @@ function Vendas() {
 				console.log("🔵 Buscando vendas...");
 				const data = await vendasAPI.listar();
 				console.log("✅ Vendas carregadas:", data.length);
-				setSales(Array.isArray(data) ? data : []);
+				const vendasMapeadas = Array.isArray(data) ? data.map(mapVenda) : [];
+				setSales(vendasMapeadas);
 			} catch (err) {
 				console.error("❌ Erro ao buscar vendas:", err);
 				setSales([]);
@@ -90,17 +113,20 @@ function Vendas() {
 	const startIndex = (currentPage - 1) * pageSize;
 	const visible = filtered.slice(startIndex, startIndex + pageSize);
 
-	const handleSaveVenda = (vendaData, isEdicao) => {
-		if (isEdicao) {
-			setSales(sales.map(venda => 
-				venda.id === vendaData.id ? vendaData : venda
-			));
-			alert("Venda atualizada com sucesso!");
-		} else {
-			setSales([vendaData, ...sales]);
-			alert("Venda cadastrada com sucesso!");
+	const handleSaveVenda = async (vendaData, isEdicao) => {
+		try {
+			if (isEdicao) {
+				// Aqui pode implementar update se necessário
+				alert("Edição de venda não implementada!");
+			} else {
+				const novaVenda = await vendasAPI.criar(vendaData);
+				setSales([mapVenda(novaVenda), ...sales]);
+				alert("Venda cadastrada com sucesso!");
+			}
+			setVendaParaEditar(null);
+		} catch (err) {
+			alert("Erro ao cadastrar venda: " + (err?.message || err));
 		}
-		setVendaParaEditar(null);
 	};
 
 	const handleEditarVenda = (venda) => {
@@ -260,7 +286,7 @@ function Vendas() {
 								</td>
 								<td>{s.seller}</td>
 								<td>
-									<span className={`status status-${s.status.toLowerCase()}`}>
+									<span className={`status status-${(s.status || "").toLowerCase()}`}>
 										{s.status}
 									</span>
 								</td>
@@ -368,7 +394,7 @@ function Vendas() {
 										</thead>
 										<tbody>
 											{selected.items.map((it, idx) => (
-												<tr key={idx}>
+												<tr key={it.idMaterial || idx}>
 													<td>{it.sku || '-'}</td>
 													<td>{it.name}</td>
 													<td>{it.qty}</td>
