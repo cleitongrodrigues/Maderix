@@ -38,11 +38,11 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
 
   useEffect(() => {
     if (initialData) {
-      setNumero(initialData.Numero || '');
-      setCliente(initialData.Cliente || '');
-      setValor(initialData.Valor != null ? formatarMoeda(initialData.Valor) : '');
-      setVencimento(initialData.Vencimento ? new Date(initialData.Vencimento).toISOString().slice(0,10) : '');
-      setObservacoes(initialData.Observacoes || '');
+      setNumero(initialData.numero || initialData.Numero || '');
+      setCliente(initialData.cliente || initialData.Cliente || '');
+      setValor(initialData.valor != null ? formatarMoeda(initialData.valor) : (initialData.Valor != null ? formatarMoeda(initialData.Valor) : ''));
+      setVencimento(initialData.dataVencimento ? new Date(initialData.dataVencimento).toISOString().slice(0,10) : (initialData.Vencimento ? new Date(initialData.Vencimento).toISOString().slice(0,10) : ''));
+      setObservacoes(initialData.observacoes || initialData.Observacoes || '');
     } else {
       setNumero('');
       setCliente('');
@@ -85,13 +85,13 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
     setSaving(true);
     try {
       const payload = { 
-        Numero: numero, 
-        Cliente: cliente, 
-        Valor: valorNumerico, 
-        Vencimento: new Date(vencimento).toISOString(),
-        Observacoes: observacoes
+        numero: numero, 
+        cliente: cliente, 
+        valor: valorNumerico, 
+        dataVencimento: new Date(vencimento).toISOString(),
+        observacoes: observacoes
       };
-      const url = initialData ? `/api/contas/${initialData.ID_Conta ?? initialData.id}` : '/api/contas';
+      const url = initialData ? `/api/contas/${initialData.idConta ?? initialData.id ?? initialData.ID_Conta}` : '/api/contas';
       const method = initialData ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error('no-api');
@@ -101,14 +101,14 @@ function ContasReceberForm({ isOpen, onClose, onSave, initialData = null }) {
     } catch (err) {
       const fakeId = Math.floor(Math.random() * 100000) + 1000;
       const obj = { 
-        ID_Conta: initialData ? (initialData.ID_Conta ?? initialData.id) : fakeId, 
-        Numero: numero, 
-        Cliente: cliente, 
-        Valor: valorNumerico, 
-        Vencimento: new Date(vencimento).toISOString(), 
-        Observacoes: observacoes,
-        Pago: initialData?.Pago || false, 
-        DT_Cad_Conta: initialData?.DT_Cad_Conta || new Date().toISOString() 
+        idConta: initialData ? (initialData.idConta ?? initialData.id ?? initialData.ID_Conta) : fakeId, 
+        numero: numero, 
+        cliente: cliente, 
+        valor: valorNumerico, 
+        dataVencimento: new Date(vencimento).toISOString(), 
+        observacoes: observacoes,
+        pago: initialData?.pago || initialData?.Pago || false, 
+        dataCadConta: initialData?.dataCadConta || initialData?.dtCadConta || initialData?.DT_Cad_Conta || new Date().toISOString() 
       };
       onSave && onSave(obj);
       onClose && onClose();

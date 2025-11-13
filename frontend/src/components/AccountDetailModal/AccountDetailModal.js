@@ -18,21 +18,24 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
   function formatarData(data) {
     if (!data) return '-';
     const d = new Date(data);
-    if (isNaN(d)) return '-';
-    return d.toLocaleDateString('pt-BR');
+    return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('pt-BR');
   }
   const paymentFormRef = useRef(null);
   const [activeTab, setActiveTab] = useState('detalhes'); // detalhes, parcelas, historico
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [pagamentoData, setPagamentoData] = useState({
-    valorPago: '',
+    valorPago: conta?.valor || '',
     dataPagamento: new Date().toISOString().split('T')[0],
     formaPagamento: 'dinheiro',
     observacoes: ''
   });
 
   useEffect(() => {
-    if (showPaymentForm) {
+    if (showPaymentForm && conta) {
+      setPagamentoData(data => ({
+        ...data,
+        valorPago: conta.valor || ''
+      }));
       if (paymentFormRef.current) {
         paymentFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -40,17 +43,23 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
         valorPagoInputRef.current.focus();
       }
     }
-  }, [showPaymentForm]);
+  }, [showPaymentForm, conta]);
 
   if (!conta) return null;
 
   // Dados de exemplo de parcelas (pronto para integração com backend)
+  const safeToISO = (data) => {
+    if (!data) return '';
+    const d = new Date(data);
+    return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
+  };
+
   const parcelas = [
     { 
       id: 1, 
       numero: 1, 
-      valor: conta.Valor / 3, 
-      vencimento: conta.Vencimento, 
+      valor: conta.valor / 3, 
+      vencimento: safeToISO(conta.dataVencimento), 
       pago: false, 
       dataPagamento: null,
       valorPago: null 
@@ -58,8 +67,8 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
     { 
       id: 2, 
       numero: 2, 
-      valor: conta.Valor / 3, 
-      vencimento: new Date(new Date(conta.Vencimento).setMonth(new Date(conta.Vencimento).getMonth() + 1)).toISOString().split('T')[0], 
+      valor: conta.valor / 3, 
+      vencimento: safeToISO(conta.dataVencimento ? new Date(conta.dataVencimento).setMonth(new Date(conta.dataVencimento).getMonth() + 1) : null), 
       pago: false, 
       dataPagamento: null,
       valorPago: null 
@@ -67,8 +76,8 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
     { 
       id: 3, 
       numero: 3, 
-      valor: conta.Valor / 3, 
-      vencimento: new Date(new Date(conta.Vencimento).setMonth(new Date(conta.Vencimento).getMonth() + 2)).toISOString().split('T')[0], 
+      valor: conta.valor / 3, 
+      vencimento: safeToISO(conta.dataVencimento ? new Date(conta.dataVencimento).setMonth(new Date(conta.dataVencimento).getMonth() + 2) : null), 
       pago: false, 
       dataPagamento: null,
       valorPago: null 
@@ -114,8 +123,10 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
 
   const handleSubmitPagamento = (e) => {
     e.preventDefault();
-    // Converte vírgula para ponto só ao submeter
-    const valorPagoConvertido = pagamentoData.valorPago.replace(/,/g, '.');
+    // Converte vírgula para ponto só se for string
+    const valorPagoConvertido = typeof pagamentoData.valorPago === 'string'
+      ? pagamentoData.valorPago.replace(/,/g, '.')
+      : pagamentoData.valorPago;
     const dataParaEnviar = { ...pagamentoData, valorPago: valorPagoConvertido, contaId: conta.ID_Conta || conta.id };
     console.log('Registrando pagamento:', dataParaEnviar);
     if (onRegisterPayment) {
@@ -150,11 +161,11 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
             <div className="summary-card">
               <div className="summary-item">
                 <span className="summary-label">Cliente:</span>
-                <span className="summary-value large">{conta.Cliente || 'N/A'}</span>
+                <span className="summary-value large">{conta.cliente || 'N/A'}</span>
               </div>
               <div className="summary-item">
                 <span className="summary-label">Número da Conta:</span>
-                <span className="summary-value">{conta.Numero || 'N/A'}</span>
+                <span className="summary-value">{conta.numero || 'N/A'}</span>
               </div>
             </div>
             
@@ -204,11 +215,11 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
                 <div className="info-grid">
                   <div className="info-item">
                     <span className="info-label">Número da Conta:</span>
-                    <span className="info-value">{conta.Numero || 'N/A'}</span>
+                    <span className="info-value">{conta.numero || 'N/A'}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Cliente:</span>
-                    <span className="info-value">{conta.Cliente || 'N/A'}</span>
+                    <span className="info-value">{conta.cliente || 'N/A'}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Valor Total:</span>
@@ -216,11 +227,11 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
                   </div>
                   <div className="info-item">
                     <span className="info-label">Data de Vencimento:</span>
-                    <span className="info-value">{formatarData(conta.Vencimento)}</span>
+                    <span className="info-value">{formatarData(conta.dataVencimento)}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Data de Cadastro:</span>
-                    <span className="info-value">{formatarData(conta.DT_Cad_Conta)}</span>
+                    <span className="info-value">{formatarData(conta.dataCadConta)}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Status:</span>
@@ -229,7 +240,7 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
                   <div className="info-item full-width">
                     <span className="info-label">Observações:</span>
                     <span className="info-value">
-                      {conta.Observacoes || 'Sem observações adicionais.'}
+                      {conta.observacoes || 'Sem observações adicionais.'}
                     </span>
                   </div>
                 </div>
@@ -420,9 +431,7 @@ function AccountDetailModal({ conta, onClose, onEdit, onRegisterPayment }) {
                 💵 Registrar Pagamento
               </button>
             )}
-            <button className="btn-primary" onClick={() => onEdit(conta)}>
-              ✏️ Editar Conta
-            </button>
+            {/* Removido botão editar */}
           </div>
         </div>
       </div>
