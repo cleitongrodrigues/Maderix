@@ -91,10 +91,16 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
+.login-container button:focus {
+  outline: none;
+  background-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.25);
+}
+
 .login-container button:active {
   transform: translateY(2px); /* Move pra baixo */
   box-shadow: 0 2px 4px rgba(0,0,0,0.25); /* Sombra menor, como se tivesse pressionado */
-  background-color: #cc5f00; /* Um tom mais escuro */
+  background-color: var(--primary-color-dark); /* Um tom mais escuro */
 }
 
 .login-container .extra-links {

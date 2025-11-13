@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { materiaisAPI, usuariosAPI } from "../../../services/api";
 import "./Movimentacoes.css";
 
 function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null }) {
@@ -9,6 +10,32 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
   const [usuario, setUsuario] = useState("");
   const [observacao, setObservacao] = useState("");
   const [error, setError] = useState("");
+  const [produtosList, setProdutosList] = useState([]);
+  const [usuariosList, setUsuariosList] = useState([]);
+    // Carrega lista de usuários ao abrir o modal
+    useEffect(() => {
+      async function fetchUsuarios() {
+        try {
+          const data = await usuariosAPI.listar();
+          setUsuariosList(Array.isArray(data) ? data : []);
+        } catch (err) {
+          setUsuariosList([]);
+        }
+      }
+      if (isOpen) fetchUsuarios();
+    }, [isOpen]);
+  // Carrega lista de produtos ao abrir o modal
+  useEffect(() => {
+    async function fetchProdutos() {
+      try {
+        const data = await materiaisAPI.listar();
+        setProdutosList(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setProdutosList([]);
+      }
+    }
+    if (isOpen) fetchProdutos();
+  }, [isOpen]);
 
   useEffect(() => {
     if (initialData) {
@@ -33,13 +60,15 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
       return;
     }
 
+
+    // Monta o payload conforme esperado pela API
     const payload = {
-      Tipo: tipo,
-      Produto: produto,
-      Quantidade: Number(quantidade),
-      Data: data ? new Date(data).toISOString() : new Date().toISOString(),
-      Usuario: usuario,
-      Observacao: observacao,
+      tipoMovimento: tipo,
+      idMaterial: produto ? Number(produto) : undefined,
+      quantidade: Number(quantidade),
+      dataMovimentacao: data ? new Date(data).toISOString() : new Date().toISOString(),
+      idUsuario: usuario ? Number(usuario) : undefined,
+      observacao: observacao,
     };
 
     // preserve ID when editing
@@ -72,11 +101,14 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
               </div>
               <div style={{ flex: 2 }}>
                 <label>🏷️ Produto *</label>
-                <input 
-                  value={produto} 
-                  onChange={(e) => setProduto(e.target.value)}
-                  placeholder="Digite o nome do produto..."
-                />
+                <select value={produto} onChange={e => setProduto(e.target.value)}>
+                  <option value="">Selecione o produto...</option>
+                  {produtosList.map((p) => (
+                    <option key={p.idMaterial || p.id} value={p.idMaterial || p.id}>
+                      {p.nmMaterial || p.nome || p.codigo || `ID ${p.idMaterial || p.id}`}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div style={{ width: 140 }}>
                 <label>🔢 Quantidade *</label>
@@ -97,11 +129,14 @@ function MovimentacoesForm({ isOpen = true, onClose, onSave, initialData = null 
               </div>
               <div style={{ flex: 1 }}>
                 <label>👤 Usuário *</label>
-                <input 
-                  value={usuario} 
-                  onChange={(e) => setUsuario(e.target.value)}
-                  placeholder="Nome do usuário..."
-                />
+                <select value={usuario} onChange={e => setUsuario(e.target.value)}>
+                  <option value="">Selecione o usuário...</option>
+                  {usuariosList.map((u) => (
+                    <option key={u.idUsuario || u.id} value={u.idUsuario || u.id}>
+                      {u.nome || u.nomeUsuario || u.email || `ID ${u.idUsuario || u.id}`}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

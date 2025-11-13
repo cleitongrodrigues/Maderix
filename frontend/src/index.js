@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { loadThemeFromStorage } from './utils/themeManager';
+
+// Carrega tema ANTES de renderizar para evitar flash de cor padrão
+loadThemeFromStorage();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

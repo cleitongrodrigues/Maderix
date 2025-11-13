@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MovimentacaoEstoqueRepository extends JpaRepository<MovimentacaoEstoque, Integer> {
+	java.util.List<MovimentacaoEstoque> findByIdMaterial_IdMaterial(Integer idMaterial);
 }

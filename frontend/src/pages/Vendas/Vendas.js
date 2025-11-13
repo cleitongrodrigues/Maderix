@@ -5,19 +5,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import TableSkeleton from "../../components/TableSkeleton/TableSkeleton";
 import Highlight from "../../components/Highlight/Highlight";
 import NovaVenda from "./NovaVenda/NovaVenda";
-
-const mockSales = [
-	{ id: 1001, date: "2025-10-01T09:12:00", customer: "João Silva", itemsCount: 3, total: 125.5, payment: "PIX", seller: "Maria", status: "CONCLUÍDA", notes: "Entrega rápida", items: [{ sku: "PEN-01", name: "Caneta Azul", qty: 2, unitPrice: 2.5 }, { sku: "NB-01", name: "Caderno 100 folhas", qty: 1, unitPrice: 120.5 }] },
-	{ id: 1002, date: "2025-10-01T10:30:00", customer: "Empresa XYZ", itemsCount: 1, total: 450.0, payment: "Cartão", seller: "Carlos", status: "PENDENTE", notes: "Pagamento a confirmar", items: [{ sku: "MAT-10", name: "Tinta 1L", qty: 10, unitPrice: 45.0 }] },
-	{ id: 1003, date: "2025-10-02T15:05:00", customer: "Ana Paula", itemsCount: 2, total: 39.9, payment: "Dinheiro", seller: "João", status: "CONCLUÍDA", notes: "", items: [{ sku: "GR-01", name: "Giz de cera", qty: 3, unitPrice: 9.9 }, { sku: "LB-02", name: "Lápis HB", qty: 2, unitPrice: 5.1 }] },
-	{ id: 1004, date: "2025-10-03T08:50:00", customer: "Loja ABC", itemsCount: 5, total: 980.0, payment: "Boleto", seller: "Maria", status: "CANCELADA", notes: "Cancelada pelo cliente", items: [] },
-	{ id: 1005, date: "2025-10-03T09:15:00", customer: "Pedro Rocha", itemsCount: 1, total: 19.99, payment: "PIX", seller: "Carlos", status: "CONCLUÍDA", notes: "Retirar no local", items: [{ sku: "BT-01", name: "Borracha", qty: 1, unitPrice: 19.99 }] },
-	{ id: 1006, date: "2025-10-04T10:00:00", customer: "Cliente 6", itemsCount: 2, total: 49.5, payment: "PIX", seller: "Maria", status: "CONCLUÍDA", notes: "", items: [] },
-	{ id: 1007, date: "2025-10-05T14:20:00", customer: "Cliente 7", itemsCount: 4, total: 200.0, payment: "Cartão", seller: "João", status: "PENDENTE", notes: "", items: [] },
-	{ id: 1008, date: "2025-10-06T16:45:00", customer: "Cliente 8", itemsCount: 1, total: 9.99, payment: "Dinheiro", seller: "Carlos", status: "CONCLUÍDA", notes: "", items: [] },
-	{ id: 1009, date: "2025-10-06T18:00:00", customer: "Cliente 9", itemsCount: 10, total: 1500.0, payment: "Boleto", seller: "Maria", status: "CONCLUÍDA", notes: "Pedido grande", items: [] },
-	{ id: 1010, date: "2025-10-07T09:30:00", customer: "Cliente 10", itemsCount: 3, total: 75.25, payment: "PIX", seller: "Carlos", status: "CANCELADA", notes: "Estornada", items: [] }
-];
+import { vendasAPI } from "../../services/api";
 
 function formatCurrency(v) {
 	return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -35,7 +23,8 @@ function getPaymentIcon(payment) {
 
 function Vendas() {
 
-	const [sales, setSales] = useState(mockSales);
+	const [sales, setSales] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [filter, setFilter] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [dateFrom, setDateFrom] = useState("");
@@ -47,6 +36,25 @@ function Vendas() {
 	// pagination fixed
 	const [page, setPage] = useState(1);
 	const pageSize = 10;
+
+	// Buscar vendas da API
+	useEffect(() => {
+		async function fetchVendas() {
+			try {
+				setLoading(true);
+				console.log("🔵 Buscando vendas...");
+				const data = await vendasAPI.listar();
+				console.log("✅ Vendas carregadas:", data.length);
+				setSales(Array.isArray(data) ? data : []);
+			} catch (err) {
+				console.error("❌ Erro ao buscar vendas:", err);
+				setSales([]);
+			} finally {
+				setLoading(false);
+			}
+		}
+		fetchVendas();
+	}, []);
 
 	const filtered = useMemo(() => {
 		return sales.filter((s) => {

@@ -5,8 +5,8 @@ import ActionButtons from "../../components/ActionButtons";
 import AccountDetailModal from "../../components/AccountDetailModal";
 import sampleContasReceber from "./sampleContasReceber";
 import ContasReceberForm from "./ContasReceberForm";
+import { contasReceberAPI } from "../../services/api";
 
-const USE_MOCK = true;
 const PAGE_SIZE = 10;
 
 function ContasReceber() {
@@ -21,18 +21,19 @@ function ContasReceber() {
   const [contaDetalhes, setContaDetalhes] = useState(null); // Para o modal de detalhes
 
   useEffect(() => {
-    if (USE_MOCK) {
-      const stored = localStorage.getItem('mock_contas_receber');
-      if (stored) { try { setContas(JSON.parse(stored)); } catch (e) { setContas(sampleContasReceber); localStorage.setItem('mock_contas_receber', JSON.stringify(sampleContasReceber)); } }
-      else { setContas(sampleContasReceber); localStorage.setItem('mock_contas_receber', JSON.stringify(sampleContasReceber)); }
-      setLoading(false);
-      return;
-    }
-
     async function fetchData() {
-      try { const res = await fetch('/api/contas/receber'); if (!res.ok) throw new Error('no-api'); const data = await res.json(); setContas(Array.isArray(data) ? data : sampleContasReceber); }
-      catch (err) { setContas(sampleContasReceber); }
-      finally { setLoading(false); }
+      try {
+        setLoading(true);
+        console.log("🔵 Buscando contas a receber...");
+        const data = await contasReceberAPI.listarPendentes();
+        console.log("✅ Contas carregadas:", data.length);
+        setContas(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("❌ Erro ao buscar contas:", err);
+        setContas([]);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchData();
   }, []);
@@ -41,38 +42,42 @@ function ContasReceber() {
   const openEdit = (c) => { setEditing(c); setIsOpen(true); };
 
   const handleSave = (saved) => {
-    if (USE_MOCK) {
-      setContas(prev => {
-        const sid = saved.ID_Conta ?? saved.id;
-        if (sid) {
-          const updated = prev.map(p => ((p.ID_Conta ?? p.id) === sid ? { ...p, ...saved } : p));
-          localStorage.setItem('mock_contas_receber', JSON.stringify(updated));
-          return updated;
-        }
-        const maxId = prev.reduce((m, x) => Math.max(m, (x.ID_Conta ?? x.id) || 0), 0);
-        const newItem = { ...saved, ID_Conta: maxId + 1, DT_Cad_Conta: new Date().toISOString(), Pago: false };
-        const next = [newItem, ...prev]; localStorage.setItem('mock_contas_receber', JSON.stringify(next)); return next;
-      });
-      return;
-    }
+    console.log('✅ Conta salva:', saved);
+    const sid = saved.ID_Conta ?? saved.id;
     setContas(prev => {
-      const exists = prev.find(p => (p.ID_Conta ?? p.id) === (saved.ID_Conta ?? saved.id));
-      if (exists) return prev.map(p => ((p.ID_Conta ?? p.id) === (saved.ID_Conta ?? saved.id) ? { ...p, ...saved } : p));
+      const exists = prev.find(p => (p.ID_Conta ?? p.id) === sid);
+      if (exists) {
+        return prev.map(p => ((p.ID_Conta ?? p.id) === sid ? { ...p, ...saved } : p));
+      }
       return [saved, ...prev];
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('Confirma exclusão da conta?')) return;
-    if (USE_MOCK) { setContas(prev => { const next = prev.filter(u => (u.ID_Conta ?? u.id) !== id); localStorage.setItem('mock_contas_receber', JSON.stringify(next)); return next; }); return; }
-    fetch(`/api/contas/${id}`, { method: 'DELETE' }).then(() => setContas(prev => prev.filter(u => (u.ID_Conta ?? u.id) !== id))).catch(() => {});
+    try {
+      console.log("🔵 Excluindo conta ID:", id);
+      await contasReceberAPI.deletar(id);
+      console.log("✅ Conta excluída");
+      setContas(prev => prev.filter(u => (u.ID_Conta ?? u.id) !== id));
+      alert('✅ Conta excluída com sucesso!');
+    } catch (err) {
+      console.error("❌ Erro ao excluir conta:", err);
+      alert('❌ Erro ao excluir: ' + (err.message || 'Erro desconhecido'));
+    }
   };
 
-  const togglePago = (c) => {
+  const togglePago = async (c) => {
     const id = c.ID_Conta ?? c.id;
-    const newVal = !c.Pago;
-    setContas(prev => { const updated = prev.map(p => ((p.ID_Conta ?? p.id) === id ? { ...p, Pago: newVal } : p)); localStorage.setItem('mock_contas_receber', JSON.stringify(updated)); return updated; });
-    if (!USE_MOCK) fetch(`/api/contas/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Pago: newVal }) }).catch(() => {});
+    try {
+      console.log("🔵 Marcando conta como paga, ID:", id);
+      await contasReceberAPI.marcarComoPaga(id);
+      console.log("✅ Conta marcada como paga");
+      setContas(prev => prev.map(p => ((p.ID_Conta ?? p.id) === id ? { ...p, Pago: true } : p)));
+    } catch (err) {
+      console.error("❌ Erro ao marcar conta como paga:", err);
+      alert('❌ Erro: ' + (err.message || 'Erro desconhecido'));
+    }
   };
 
   // Função para abrir modal de detalhes
@@ -94,23 +99,9 @@ function ContasReceber() {
   // Função para registrar pagamento
   const handleRegisterPayment = (paymentData) => {
     console.log('Registrando pagamento:', paymentData);
-    // Aqui você integraria com a API para salvar o pagamento
-    // Por enquanto, apenas fecha o modal e atualiza a conta se for pagamento total
-    if (USE_MOCK) {
-      setContas(prev => {
-        const updated = prev.map(c => {
-          if ((c.ID_Conta ?? c.id) === paymentData.contaId) {
-            // Marca como pago
-            return { ...c, Pago: true };
-          }
-          return c;
-        });
-        localStorage.setItem('mock_contas_receber', JSON.stringify(updated));
-        return updated;
-      });
-      setContaDetalhes(prev => prev ? { ...prev, Pago: true } : prev); // Atualiza status no modal
-      handleCloseDetails(); // Fecha o modal após registrar
-    }
+    // TODO: Integrar com a API para registrar o pagamento de fato
+    // Após integração, atualizar a lista de contas conforme resposta da API
+    handleCloseDetails(); // Fecha o modal após registrar
   };
 
 

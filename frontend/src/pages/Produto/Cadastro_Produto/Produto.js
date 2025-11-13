@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Produto.css";
-import { materiaisAPI, empresasAPI, unidadesAPI } from "../../../services/api";
+import { materiaisAPI, empresasAPI, unidadesAPI, estoqueAPI } from "../../../services/api";
 
 function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
   const [loading, setLoading] = useState(false);
@@ -208,11 +208,26 @@ function Produto({ isOpen, onClose, onSave, produtoParaEditar }) {
         saved = await materiaisAPI.atualizar(id, payload);
         console.log("✅ Material atualizado");
         console.log("📥 Resposta da API:", JSON.stringify(saved, null, 2));
+
       } else {
         // Criando novo material
         saved = await materiaisAPI.criar(payload);
         console.log("✅ Material criado");
         console.log("📥 Resposta da API:", JSON.stringify(saved, null, 2));
+
+        // Registrar movimentação de entrada
+        try {
+          const mov = {
+            idMaterial: saved.idMaterial || saved.id,
+            tipoMovimento: 'ENTRADA',
+            quantidade: saved.estoqueAtual || saved.quantidade || payload.estoqueAtual,
+            observacao: 'Entrada inicial automática ao cadastrar produto'
+          };
+          await estoqueAPI.registrar(mov);
+          console.log('✅ Movimentação de entrada registrada');
+        } catch (err) {
+          console.error('❌ Erro ao registrar movimentação de entrada:', err);
+        }
       }
 
       if (onSave) {

@@ -1,11 +1,41 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "./NovaVenda.css";
+import { clientesAPI, materiaisAPI } from "../../../services/api";
 
 function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
-  const [cliente, setCliente] = useState("");
+  const [clienteId, setClienteId] = useState("");
+  const [clientes, setClientes] = useState([]);
+  const [materiais, setMateriais] = useState([]);
   const [itens, setItens] = useState([]);
   const [formaPagamento, setFormaPagamento] = useState("PIX");
   const [observacoes, setObservacoes] = useState("");
+
+  // Carregar clientes da API ao abrir o modal
+  useEffect(() => {
+    if (isOpen) {
+      console.log('[NovaVenda] Buscando clientes...');
+      clientesAPI.listar()
+        .then((data) => {
+          console.log('[NovaVenda] Clientes recebidos:', data);
+          setClientes(Array.isArray(data) ? data : []);
+        })
+        .catch((err) => {
+          console.error('[NovaVenda] Erro ao buscar clientes:', err);
+          setClientes([]);
+        });
+      console.log('[NovaVenda] Buscando materiais...');
+      materiaisAPI.listar()
+        .then((data) => {
+          console.log('[NovaVenda] Materiais recebidos:', data);
+          setMateriais(Array.isArray(data) ? data : []);
+        })
+        .catch((err) => {
+          console.error('[NovaVenda] Erro ao buscar materiais:', err);
+          setMateriais([]);
+        });
+    }
+  }, [isOpen]);
 
   // Função para formatar valor como moeda
   const formatarMoeda = (valor) => {
@@ -22,15 +52,15 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
   };
   
   // Preencher dados se estiver editando
-  React.useEffect(() => {
+  useEffect(() => {
     if (vendaParaEditar) {
-      setCliente(vendaParaEditar.customer);
+      setClienteId(vendaParaEditar.customer && vendaParaEditar.customer.id ? vendaParaEditar.customer.id : "");
       setItens(vendaParaEditar.items || []);
       setFormaPagamento(vendaParaEditar.payment);
       setObservacoes(vendaParaEditar.notes || "");
     } else {
       // Limpar formulário ao abrir para nova venda
-      setCliente("");
+      setClienteId("");
       setItens([]);
       setFormaPagamento("PIX");
       setObservacoes("");
@@ -41,36 +71,33 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     // Validações
-    const itensInvalidos = itens.filter(item => 
+    const itensInvalidos = itens.filter(item =>
       !item.name.trim() || item.qty <= 0 || item.unitPrice <= 0
     );
-    
     if (itensInvalidos.length > 0) {
       alert("Por favor, preencha todos os campos dos itens com valores válidos (quantidade e preço devem ser maiores que zero).");
       return;
     }
-    
+    if (!clienteId) {
+      alert("Selecione um cliente.");
+      return;
+    }
     const vendaData = {
-      id: vendaParaEditar ? vendaParaEditar.id : Date.now(),
-      date: vendaParaEditar ? vendaParaEditar.date : new Date().toISOString(),
-      customer: cliente,
-      itemsCount: itens.length,
-      total: itens.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0),
-      payment: formaPagamento,
-      seller: vendaParaEditar ? vendaParaEditar.seller : "Usuário Atual",
-      status: vendaParaEditar ? vendaParaEditar.status : "PENDENTE",
-      notes: observacoes,
-      items: itens
+      idCliente: Number(clienteId),
+      idEmpresa: 1, // Ajuste aqui se necessário para multi-empresa
+      itens: itens.map(item => ({
+        idMaterial: item.idMaterial || item.sku || null, // Ajuste conforme origem do idMaterial
+        quantidade: Number(item.qty),
+        valorUnitario: Number(item.unitPrice)
+      }))
     };
-    
     if (onSave) onSave(vendaData, !!vendaParaEditar);
     onClose();
   };
 
   const adicionarItem = () => {
-    setItens([...itens, { sku: "", name: "", qty: 1, unitPrice: 0 }]);
+    setItens([...itens, { idMaterial: "", nome: "", qty: 1, unitPrice: 0 }]);
   };
 
   const removerItem = (index) => {
@@ -79,16 +106,28 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
 
   const atualizarItem = (index, field, value) => {
     const novosItens = [...itens];
-    
-    // Validações básicas
-    if (field === 'qty') {
+    if (field === 'idMaterial') {
+      // Ao selecionar um material, preenche nome e unitPrice automaticamente
+      const material = materiais.find(m => String(m.idMaterial) === String(value));
+      if (material) {
+        novosItens[index] = {
+          ...novosItens[index],
+          idMaterial: material.idMaterial,
+          nome: material.nmMaterial,
+          unitPrice: material.precoVenda || 0
+        };
+      } else {
+        novosItens[index] = { ...novosItens[index], idMaterial: value };
+      }
+    } else if (field === 'qty') {
       value = Math.max(1, parseInt(value) || 1);
+      novosItens[index] = { ...novosItens[index], qty: value };
     } else if (field === 'unitPrice') {
-      // Valor já vem como número do handlePrecoChange
       value = Math.max(0, parseFloat(value) || 0);
+      novosItens[index] = { ...novosItens[index], unitPrice: value };
+    } else if (field === 'nome') {
+      novosItens[index] = { ...novosItens[index], nome: value };
     }
-    
-    novosItens[index] = { ...novosItens[index], [field]: value };
     setItens(novosItens);
   };
 
@@ -119,13 +158,18 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
           <div className="form-group">
             <label>
               Cliente *
-              <input
-                type="text"
-                value={cliente}
-                onChange={(e) => setCliente(e.target.value)}
-                placeholder="Nome do cliente"
+              <select
+                value={clienteId}
+                onChange={e => setClienteId(e.target.value)}
                 required
-              />
+              >
+                <option value="">Selecione um cliente</option>
+                {clientes.map(cliente => (
+                  <option key={cliente.idCliente} value={cliente.idCliente}>
+                    {cliente.nmCliente || cliente.nome || cliente.name || cliente.razaoSocial || cliente.cnpj || cliente.idCliente}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
 
@@ -165,17 +209,23 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
               <div className="itens-list">
                 {itens.map((item, index) => (
                   <div key={index} className="item-row">
-                    <input
-                      type="text"
-                      placeholder="Código/SKU"
-                      value={item.sku}
-                      onChange={(e) => atualizarItem(index, 'sku', e.target.value)}
-                    />
+                    <select
+                      value={item.idMaterial}
+                      onChange={e => atualizarItem(index, 'idMaterial', e.target.value)}
+                      required
+                    >
+                      <option value="">Selecione o produto</option>
+                      {materiais.map(mat => (
+                        <option key={mat.idMaterial} value={mat.idMaterial}>
+                          {mat.idMaterial}
+                        </option>
+                      ))}
+                    </select>
                     <input
                       type="text"
                       placeholder="Nome do produto"
-                      value={item.name}
-                      onChange={(e) => atualizarItem(index, 'name', e.target.value)}
+                      value={item.nome}
+                      readOnly
                       required
                     />
                     <input
@@ -183,7 +233,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
                       placeholder="Qtd"
                       min="1"
                       value={item.qty}
-                      onChange={(e) => atualizarItem(index, 'qty', e.target.value)}
+                      onChange={e => atualizarItem(index, 'qty', e.target.value)}
                       required
                     />
                     <div className="preco-wrapper">
@@ -193,7 +243,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
                         placeholder="0,00"
                         className="input-preco"
                         value={formatarMoeda(item.unitPrice)}
-                        onChange={(e) => handlePrecoChange(index, e.target.value)}
+                        onChange={e => handlePrecoChange(index, e.target.value)}
                         required
                       />
                     </div>
@@ -217,7 +267,7 @@ function NovaVenda({ isOpen, onClose, onSave, vendaParaEditar }) {
             <button type="button" className="btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn-primary" disabled={!cliente || itens.length === 0}>
+            <button type="submit" className="btn-primary" disabled={!clienteId || itens.length === 0}>
               {vendaParaEditar ? '💾 Salvar Alterações' : '💾 Finalizar Venda'}
             </button>
           </div>

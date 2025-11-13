@@ -82,8 +82,13 @@ public class MovimentacaoEstoqueService {
         return movimentacaoEstoqueRepository.save(movimentacao);
     }
 
+
     public List<MovimentacaoEstoque> buscarMovimentacoes(){
         return movimentacaoEstoqueRepository.findAll();
+    }
+
+    public List<MovimentacaoEstoque> buscarMovimentacoesPorMaterial(Integer idMaterial) {
+        return movimentacaoEstoqueRepository.findByIdMaterial_IdMaterial(idMaterial);
     }
 
     public Optional<MovimentacaoEstoque> buscarMovimentacoesPorId(Integer id){

@@ -173,7 +173,9 @@
   box-sizing: border-box;
 }
 
-.item-row input {
+
+.item-row input,
+.item-row select {
   padding: 8px 8px;
   border: 1px solid var(--input-border, #444);
   background: var(--input-bg, #23272e);
@@ -182,6 +184,23 @@
   font-size: 13px;
   min-width: 0;
   box-sizing: border-box;
+  height: 36px;
+  appearance: none;
+}
+
+.item-row select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.item-row select {
+  cursor: pointer;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23aaa" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 18px 18px;
+  padding-right: 32px;
 }
 
 .item-row input:focus {

@@ -56,11 +56,17 @@ public class MovimentacaoEstoqueController {
         return ResponseEntity.status(HttpStatus.CREATED).body(movimentacao);
     }
 
+
     @GetMapping
     public ResponseEntity<List<MovimentacaoEstoque>> buscarTodasMovimentacoes(){
         List <MovimentacaoEstoque> movimentcacoes = movimentacaoEstoqueService.buscarMovimentacoes();
-
         return ResponseEntity.ok(movimentcacoes);
+    }
+
+    @GetMapping("/material/{idMaterial}")
+    public ResponseEntity<List<MovimentacaoEstoque>> buscarMovimentacoesPorMaterial(@PathVariable Integer idMaterial) {
+        List<MovimentacaoEstoque> movimentacoes = movimentacaoEstoqueService.buscarMovimentacoesPorMaterial(idMaterial);
+        return ResponseEntity.ok(movimentacoes);
     }
 
     @GetMapping("/{id}")

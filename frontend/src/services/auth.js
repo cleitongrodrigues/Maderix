@@ -6,6 +6,9 @@ import { post } from "./http";
 export async function login(nmLogin, senhaPura) {
   const response = await post("/auth/login", { nmLogin, senhaPura });
   // Resposta esperada: { token: "...", usuario: {...} }
+  if (response && response.usuario) {
+    localStorage.setItem('usuario', JSON.stringify(response.usuario));
+  }
   return response;
 }
 

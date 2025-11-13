@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { estoqueAPI } from '../../services/api';
 import './ProductDetailModal.css';
 
 function ProductDetailModal({ produto, onClose, onEdit, onViewMovements }) {
   const [activeTab, setActiveTab] = useState('geral'); // geral, historico, info
+  const [movimentacoes, setMovimentacoes] = useState([]);
+  const [loadingMov, setLoadingMov] = useState(false);
+
+  useEffect(() => {
+    async function fetchMovimentacoes() {
+      if (produto && produto.id) {
+        setLoadingMov(true);
+        try {
+          console.log('[MODAL] Buscando movimentações para produto id:', produto.id, produto);
+          const data = await estoqueAPI.buscarPorMaterial(produto.id);
+          console.log('[MODAL] Resposta da API de movimentações:', data);
+          setMovimentacoes(Array.isArray(data) ? data : []);
+        } catch (err) {
+          console.error('[MODAL] Erro ao buscar movimentações:', err);
+          setMovimentacoes([]);
+        } finally {
+          setLoadingMov(false);
+        }
+      }
+    }
+    if (activeTab === 'historico') {
+      fetchMovimentacoes();
+    }
+  }, [produto, activeTab]);
 
   if (!produto) return null;
-
-  // Dados de exemplo de movimentações (pronto para integração com backend)
-  const movimentacoes = [
-    { id: 1, tipo: 'entrada', quantidade: 50, data: '2024-10-25', usuario: 'João Silva', observacao: 'Compra de fornecedor' },
-    { id: 2, tipo: 'saida', quantidade: 10, data: '2024-10-26', usuario: 'Maria Santos', observacao: 'Venda #1234' },
-    { id: 3, tipo: 'entrada', quantidade: 30, data: '2024-10-27', usuario: 'João Silva', observacao: 'Reposição de estoque' },
-    { id: 4, tipo: 'saida', quantidade: 5, data: '2024-10-28', usuario: 'Carlos Lima', observacao: 'Venda #1245' },
-  ];
 
   const formatarData = (data) => {
     return new Date(data).toLocaleDateString('pt-BR');
@@ -153,30 +170,34 @@ function ProductDetailModal({ produto, onClose, onEdit, onViewMovements }) {
                   </button>
                 </div>
                 <div className="movements-list">
-                  {movimentacoes.map(mov => (
-                    <div key={mov.id} className={`movement-item ${mov.tipo}`}>
-                      <div className="movement-icon">
-                        {mov.tipo === 'entrada' ? '📥' : '📤'}
-                      </div>
-                      <div className="movement-info">
-                        <div className="movement-header-row">
-                          <span className={`movement-type ${mov.tipo}`}>
-                            {mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}
-                          </span>
-                          <span className="movement-date">{formatarData(mov.data)}</span>
+                  {loadingMov ? (
+                    <div>Carregando movimentações...</div>
+                  ) : movimentacoes.length === 0 ? (
+                    <div>Nenhuma movimentação encontrada.</div>
+                  ) : (
+                    movimentacoes.map(mov => (
+                      <div key={mov.idMovimentacao || mov.id} className={`movement-item ${mov.tipoMovimento}`}>
+                        <div className="movement-icon">
+                          {mov.tipoMovimento === 'ENTRADA' ? '📥' : '📤'}
                         </div>
-                        <div className="movement-details">
-                          <span className="movement-quantity">
-                            {mov.tipo === 'entrada' ? '+' : '-'}{mov.quantidade} un
-                          </span>
-                          <span className="movement-user">👤 {mov.usuario}</span>
+                        <div className="movement-info">
+                          <div className="movement-header-row">
+                            <span className={`movement-type ${mov.tipoMovimento}`}>{mov.tipoMovimento === 'ENTRADA' ? 'Entrada' : 'Saída'}</span>
+                            <span className="movement-date">{formatarData(mov.dataMovimentacao)}</span>
+                          </div>
+                          <div className="movement-details">
+                            <span className="movement-quantity">
+                              {mov.tipoMovimento === 'ENTRADA' ? '+' : '-'}{mov.quantidade} un
+                            </span>
+                            <span className="movement-user">👤 {mov.usuarioMovimentacao || '---'}</span>
+                          </div>
+                          {mov.observacao && (
+                            <div className="movement-obs">{mov.observacao}</div>
+                          )}
                         </div>
-                        {mov.observacao && (
-                          <div className="movement-obs">{mov.observacao}</div>
-                        )}
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             )}

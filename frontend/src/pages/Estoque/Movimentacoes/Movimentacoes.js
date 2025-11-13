@@ -4,8 +4,8 @@ import Pagination from "../../../components/Pagination/Pagination";
 import ActionButtons from "../../../components/ActionButtons";
 import sampleMovimentacoes from "./sampleMovimentacoes";
 import MovimentacoesForm from "./MovimentacoesForm";
+import { estoqueAPI } from "../../../services/api";
 
-const USE_MOCK = true;
 const PAGE_SIZE = 10;
 
 function Movimentacoes() {
@@ -17,24 +17,26 @@ function Movimentacoes() {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    if (USE_MOCK) {
-      const stored = localStorage.getItem("mock_movimentacoes");
-      if (stored) {
-        try { setItems(JSON.parse(stored)); }
-        catch (e) { setItems(sampleMovimentacoes); localStorage.setItem("mock_movimentacoes", JSON.stringify(sampleMovimentacoes)); }
-      } else { setItems(sampleMovimentacoes); localStorage.setItem("mock_movimentacoes", JSON.stringify(sampleMovimentacoes)); }
-      setLoading(false);
-      return;
-    }
-
     async function fetchData() {
       try {
-        const res = await fetch('/api/estoque/movimentacoes');
-        if (!res.ok) throw new Error('no-api');
-        const data = await res.json();
-        setItems(Array.isArray(data) ? data : sampleMovimentacoes);
+        setLoading(true);
+        console.log("🔵 Buscando movimentações de estoque...");
+        const data = await estoqueAPI.listar();
+        console.log("✅ Movimentações carregadas:", data.length);
+        // Mapeia os campos da API para os nomes esperados pelo frontend
+        const mapped = Array.isArray(data) ? data.map(mov => ({
+          ID_Mov: mov.idMovimentacao || mov.id || mov.ID_Mov,
+          Tipo: mov.tipoMovimento,
+          Produto: mov.nomeMaterial || mov.material || mov.nome || '',
+          Quantidade: mov.quantidade,
+          Data: mov.dataMovimentacao,
+          Usuario: mov.usuarioMovimentacao,
+          Observacao: mov.observacao,
+        })) : [];
+        setItems(mapped);
       } catch (err) {
-        setItems(sampleMovimentacoes);
+        console.error("❌ Erro ao buscar movimentações:", err);
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -45,33 +47,37 @@ function Movimentacoes() {
   const openCreate = () => { setEditing(null); setIsOpen(true); };
   const openEdit = (it) => { setEditing(it); setIsOpen(true); };
 
-  const handleSave = (saved) => {
-    if (USE_MOCK) {
-      setItems(prev => {
-        const sid = saved.ID_Mov ?? saved.id;
-        if (sid) {
-          const updated = prev.map(p => ((p.ID_Mov ?? p.id) === sid ? { ...p, ...saved } : p));
-          localStorage.setItem('mock_movimentacoes', JSON.stringify(updated));
-          return updated;
-        }
-        const maxId = prev.reduce((m, x) => Math.max(m, (x.ID_Mov ?? x.id) || 0), 0);
-        const newItem = { ...saved, ID_Mov: maxId + 1, Data: saved.Data || new Date().toISOString() };
-        const next = [newItem, ...prev]; localStorage.setItem('mock_movimentacoes', JSON.stringify(next)); return next;
-      });
-      return;
+  const handleSave = async (saved) => {
+    try {
+      // Envia para a API
+      const result = await estoqueAPI.registrar(saved);
+      // Atualiza a lista local exibida
+      setItems(prev => [{
+        ID_Mov: result.idMovimentacao,
+        Tipo: result.tipoMovimento,
+        Produto: result.nomeMaterial || result.material?.nmMaterial || result.material?.nome || '',
+        Quantidade: result.quantidade,
+        Data: result.dataMovimentacao,
+        Usuario: result.usuarioMovimentacao || result.usuario?.nome || '',
+        Observacao: result.observacao,
+      }, ...prev]);
+    } catch (err) {
+      alert('Erro ao registrar movimentação: ' + (err?.response?.data?.message || err.message || 'Erro desconhecido'));
     }
-
-    setItems(prev => {
-      const exists = prev.find(p => (p.ID_Mov ?? p.id) === (saved.ID_Mov ?? saved.id));
-      if (exists) return prev.map(p => ((p.ID_Mov ?? p.id) === (saved.ID_Mov ?? saved.id) ? { ...p, ...saved } : p));
-      return [saved, ...prev];
-    });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('Confirma exclusão da movimentação?')) return;
-    if (USE_MOCK) { setItems(prev => { const next = prev.filter(u => (u.ID_Mov ?? u.id) !== id); localStorage.setItem('mock_movimentacoes', JSON.stringify(next)); return next; }); return; }
-    fetch(`/api/estoque/movimentacoes/${id}`, { method: 'DELETE' }).then(() => setItems(prev => prev.filter(u => (u.ID_Mov ?? u.id) !== id))).catch(() => {});
+    try {
+      console.log("🔵 Excluindo movimentação ID:", id);
+      // Nota: estoqueAPI não tem método deletar definido ainda
+      // await estoqueAPI.deletar(id);
+      console.warn("⚠️ API de exclusão de movimentação ainda não implementada");
+      alert('⚠️ Funcionalidade de exclusão ainda não disponível na API');
+    } catch (err) {
+      console.error("❌ Erro ao excluir movimentação:", err);
+      alert('❌ Erro: ' + (err.message || 'Erro desconhecido'));
+    }
   };
 
   // filtering

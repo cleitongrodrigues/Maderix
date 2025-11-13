@@ -364,7 +364,7 @@
 .movimentacao-form textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  background: var(--modal-bg);
+  background: var(--input-bg);
   box-shadow: 
     0 0 0 4px rgba(var(--primary-color-rgb), 0.12),
     0 4px 12px rgba(var(--primary-color-rgb), 0.15);
@@ -381,7 +381,8 @@
 }
 
 .movimentacao-form select:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ff7700' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background: var(--input-bg) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23bbb' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
 }
 
 .movimentacao-form textarea {

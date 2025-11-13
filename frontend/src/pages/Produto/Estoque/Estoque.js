@@ -59,9 +59,35 @@ function Estoque() {
   };
 
   // Função para abrir modal de detalhes
-  const handleViewDetails = (produto) => {
-    setProdutoDetalhes(produto);
-    setOpenMenuId(null);
+  const handleViewDetails = async (produto) => {
+    try {
+      setLoading(true);
+      const idProduto = produto.idMaterial || produto.id;
+      console.log('[LUPINHA] Abrindo modal para produto id:', idProduto, produto);
+      const apiProduto = await materiaisAPI.buscarPorId(idProduto);
+      // Mapeia os campos para o formato esperado pelo modal
+      const mapped = {
+        id: apiProduto.idMaterial || apiProduto.id,
+        nome: apiProduto.nmMaterial || apiProduto.nome || '',
+        codigo: apiProduto.codigo || '',
+        quantidade: apiProduto.estoqueAtual ?? apiProduto.quantidade ?? 0,
+        preco: apiProduto.precoVenda ?? apiProduto.preco ?? 0,
+        unidadeMedida: apiProduto.unidadeMedida || '',
+        dataCadastro: apiProduto.dataCadMaterial || apiProduto.dataCadastro || '',
+        estoqueMinimo: apiProduto.estoqueMinimo || '',
+        localizacao: apiProduto.localizacao || '',
+        foto: apiProduto.foto || '',
+        descricao: apiProduto.descricao || '',
+        ...apiProduto // mantém outros campos para abas adicionais
+      };
+      setProdutoDetalhes(mapped);
+    } catch (err) {
+      console.error('Erro ao buscar detalhes do produto:', err);
+      setProdutoDetalhes(produto); // fallback para dados locais
+    } finally {
+      setLoading(false);
+      setOpenMenuId(null);
+    }
   };
 
   // Função para fechar modal de detalhes
