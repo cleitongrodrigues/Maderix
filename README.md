@@ -1,132 +1,64 @@
-# Maderix
+# 🪵 Maderix: Sistema de Gestão de Estoque e Financeiro para Marcenarias
 
-# Para iniciar o Back-end, utilize o seuinte comando:
-  ./mvnw clean spring-boot:run
+Maderix é uma solução completa para micro e pequenas empresas no setor madeireiro e de marcenaria, focada em centralizar o controle de estoque de matéria-prima e a gestão de contas a receber. O sistema automatiza o registro de transações, garantindo que o estoque físico seja atualizado em tempo real.
 
-# Para alterar a versão do java, basta acessar o pom.xml e alterar o java.version para a versão desejada
-```mermaid
-classDiagram
-class EMPRESA {
-    +ID_Empresa: Integer
-    --
-    +NM_Fantasia: Varchar
-    +RZ_Social: Varchar
-    +CNPJ: Varchar
-    +DT_Cad_Empresa: Datetime
-}
+---
 
-class PERFIS_USUARIO {
-    +ID_Perfil: Integer
-    --
-    +NM_Perfil: Varchar
-}
+## 🛠️ Stack Tecnológica
 
-class USUARIOS {
-    +ID_Usuario: Integer
-    --
-    +NM_Usuario: Varchar
-    +Email: Varchar
-    +Tel_Usuario: Varchar
-    +Senha: Varchar
-    +DT_Cad_Usuario: Datetime
-    +ID_Empresa: Integer
-    +ID_Perfil: Integer
-}
+O projeto é baseado em uma arquitetura de microserviços (mono-repositório) com uma stack moderna e robusta.
 
-class CLIENTES {
-    +ID_Cliente: Integer
-    --
-    +NM_Cliente: Varchar
-    +Tel_Cliente: Varchar
-    +Email: Varchar
-    +DT_Cad_Cliente: Datetime
-    +ID_Empresa: Integer
-}
+| Camada | Tecnologia | Versão |
+| :--- | :--- | :--- |
+| **Backend (API)** | **Spring Boot** | 3.x (Latest) |
+| **Segurança** | Spring Security, **JWT (Auth0)** | - |
+| **Banco de Dados** | JPA/Hibernate, **H2 (Em Memória para Dev)**, MySQL (Produção) | - |
+| **Frontend (Web)** | **React** | Latest |
+| **Ambiente** | **Node.js** | LTS (Última) |
+| **Build Tool** | Maven | - |
 
-class VENDAS {
-    +ID_Venda: Integer
-    --
-    +Valor_Total: Decimal
-    +Status_Venda: Varchar
-    +DT_Venda: Datetime
-    +ID_Cliente: Integer
-    +ID_Empresa: Integer
-    +ID_Usuario: Integer
-}
+---
 
-class UNIDADES_MEDIDA {
-    +ID_Unidade: Integer
-    --
-    +Sigla: Varchar
-    +Descricao: Varchar
-}
+## ⚙️ Guia de Instalação e Execução
 
-class MATERIAIS {
-    +ID_Material: Integer
-    --
-    +NM_Material: Varchar
-    +Descricao: Varchar
-    +Preco_Custo: Decimal
-    +Estoque_Atual: Integer
-    +DT_Cad_Material: Datetime
-    +ID_Empresa: Integer
-    +ID_Unidade: Integer
-}
+Siga estas instruções para configurar e rodar o projeto localmente.
 
-class ITENS_VENDA {
-    +ID_Item_Venda: Integer
-    --
-    +Quantidade: Integer
-    +Preco_Unitario: Decimal
-    +Valor_Total_Item: Decimal
-    +ID_Venda: Integer
-    +ID_Material: Integer
-}
+### 1. Pré-Requisitos
 
-class MOVIMENTACAO_ESTOQUE {
-    +ID_Movimentacao: Integer
-    --
-    +Tipo_Movimento: Varchar
-    +Quantidade: Integer
-    +Valor_Unitario: Decimal
-    +Observacao: Varchar
-    +DT_Movimentacao: Datetime
-    +ID_Material: Integer
-    +ID_Usuario: Integer
-    +ID_Venda: Integer
-}
+Certifique-se de ter instalado:
+* Java Development Kit **(JDK 17 ou superior)**
+* Node.js **(LTS)**
+* npm (gerenciador de pacotes do Node) ou Yarn
+* Maven (instalado ou via wrapper)
 
-class CONTAS_RECEBER {
-    +ID_Conta: Integer
-    --
-    +Descricao: Varchar
-    +Valor: Decimal
-    +Data_Vencimento: Datetime
-    +Pago: Bit
-    +Data_Pagamento: Datetime
-    +DT_Cad_Conta: Datetime
-    +ID_Venda: Integer
-    +ID_Empresa: Integer
-}
+### 2. Configuração do Backend (Spring Boot)
 
-EMPRESA "1" o-- "1..*" USUARIOS : possui
-EMPRESA "1" o-- "1..*" CLIENTES : possui
-EMPRESA "1" o-- "1..*" VENDAS : realiza
-EMPRESA "1" o-- "1..*" MATERIAIS : gerencia
-EMPRESA "1" o-- "1..*" CONTAS_RECEBER : possui
+1. **Clonar o Repositório:**
+   ```bash
+   git clone [https://www.youtube.com/watch?v=m_6f3r-fwsE](https://www.youtube.com/watch?v=m_6f3r-fwsE)
+   cd backend
 
-PERFIS_USUARIO "1" o-- "1..*" USUARIOS : classifica
+   Configurar a Chave JWT: Edite o arquivo src/main/resources/application.properties e adicione sua chave secreta para o JWT. (A chave deve ser longa e complexa):
+  # Chave de segurança para o JWT
+  api.security.token.secret=SUA_CHAVE_SECRETA_AQUI
 
-USUARIOS "1" o-- "0..1" VENDAS : realiza
-USUARIOS "1" o-- "0..*" MOVIMENTACAO_ESTOQUE : efetua
+  Rodar o Backend: O projeto está configurado para usar o H2 Database em memória para desenvolvimento.
 
-CLIENTES "1" o-- "1..*" VENDAS : faz
+  # Compila e executa o projeto
+  ./mvnw spring-boot:run
+  Ou
+  mvn spring-boot:run
+  A API estará rodando em http://localhost:8080
 
-VENDAS "1" *-- "1..*" ITENS_VENDA : contém
-VENDAS "1" o-- "0..*" MOVIMENTACAO_ESTOQUE : causa
-VENDAS "1" o-- "1..*" CONTAS_RECEBER : gera
+  Instalar Dependências: A partir da pasta raiz do frontend:
+  npm install ou npm i
 
-MATERIAIS "1" o-- "1..*" ITENS_VENDA : é parte de
-MATERIAIS "1" o-- "1..*" MOVIMENTACAO_ESTOQUE : é movimentado
+  Iniciar a Aplicação:
+  npm start
 
-UNIDADES_MEDIDA "1" o-- "1..*" MATERIAIS : mede
+  O frontend será aberto no seu navegador, geralmente em http://localhost:3000
+
+  🔒 Endpoints e Documentação
+  Documentação da API (Swagger/OpenAPI): Acesse http://localhost:8080/swagger-ui/index.html para testar todos os endpoints (Login, CRUDs, Vendas, Cancelamento).
+
+  Console do Banco de Dados (H2): Acesse http://localhost:8080/h2-console (JDBC URL: jdbc:h2:mem:maderixdb) para verificar o schema e os dados criados.
